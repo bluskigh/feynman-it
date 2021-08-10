@@ -53,7 +53,9 @@
             {% define False as lis %}
             {% endif %}
             {% for li in lis %}
-            <li class="{% if request.path == li|get_path %}current{% endif %}">{{ li }}</li>
+            {% with path=li|get_path %}
+            <li class="{% if request.path == path %}current{% endif %}"><a href="{{ path }}">{{ li }}</a></li>
+            {% endwith %}
             {% endfor %}
         </ul>
     </nav>

@@ -1,11 +1,14 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, reverse
-from django.contrib.auth import authenticate, logout 
+from django.contrib.auth import authenticate 
 from django.contrib.auth import login as auth_login
-from django.contrib.auth.models import User
+from django.contrib.auth import logout as auth_logout 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
+from django.utils.translation import gettext as _
 from django import forms
+
+from .models import User
 
 
 class LoginForm(forms.Form):
@@ -25,8 +28,14 @@ class RegisterForm(LoginForm):
         password = cd.get('password')
         confirmation = cd.get('confirmation')
         if password != confirmation:
-            raise ValidationError(('Confirmation did not match password.')
-                    , code='invalid confirmation') 
+            raise ValidationError(_('Confirmation did not match password.')
+                    , code='invalid_confirmation') 
+        username = cd.get('username')
+        if User.objects.filter(username=username).exists():
+            raise ValidationError(_('A user with username of \
+                "%(username)s" already exists.'),
+                    params={'username': username},
+                    code='invalid_username')
 
 
 @login_required
@@ -78,5 +87,5 @@ def login(request):
 
 
 def logout(request):
-    logout(request)
+    auth_logout(request)
     return HttpResponseRedirect(reverse('login'))
