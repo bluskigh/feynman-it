@@ -3,14 +3,13 @@ from django.shortcuts import render, reverse
 from django.contrib.auth import authenticate 
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout 
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Permission
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 from django import forms
-from django.forms import ModelForm
 
-from .models import User, Note
+from .models import User
 
 
 class LoginForm(forms.Form):
@@ -32,14 +31,14 @@ class LoginForm(forms.Form):
 
 
 class RegisterForm(LoginForm):
-    field_order = ['username', 'email', 'password', 'confirmation']
+    field_order = ["username", "email", "password", "confirmation"]
     email = forms.CharField(widget=forms.EmailInput)
     confirmation = forms.CharField(widget=forms.PasswordInput, 
             error_messages={'required': 'Please Re-Enter your password \
                     for confirmation'})
 
     def clean(self):
-        cd = self.cleaned_data
+        cd = super().clean()
         password = cd.get('password')
         confirmation = cd.get('confirmation')
         if password != confirmation:
@@ -53,19 +52,9 @@ class RegisterForm(LoginForm):
                     code='invalid_username')
 
 
-class PostForm(ModelForm):
-    class Meta:
-        model = Note
-        fields = ['title', 'step_one_iterations', 'links', 'step_two_iterations', 'step_three', 'understand'] 
-
-
-
-
 @login_required
 def index(request):
-    # right now index handles rendering all notes
-    return render(request, 'main/index.html', {'notes': 
-        [n.clean() for n in Note.objects.all()]})
+    return render(request, 'main/index.html')
 
 
 @login_required
@@ -73,16 +62,6 @@ def profile(request):
     return render(request, 'main/view_profile.html', {
         'username': request.user.get('username'),
         })
-
-
-@login_required
-@permission_required('main.new_note')
-def new_note(request):
-    if request.method == 'GET':
-        return render(request, 'main/view_new_note.html', 
-        {'form': NewNoteForm()})
-    elif request.method == 'POST':
-        pass
 
 
 def register(request):

@@ -1,30 +1,5 @@
 {% extends 'main/layout.html' %}
 {% block title %}Notes{% endblock %}
-{% block style %}
-main {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-    justify-content: center;
-    align-items: flex-start;
-}
-{% endblock %}
 {% block body %}
-<main>
-    <h1>Notes</h1>
-    {% if request.user.has_perm('main.new_note') %}
-    <form action="{% url 'new_note' %}">
-        <button type="submit">New Note</button>
-    </form>
-    {% endif %}
-    {% for note in notes %}
-    <div>
-        <h2>{{ note.title }}</h2>
-        {% if request.user.has_perm('main.edit_note') %}
-        <button>Edit</button>
-        {% endif %}
-    </div>
-    {% endfor %}
-</main>
+<h1>Notes</h1>
 {% endblock %}
