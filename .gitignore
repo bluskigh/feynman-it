@@ -2,6 +2,7 @@
 __pycache__/
 
 # Environments
+feynmanit-venv/
 .env
 .venv
 env/
