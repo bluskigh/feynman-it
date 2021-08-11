@@ -7,9 +7,4 @@ class User(AbstractUser):
 
 
 class Note(models.Model):
-    class Meta:
-        permissions = [
-                ('new_note', 'Allows for creation of note.'),
-                ('close_note', 'Allows for deletion of note.'),
-                ('modify_note', 'Allows for modification of note.')
-        ]
+    pass

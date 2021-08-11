@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout 
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import Permission
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 from django import forms
@@ -14,6 +15,19 @@ from .models import User
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=64)
     password = forms.CharField(widget=forms.PasswordInput)
+
+    def clean(self):
+        cd = super().clean()
+        username = cd.get('username')
+        password = cd.get('password')
+        user = authenticate(username=username, password=password)
+        if not user:
+            raise ValidationError(
+                    _('Failed to authenticate you as "%(username)s"'), 
+                    params={'username': username},
+                    code='invalid_user')
+        else:
+            return {'user': user}
 
 
 class RegisterForm(LoginForm):
@@ -61,10 +75,15 @@ def register(request):
         form = RegisterForm(request.POST)
         if form.is_valid():
             cd = form.cleaned_data
-            User.objects.create_user(
+            user = User.objects.create_user(
                     username=cd.get('username'), 
                     email=cd.get('email'),
                     password=cd.get('password'))
+
+            # add all permissions related to notes
+            permissions = Permission.objects.filter(codename__contains='_note')
+            user.user_permissions.add(*permissions)
+
             return HttpResponseRedirect(reverse('login'))
         else:
             return render(request, 'main/register.html', 
@@ -78,9 +97,13 @@ def login(request):
         form = LoginForm(request.POST)
         if form.is_valid():
             cd = form.cleaned_data
-            user = authenticate(request, username=cd.get('username'), 
-                    password=cd.get('password'))
+            user = cd.get('user')
             auth_login(request, user)
+            # in case of an update we want to check if this user has 
+            # certain permissions otherwise if so ignore otherwise add
+            permissions = Permission.objects.filter(codename__contains='_note')
+            if user.has_perms([p.codename for p in permissions]):
+                user.user_permissions.add(*permissions)
             return HttpResponseRedirect(reverse('index'))
         else:
             return render(request, 'main/login.html', {'form': form})
