@@ -1,0 +1,25 @@
+{% extends 'main/layout.html' %}
+{% block title %}{% endblock %}
+{% block style %}
+.errorlist {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+form {
+    position: absolute;
+    top: 50%;
+    right: 50%;
+    transform: translate(50%, -50%);
+}
+tr {
+}
+{% endblock %}
+{% block body %}
+<form action="{% block where %}{% endblock %}" method="POST">
+    {% csrf_token %}
+    <table>
+    {{ form.as_table }}
+    </table>
+    <button type="submit">Submit</button>
+{% endblock %}
