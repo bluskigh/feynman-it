@@ -5,11 +5,14 @@
     {% block note_title %}
     {% endblock %}
     <tr>
-        <th>1: Iterations</th>
+        <th><h2>1: Write what you know</h2></th>
         <td>
             {% if note.iterations_one %}
             {% for iteration in note.iterations_one %}
-            <div>{{ iteration }}</div>
+            <div class="table-data">
+                <h4>Iteration: {{ forloop.counter }}</h4>
+                <p>{{ iteration }}</p>
+            </div>
             {% endfor %}
             {% else %}
             <p>No iterations so far.</p>
@@ -19,11 +22,14 @@
         </td>
     </tr>
     <tr>
-        <th>1: Links</th>
+        <th><h2>1: Links</h2></th>
         <td>
             {% if note.links %}
             {% for iteration in note.links %}
-            <div>{{ iteration }}</div>
+            <div class="table-data">
+                <!-- Links for iteration {iteration here} -->
+                <p>{{ iteration }}</p>
+            </div>
             {% endfor %}
             {% else %}
             <p>No links</p>
@@ -46,6 +52,10 @@
             {% block step_two_iterations %}
             {% endblock %}
         </td>
+    </tr>
+    <tr>
+        <th>3: Final Statement</th>
+        <td>{{ note.step_three }}</td>
     </tr>
     {% block rest %}
     {% endblock %}

@@ -72,7 +72,14 @@ class NewNoteForm(ModelForm):
 class NoteForm(ModelForm):
     class Meta:
         model = Note
-        fields = ['title', 'step_one_iterations', 'links', 'step_two_iterations', 'step_three', 'understand'] 
+        exclude = ['owner']
+        # fields = ['title', 'step_one_iterations', 'links', 'step_two_iterations', 'step_three', 'understand'] 
+        widgets = {'step_one_iterations': forms.Textarea, 'step_two_iterations': forms.Textarea}
+
+    def clean_step_one_iterations(self):
+        data = self.cleaned_data.get('step_one_iterations')
+        print(data)
+        return data
 
 
 @login_required
@@ -111,7 +118,7 @@ def view_note(request, id):
     if note is None:
         messages.info(request, f'404: Could not locate note of id: {id}')
         return HttpResponseRedirect(reverse('index'))
-    return render(request, 'main/view_note.html', {'note': note.clean()})
+    return render(request, 'main/view_note.html', {'note': note.more_information()})
 
 
 @login_required
@@ -120,7 +127,33 @@ def edit_note(request, id):
     note = Note.objects.get(id=id)
     if note is None:
         messages.info(request, f'404: Could not locate note of id: {id}')
-    return render(request, 'main/edit_note.html', {'note': note.clean(), 'form': NoteForm(initial={'step_three': note.step_three, 'title': note.title})})
+    if request.method == 'GET':
+        return render(request, 'main/edit_note.html', {'note': note.more_information(), 'form': NoteForm(initial={'step_three': note.step_three, 'title': note.title})})
+    elif request.method == 'POST':
+        data = loads(request.body)
+        form = NoteForm(data)
+        if form.is_valid():
+            changed_data = form.changed_data
+            print(form.cleaned_data.get('step_one_iterations'))
+            cleaned_data = form.cleaned_data
+            # updating
+            if 'step_three' in changed_data:
+                note.step_three = cleaned_data.get('step_three')
+            if 'title' in changed_data:
+                note.title = cleaned_data.get('title')
+            if 'step_one_iterations' in changed_data:
+                note.step_one_iterations.extend(cleaned_data.get('step_one_iterations'))
+            if 'step_two_iterations' in changed_data:
+                note.step_two_iterations.extend(cleaned_data.get('step_two_iterations'))
+            if 'links' in changed_data:
+                note.links.extend(cleaned_data.get('links'))
+            if 'understand' in changed_data:
+                note.understand = cleaned_data.get('understand')
+            note.save()
+            return HttpResponseRedirect(reverse('view_note', kwargs={'id': id}))
+        else:
+            # being naive here, error are goign to be a bit complex due to how its all structured
+            return render(request, 'main/edit_note.html', {'note': note.more_information(), 'form': form})
 
 
 def register(request):

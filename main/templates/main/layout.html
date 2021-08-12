@@ -6,6 +6,9 @@
     <title>{% block title %}{% endblock %}</title>
     <style>
         html, body {margin: 0; padding: 0;}
+        p, h2, h1, h3, h5, h6, h4 {
+            margin: 0;padding: 0;
+        }
         nav {
             display: flex;
             align-items: center;
@@ -39,6 +42,23 @@
         }
         th {
             vertical-align: text-top;
+        }
+        .table-data {
+            padding: .5em 0;
+        }
+        .table-data:nth-child(n+2):nth-last-child(n+3) {
+            border-bottom: 1px solid black;
+            border-top: 1px solid black;
+        }
+        .table-data h4 {
+            margin: .5em 0;
+        }
+        .iteration-input {
+            display: flex;
+            align-items: flex-end;
+        }
+        .iteration-input button {
+            height: fit-content;
         }
     </style>
     <style>

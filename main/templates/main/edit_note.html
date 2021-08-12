@@ -2,6 +2,7 @@
 {% block title %}Edit Note{% endblock %}
 {% block container_start %}
 <form action="{% url 'edit_note' note.id %}" method="POST">
+{% csrf_token %}
 {% endblock %}
 {% block note_title %}
 <tr>
@@ -10,21 +11,21 @@
 </tr>
 {% endblock %}
 {% block iterations_one %}
-<div style="display: flex;">
+<div class="iteration-input">
     {{ form.step_one_iterations }}
-    <button>Add Iteration</button>
+    <button class="add-button" type="button" data-length={{note.iterations_one|length}}>Add Iteration</button>
 </div>
 {% endblock %}
 {% block form_links %}
-<div style="display: flex;">
+<div class="iteration-input">
     {{ form.links }}
-    <button>Add Link</button>
+    <button class="add-button" type="button" data-length={{note.links|length}}>Add Link</button>
 </div>
 {% endblock %}
 {% block step_two_iterations %}
-<div style="display: flex;">
+<div class="iteration-input">
     {{ form.step_two_iterations }}
-    <button>Add Iteration</button>
+    <button class="add-button" type="button" data-length={{note.iterations_two|length}}>Add Iteration</button>
 </div>
 {% endblock %}
 {% block rest %}
@@ -37,11 +38,68 @@
     <td>{{ form.understand }}</td>
 </tr>
 <tr>
-    <th>
-        <button type="submit">Save</button>
-    </th>
 </tr>
 {% endblock %}
 {% block container_end %}
 </form>
+<button class="submit">Save</button>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const form = document.querySelector('form');
+    const addButtons = document.querySelectorAll('.add-button');
+
+
+    function addItem(object) {
+        const target = object.target;
+        target.dataset.length = parseInt(target.dataset.length) + 1;
+
+        const container = document.createElement('div');
+        container.classList.add('table-data')
+
+        const iterationHeader = document.createElement('h4');
+        iterationHeader.innerText = `Iteration: ${target.dataset.length}`;
+
+        const input = target.previousElementSibling.previousElementSibling;
+
+        const p = document.createElement('p');
+        p.innerText = input.value;
+
+
+        container.appendChild(iterationHeader)
+        container.appendChild(p)
+
+        target.parentElement.parentElement.insertBefore(container, target.parentElement)
+        if (input.dataset.added == null) {
+            // create added dataset value
+            input.dataset.added = input.value;
+        } else {
+            // add to dataset
+            input.dataset.added += (','+input.value);
+        }
+        input.value = "";
+    }
+
+    addButtons.forEach(item => {
+        item.addEventListener('click', addItem)
+    })
+
+    document.querySelector('.submit').addEventListener('click', function() {
+        addButtons.forEach(item => {
+            const input = item.previousElementSibling.previousElementSibling;
+            if (input.dataset.added) {
+                input.value = `${input.dataset.added.trim()}`;
+            }
+        })
+        fetch(form.getAttribute('action'), {
+            method: 'PATCH',
+            mode: 'same-origin',
+            headers: new Headers({
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                'Content-Type': 'application/json'
+            })
+        })
+    })
+</script>
 {% endblock %}
