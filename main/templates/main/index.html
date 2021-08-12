@@ -42,20 +42,32 @@ main {
 {% endblock %}
 {% block scripts %}
 <script>
-    const notesContainer = document.querySelector('#notes')
+    const notesContainer = document.querySelector('#notes');
+    const newNoteTitle = document.querySelector('#id_title');
+    const newNoteBody = newNoteTitle.parentElement.parentElement.parentElement;
+    const newNoteButton = document.querySelector('#new-note-form button');
 
-    function newNote(id, title) {
+    newNoteTitle.addEventListener('keydown', function(e) {
+        if (this.value.length > 0 && newNoteBody.children.length >= 2) {
+            newNoteBody.removeChild(newNoteBody.lastChild)
+            if (newNoteButton.disabled) {
+                newNoteButton.disabled = false;
+            }
+        }
+    })
+
+    function addNote(id, title) {
         const container = document.createElement('div'); 
         container.classList.add('note')
         const h2 = document.createElement('h2'); 
-        h2.innerText = noteTitle.value;
+        h2.innerText = title;
         container.appendChild(h2)
         const editForm = document.createElement('form');
         editForm.setAttribute('action', `/notes/${id}`)
         const editButton = document.createElement('button');
         editButton.setAttribute('type', 'submit')
         editButton.innerText = 'Edit'
-        editForm.appendChid(editButton)
+        editForm.appendChild(editButton)
         container.appendChild(h2)
         container.appendChild(editForm)
         notesContainer.appendChild(container)
@@ -63,20 +75,39 @@ main {
 
     document.querySelector('#new-note-form').addEventListener('submit', function(e) {
         e.preventDefault()
-        this.querySelector('button').disabled = true;
+        newNoteButton.disabled = true;
         fetch(this.getAttribute('action'), {
-            method: 'POST',
+            method: 'POST', 
             mode: 'same-origin',
             headers: new Headers({
                 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
                 'Content-Type': 'application/json'
             }), 
             body: JSON.stringify({
-                'title': this.querySelector('#id_title').value
+                'title': newNoteTitle.value
             })
         })
-        .then(async r => await r.json())
-        .then(r => {if (r.status == 200){addNote(r.id, r.title);this.querySelector('button').disabled=false;}})
+        .then(async r => {
+            const data = await r.json(); 
+            if (r.status == 200) {
+                console.log(r)
+                addNote(data.id, data.title)
+                newNoteButton.disabled = false;
+            } else if (r.status == 400) {
+                for (const error_key in data.errors) {
+                    const error = document.createElement('p');
+                    error.innerText = data.errors[error_key];
+                    const row = document.createElement('tr');
+                    const th = document.createElement('th');
+                    const td = document.createElement('td');
+                    td.appendChild(error)
+                    row.appendChild(th)
+                    row.appendChild(td)
+                    newNoteBody.appendChild(row)
+                }
+            }
+        })
+        .catch(e => {console.log(e)})
     })
 </script>
 {% endblock %}

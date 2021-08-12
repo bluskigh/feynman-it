@@ -23,5 +23,6 @@ class Note(models.Model):
     # who owns the note
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notes', default=None)
 
-    def clean(self):
+    def basic_information(self):
         return {'id': self.id, 'title': self.title}
+

@@ -61,6 +61,13 @@ class NewNoteForm(ModelForm):
         fields = ['title']
 
 
+    def clean_title(self):
+        title = self.cleaned_data.get('title')
+        if not len(title):
+            raise ValidationError(_('Please provide a value for the notes title.'), code='invalid_title')
+        return title 
+
+
 class NoteForm(ModelForm):
     class Meta:
         model = Note
@@ -71,7 +78,7 @@ class NoteForm(ModelForm):
 def index(request):
     # right now index handles rendering all notes
     return render(request, 'main/index.html', {
-        'notes': [n.clean() for n in Note.objects.all()], 
+        'notes': [n.basic_information() for n in Note.objects.all()], 
         'new_note_form': NewNoteForm()})
 
 
@@ -91,9 +98,9 @@ def new_note(request):
         if form.is_valid():
             cd = form.cleaned_data
             note = Note.objects.create(title=cd.get('title'), owner=request.user)
-            return JsonResponse({'id': note.id, 'title': note.title}, status=200)
+            return JsonResponse(note.basic_information(), status=200)
         else:
-            return JsonResponse(status=400)
+            return JsonResponse({'errors': form.errors, 'status': 400}, status=400)
 
 
 def register(request):
