@@ -9,7 +9,7 @@ class User(AbstractUser):
 
 class Note(models.Model):
     # title of the note
-    title = models.CharField(max_length=64)
+    title = models.CharField(blank=True, max_length=64)
     # step one text(s)
     step_one_iterations = ArrayField(default=list, base_field=models.TextField(blank=True))
     # step two text(s)
@@ -21,4 +21,7 @@ class Note(models.Model):
     # does user understand new note
     understand = models.BooleanField(default=False)
     # who owns the note
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notes')
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notes', default=None)
+
+    def clean(self):
+        return {'id': self.id, 'title': self.title}

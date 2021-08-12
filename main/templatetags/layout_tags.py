@@ -18,3 +18,8 @@ def define(authenticated=None):
         return ['Notes', 'Profile', 'Logout']
     else:
         return ['Login', 'Register']
+
+
+@register.filter(name='has_permission')
+def has_permission(user, permission):
+    return user.has_perm(permission)

@@ -1,4 +1,4 @@
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse 
 from django.shortcuts import render, reverse
 from django.contrib.auth import authenticate 
 from django.contrib.auth import login as auth_login
@@ -9,6 +9,8 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 from django import forms
 from django.forms import ModelForm
+
+from json import loads, dumps
 
 from .models import User, Note
 
@@ -53,19 +55,24 @@ class RegisterForm(LoginForm):
                     code='invalid_username')
 
 
-class PostForm(ModelForm):
+class NewNoteForm(ModelForm):
+    class Meta:
+        model = Note 
+        fields = ['title']
+
+
+class NoteForm(ModelForm):
     class Meta:
         model = Note
         fields = ['title', 'step_one_iterations', 'links', 'step_two_iterations', 'step_three', 'understand'] 
 
 
-
-
 @login_required
 def index(request):
     # right now index handles rendering all notes
-    return render(request, 'main/index.html', {'notes': 
-        [n.clean() for n in Note.objects.all()]})
+    return render(request, 'main/index.html', {
+        'notes': [n.clean() for n in Note.objects.all()], 
+        'new_note_form': NewNoteForm()})
 
 
 @login_required
@@ -76,13 +83,17 @@ def profile(request):
 
 
 @login_required
-@permission_required('main.new_note')
+@permission_required('main.add_note')
 def new_note(request):
-    if request.method == 'GET':
-        return render(request, 'main/view_new_note.html', 
-        {'form': NewNoteForm()})
-    elif request.method == 'POST':
-        pass
+    if request.method == 'POST':
+        data = loads(request.body)
+        form = NewNoteForm(data)
+        if form.is_valid():
+            cd = form.cleaned_data
+            note = Note.objects.create(title=cd.get('title'), owner=request.user)
+            return JsonResponse({'id': note.id, 'title': note.title}, status=200)
+        else:
+            return JsonResponse(status=400)
 
 
 def register(request):
