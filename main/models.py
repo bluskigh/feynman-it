@@ -26,3 +26,7 @@ class Note(models.Model):
     def basic_information(self):
         return {'id': self.id, 'title': self.title}
 
+    
+    def clean(self):
+        return {'id': self.id, 'title': self.title, 'iterations_one': self.step_one_iterations, 
+        'iterations_two': self.step_two_iterations, 'links': self.links, 'understand': self.understand, 'owner': self.owner}

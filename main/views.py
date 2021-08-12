@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import Permission
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
+from django.contrib import messages
 from django import forms
 from django.forms import ModelForm
 
@@ -101,6 +102,25 @@ def new_note(request):
             return JsonResponse(note.basic_information(), status=200)
         else:
             return JsonResponse({'errors': form.errors, 'status': 400}, status=400)
+
+
+@login_required
+@permission_required('main.view_note')
+def view_note(request, id):
+    note = Note.objects.get(id=id)
+    if note is None:
+        messages.info(request, f'404: Could not locate note of id: {id}')
+        return HttpResponseRedirect(reverse('index'))
+    return render(request, 'main/view_note.html', {'note': note.clean()})
+
+
+@login_required
+@permission_required('main.change_note')
+def edit_note(request, id):
+    note = Note.objects.get(id=id)
+    if note is None:
+        messages.info(request, f'404: Could not locate note of id: {id}')
+    return render(request, 'main/edit_note.html', {'note': note.clean(), 'form': NoteForm(initial={'step_three': note.step_three, 'title': note.title})})
 
 
 def register(request):

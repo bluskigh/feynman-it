@@ -33,7 +33,9 @@ main {
         <div class="note">
             <h2>{{ note.title }}</h2>
             {% if request.user|has_permission:'main.change_note' %}
-            <button>Edit</button>
+            <form action="{% url 'view_note' note.id %}">
+                <button>Edit</button>
+            </form>
             {% endif %}
         </div>
         {% endfor %}
@@ -63,7 +65,7 @@ main {
         h2.innerText = title;
         container.appendChild(h2)
         const editForm = document.createElement('form');
-        editForm.setAttribute('action', `/notes/${id}`)
+        editForm.setAttribute('action', `view_note/${id}`)
         const editButton = document.createElement('button');
         editButton.setAttribute('type', 'submit')
         editButton.innerText = 'Edit'

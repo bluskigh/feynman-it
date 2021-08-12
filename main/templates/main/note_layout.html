@@ -1,0 +1,54 @@
+{% extends 'main/layout.html' %}
+{% block body %}
+{% block container_start %}{% endblock %}
+<table>
+    {% block note_title %}
+    {% endblock %}
+    <tr>
+        <th>1: Iterations</th>
+        <td>
+            {% if note.iterations_one %}
+            {% for iteration in note.iterations_one %}
+            <div>{{ iteration }}</div>
+            {% endfor %}
+            {% else %}
+            <p>No iterations so far.</p>
+            {% endif %}
+            {% block iterations_one %}
+            {% endblock %}
+        </td>
+    </tr>
+    <tr>
+        <th>1: Links</th>
+        <td>
+            {% if note.links %}
+            {% for iteration in note.links %}
+            <div>{{ iteration }}</div>
+            {% endfor %}
+            {% else %}
+            <p>No links</p>
+            {% endif %}
+            {% block form_links %}
+            {% endblock %}
+        </td>
+    </tr>
+    <tr>
+        <th>2: Identify gaps in explanation</th>
+        <td>
+            {% if note.iterations_two %}
+            {% for iteration in note.iterations_two %}
+            {{forloop.counter}}
+            <div>{{ iteration }}</div>
+            {% endfor %}
+            {% else %}
+            <p>No iterations so far</p>
+            {% endif %}
+            {% block step_two_iterations %}
+            {% endblock %}
+        </td>
+    </tr>
+    {% block rest %}
+    {% endblock %}
+</table>
+{% block container_end %}{% endblock %}
+{% endblock %}

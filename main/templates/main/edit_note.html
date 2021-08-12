@@ -1,0 +1,47 @@
+{% extends 'main/note_layout.html' %}
+{% block title %}Edit Note{% endblock %}
+{% block container_start %}
+<form action="{% url 'edit_note' note.id %}" method="POST">
+{% endblock %}
+{% block note_title %}
+<tr>
+    <th>{{ form.title.label }}</th>
+    <td>{{ form.title }}</td>
+</tr>
+{% endblock %}
+{% block iterations_one %}
+<div style="display: flex;">
+    {{ form.step_one_iterations }}
+    <button>Add Iteration</button>
+</div>
+{% endblock %}
+{% block form_links %}
+<div style="display: flex;">
+    {{ form.links }}
+    <button>Add Link</button>
+</div>
+{% endblock %}
+{% block step_two_iterations %}
+<div style="display: flex;">
+    {{ form.step_two_iterations }}
+    <button>Add Iteration</button>
+</div>
+{% endblock %}
+{% block rest %}
+<tr>
+    <th>{{ form.step_three.label }}</th>
+    <td>{{ form.step_three }}</td>
+</tr>
+<tr>
+    <th>{{ form.understand.label }}</th>
+    <td>{{ form.understand }}</td>
+</tr>
+<tr>
+    <th>
+        <button type="submit">Save</button>
+    </th>
+</tr>
+{% endblock %}
+{% block container_end %}
+</form>
+{% endblock %}
