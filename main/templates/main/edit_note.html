@@ -13,19 +13,19 @@
 {% block iterations_one %}
 <div class="iteration-input">
     {{ form.step_one_iterations }}
-    <button class="add-button" type="button" data-length={{note.iterations_one|length}}>Add Iteration</button>
+    <button class="add-button" type="button" data-which='iterations_one' data-length={{note.iterations_one|length}}>Add Iteration</button>
 </div>
 {% endblock %}
 {% block form_links %}
 <div class="iteration-input">
     {{ form.links }}
-    <button class="add-button" type="button" data-length={{note.links|length}}>Add Link</button>
+    <button class="add-button" type="button" data-which='links' data-length={{note.links|length}}>Add Link</button>
 </div>
 {% endblock %}
 {% block step_two_iterations %}
 <div class="iteration-input">
     {{ form.step_two_iterations }}
-    <button class="add-button" type="button" data-length={{note.iterations_two|length}}>Add Iteration</button>
+    <button class="add-button" type="button" data-which='iterations_two' data-length={{note.iterations_two|length}}>Add Iteration</button>
 </div>
 {% endblock %}
 {% block rest %}
@@ -50,6 +50,7 @@
     const form = document.querySelector('form');
     const addButtons = document.querySelectorAll('.add-button');
 
+    var iterations = {'iterations_one': [], 'links': [], 'iterations_two': []}; 
 
     function addItem(object) {
         const target = object.target;
@@ -61,23 +62,23 @@
         const iterationHeader = document.createElement('h4');
         iterationHeader.innerText = `Iteration: ${target.dataset.length}`;
 
-        const input = target.previousElementSibling.previousElementSibling;
+        const input = target.previousElementSibling;
 
         const p = document.createElement('p');
         p.innerText = input.value;
-
 
         container.appendChild(iterationHeader)
         container.appendChild(p)
 
         target.parentElement.parentElement.insertBefore(container, target.parentElement)
-        if (input.dataset.added == null) {
-            // create added dataset value
-            input.dataset.added = input.value;
-        } else {
-            // add to dataset
-            input.dataset.added += (','+input.value);
+        if (target.dataset.added == null) {
+            // for empty values, if p (No iterations) exist then remove it
+            target.parentElement.parentElement.removeChild(target.parentElement.parentElement.querySelector('p'))
+            target.dataset.added = true;
         }
+
+        iterations[target.dataset.which] = iterations[target.dataset.which].concat(input.value);
+
         input.value = "";
     }
 
@@ -87,19 +88,11 @@
 
     document.querySelector('.submit').addEventListener('click', function() {
         addButtons.forEach(item => {
-            const input = item.previousElementSibling.previousElementSibling;
-            if (input.dataset.added) {
-                input.value = `${input.dataset.added.trim()}`;
+            if (item.dataset.added) {
+                item.previousElementSibling.value = JSON.stringify(iterations[item.dataset.which]);
             }
         })
-        fetch(form.getAttribute('action'), {
-            method: 'PATCH',
-            mode: 'same-origin',
-            headers: new Headers({
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-                'Content-Type': 'application/json'
-            })
-        })
+        form.submit()
     })
 </script>
 {% endblock %}

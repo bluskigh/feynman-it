@@ -39,12 +39,14 @@
         </td>
     </tr>
     <tr>
-        <th>2: Identify gaps in explanation</th>
+        <th><h2>2: Identify gaps in explanation</h2></th>
         <td>
             {% if note.iterations_two %}
             {% for iteration in note.iterations_two %}
-            {{forloop.counter}}
-            <div>{{ iteration }}</div>
+            <div class="table-data">
+                <h4>Iteration: {{ forloop.counter }}</h4>
+                <p>{{ iteration }}</p>
+            </div>
             {% endfor %}
             {% else %}
             <p>No iterations so far</p>

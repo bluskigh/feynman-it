@@ -69,17 +69,30 @@ class NewNoteForm(ModelForm):
         return title 
 
 
+class LargeTextField(forms.Field):
+    widget = forms.Textarea
+
+
+    def __init__(self, *, empty_value='', **kwargs):
+        self.empty_value = ''
+        super().__init__(**kwargs)
+
+
+    def to_python(self, value):
+        if value not in self.empty_value:
+            # should be an array of values
+            data = loads(value)
+            return data
+        else:
+            return self.empty_value 
+
+
 class NoteForm(ModelForm):
+    step_one_iterations = LargeTextField()
+    step_two_iterations = LargeTextField()
     class Meta:
         model = Note
         exclude = ['owner']
-        # fields = ['title', 'step_one_iterations', 'links', 'step_two_iterations', 'step_three', 'understand'] 
-        widgets = {'step_one_iterations': forms.Textarea, 'step_two_iterations': forms.Textarea}
-
-    def clean_step_one_iterations(self):
-        data = self.cleaned_data.get('step_one_iterations')
-        print(data)
-        return data
 
 
 @login_required
@@ -130,11 +143,9 @@ def edit_note(request, id):
     if request.method == 'GET':
         return render(request, 'main/edit_note.html', {'note': note.more_information(), 'form': NoteForm(initial={'step_three': note.step_three, 'title': note.title})})
     elif request.method == 'POST':
-        data = loads(request.body)
-        form = NoteForm(data)
+        form = NoteForm(request.POST)
         if form.is_valid():
             changed_data = form.changed_data
-            print(form.cleaned_data.get('step_one_iterations'))
             cleaned_data = form.cleaned_data
             # updating
             if 'step_three' in changed_data:
