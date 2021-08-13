@@ -11,7 +11,12 @@
             {% for iteration in note.iterations_one %}
             <div class="table-data">
                 <h4>Iteration: {{ forloop.counter }}</h4>
-                <p>{{ iteration }}</p>
+                <div class="data">
+                    <p>{{ iteration }}</p>
+                    {% if 'edit' in request.path %}
+                    <button type="button" class="edit-iteration" data-iteration={{forloop.counter}} data-which=1>Edit</button>
+                    {% endif %}
+                </div>
             </div>
             {% endfor %}
             {% else %}
@@ -27,8 +32,14 @@
             {% if note.links %}
             {% for iteration in note.links %}
             <div class="table-data">
-                <!-- Links for iteration {iteration here} -->
-                <p>{{ iteration }}</p>
+                <h4>Iteration: {{ forloop.counter }}</h4>
+                <div class="data">
+                    <!-- Links for iteration {iteration here} -->
+                    <a href="{{ iteration }}" target="_blank">{{ iteration }}</a>
+                    {% if 'edit' in request.path %}
+                    <button type="button" class="edit-iteration" data-iteration={{forloop.counter}} data-which=0>Edit</button>
+                    {% endif %}
+                </div>
             </div>
             {% endfor %}
             {% else %}
@@ -44,8 +55,13 @@
             {% if note.iterations_two %}
             {% for iteration in note.iterations_two %}
             <div class="table-data">
-                <h4>Iteration: {{ forloop.counter }}</h4>
-                <p>{{ iteration }}</p>
+                <div class="data">
+                    <h4>Iteration: {{ forloop.counter }}</h4>
+                    <p>{{ iteration }}</p>
+                </div>
+                {% if 'edit' in request.path %}
+                <button type="button" class="edit-iteration" data-iteration={{forloop.counter}} data-which=2>Edit</button>
+                {% endif %}
             </div>
             {% endfor %}
             {% else %}
@@ -57,7 +73,11 @@
     </tr>
     <tr>
         <th>3: Final Statement</th>
+        {% if note.step_three|length %}
         <td>{{ note.step_three }}</td>
+        {% else %}
+        <p>No step three stated.</p>
+        {% endif %}
     </tr>
     {% block rest %}
     {% endblock %}

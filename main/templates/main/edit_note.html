@@ -1,31 +1,37 @@
 {% extends 'main/note_layout.html' %}
 {% block title %}Edit Note{% endblock %}
 {% block container_start %}
+{{ form.errors }}
+<section id="edit-iteration-container" class="hidden">
+    <textarea name="text" class="edit" cols="30" rows="10"></textarea>
+    <button type="button" class="save-edit">Save Edit</button>
+    <button type="button" class="close">Close</button>
+</section>
 <form action="{% url 'edit_note' note.id %}" method="POST">
 {% csrf_token %}
 {% endblock %}
 {% block note_title %}
 <tr>
-    <th>{{ form.title.label }}</th>
+    <th><h2>{{ form.title.label }}</h2></th>
     <td>{{ form.title }}</td>
 </tr>
 {% endblock %}
 {% block iterations_one %}
 <div class="iteration-input">
     {{ form.step_one_iterations }}
-    <button class="add-button" type="button" data-which='iterations_one' data-length={{note.iterations_one|length}}>Add Iteration</button>
+    <button class="add-button" type="button" data-which=1 data-length={{note.iterations_one|length}}>Add Iteration</button>
 </div>
 {% endblock %}
 {% block form_links %}
 <div class="iteration-input">
     {{ form.links }}
-    <button class="add-button" type="button" data-which='links' data-length={{note.links|length}}>Add Link</button>
+    <button class="add-button" type="button" data-which=0 data-length={{note.links|length}}>Add Link</button>
 </div>
 {% endblock %}
 {% block step_two_iterations %}
 <div class="iteration-input">
     {{ form.step_two_iterations }}
-    <button class="add-button" type="button" data-which='iterations_two' data-length={{note.iterations_two|length}}>Add Iteration</button>
+    <button class="add-button" type="button" data-which=2 data-length={{note.iterations_two|length}}>Add Iteration</button>
 </div>
 {% endblock %}
 {% block rest %}
@@ -47,10 +53,14 @@
 
 {% block scripts %}
 <script>
+    const editIterationContainer = document.querySelector('#edit-iteration-container');
     const form = document.querySelector('form');
     const addButtons = document.querySelectorAll('.add-button');
 
-    var iterations = {'iterations_one': [], 'links': [], 'iterations_two': []}; 
+    // 1 = iterations_one
+    // 0 = links
+    // 2 = iterations_two
+    var iterations = {1: {}, 0: {}, 2:{}}; 
 
     function addItem(object) {
         const target = object.target;
@@ -62,22 +72,40 @@
         const iterationHeader = document.createElement('h4');
         iterationHeader.innerText = `Iteration: ${target.dataset.length}`;
 
+        const dataContainer = document.createElement('div'); 
+        dataContainer.classList.add('data')
+
         const input = target.previousElementSibling;
 
         const p = document.createElement('p');
         p.innerText = input.value;
+        const editButton = document.createElement('button');
+        editButton.setAttribute('type', 'button')
+        editButton.classList.add('edit-iteration')
+        editButton.dataset.iteration = target.parentElement.parentElement.querySelector('.table-data') && target.parentElement.parentElement.querySelector('.table-data').length+1;
+        editButton.dataset.which = target.dataset.which;
+        editButton.innerText = 'Edit';
+        editButton.addEventListener('click', editButtonFunctionality)
 
         container.appendChild(iterationHeader)
-        container.appendChild(p)
+        dataContainer.appendChild(p)
+        dataContainer.appendChild(editButton);
+        container.appendChild(dataContainer)
+
+        // this means that there were no iterations in the current step, therefore remove the message indicating that there are no iterations
+        // since one is being added
+        if (target.parentElement.parentElement.querySelector('p') && target.parentElement.parentElement.querySelector('p').innerText.startsWith('No')) {
+            target.parentElement.parentElement.removeChild(target.parentElement.parentElement.querySelector('p'))
+        }
 
         target.parentElement.parentElement.insertBefore(container, target.parentElement)
         if (target.dataset.added == null) {
             // for empty values, if p (No iterations) exist then remove it
-            target.parentElement.parentElement.removeChild(target.parentElement.parentElement.querySelector('p'))
+            iterations[target.dataset.which].added = [];
             target.dataset.added = true;
         }
 
-        iterations[target.dataset.which] = iterations[target.dataset.which].concat(input.value);
+        iterations[target.dataset.which].added = iterations[target.dataset.which].added.concat(input.value);
 
         input.value = "";
     }
@@ -88,11 +116,52 @@
 
     document.querySelector('.submit').addEventListener('click', function() {
         addButtons.forEach(item => {
-            if (item.dataset.added) {
-                item.previousElementSibling.value = JSON.stringify(iterations[item.dataset.which]);
-            }
+            item.previousElementSibling.value = JSON.stringify(iterations[item.dataset.which]);
         })
         form.submit()
+    })
+
+    function editButtonFunctionality(object) {
+        if (editIterationContainer.classList.contains('busy')) {
+            editIterationContainer.querySelector('textarea').value = '';
+            editIterationContainer.parentElement.querySelector('.data').classList.remove('hidden')
+        }
+        const data = this.parentElement.parentElement.querySelector('.data');
+        data.classList.add('hidden')
+        this.parentElement.parentElement.appendChild(editIterationContainer)
+        editIterationContainer.classList.remove('hidden')
+        editIterationContainer.querySelector('textarea').value = this.previousElementSibling.innerText;
+        editIterationContainer.classList.add('busy')
+        this.parentElement.parentElement.querySelector('.save-edit').dataset.which = this.dataset.which;
+        this.parentElement.parentElement.querySelector('.save-edit').dataset.iteration = this.dataset.iteration;
+    }
+
+    document.querySelectorAll('.edit-iteration').forEach(item => {
+        item.addEventListener('click', editButtonFunctionality)
+    })
+
+    function toggleEditIterationContainer() {
+        editIterationContainer.classList.add('hidden')
+        editIterationContainer.classList.remove('busy')
+        editIterationContainer.parentElement.querySelector('.data').classList.remove('hidden')
+        editIterationContainer.querySelector('textarea').value = '';
+        document.querySelector('body').appendChild(editIterationContainer)
+    }
+
+    // send back to body and hide
+    editIterationContainer.querySelector('.close').addEventListener('click', toggleEditIterationContainer)
+
+    editIterationContainer.querySelector('.save-edit').addEventListener('click', function() {
+        // save response 
+        const value = this.previousElementSibling.value;
+        const iteration = this.dataset.iteration;
+        if (iterations[this.dataset.which].edit == null) {
+            iterations[this.dataset.which].edit = {};
+        }
+        iterations[this.dataset.which].edit[iteration] = value.trim();
+        this.parentElement.parentElement.querySelector('.data').querySelector('p').innerText = value;
+
+        toggleEditIterationContainer()
     })
 </script>
 {% endblock %}

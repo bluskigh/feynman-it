@@ -20,6 +20,7 @@ class LoginForm(forms.Form):
     username = forms.CharField(max_length=64)
     password = forms.CharField(widget=forms.PasswordInput)
 
+
     def clean(self):
         cd = super().clean()
         username = cd.get('username')
@@ -70,6 +71,7 @@ class NewNoteForm(ModelForm):
 
 
 class LargeTextField(forms.Field):
+    """Utilizes text area widget, and converts data from widget into json"""
     widget = forms.Textarea
 
 
@@ -88,8 +90,8 @@ class LargeTextField(forms.Field):
 
 
 class NoteForm(ModelForm):
-    step_one_iterations = LargeTextField()
-    step_two_iterations = LargeTextField()
+    step_one_iterations = LargeTextField(required=False)
+    step_two_iterations = LargeTextField(required=False)
     class Meta:
         model = Note
         exclude = ['owner']
@@ -153,11 +155,30 @@ def edit_note(request, id):
             if 'title' in changed_data:
                 note.title = cleaned_data.get('title')
             if 'step_one_iterations' in changed_data:
-                note.step_one_iterations.extend(cleaned_data.get('step_one_iterations'))
+                soi = cleaned_data.get('step_one_iterations')
+                # user updated iteration
+                if soi.get('edit'):
+                    for key in soi.get('edit'):
+                        note.step_one_iterations[int(key)-1] = soi.get('edit').get(key)
+                else:
+                    if soi.get('added'):
+                        note.step_one_iterations.extend(soi.get('added'))
             if 'step_two_iterations' in changed_data:
-                note.step_two_iterations.extend(cleaned_data.get('step_two_iterations'))
+                sti = cleaned_data.get('step_two_iterations')
+                if sti.get('edit'):
+                    for key in sti.get('edit'):
+                        note.step_two_iterations[int(key)-1] = sti.get('edit').get(key)
+                else:
+                    if sti.get('added'):
+                        note.step_two_iterations.extend(sti.get('added'))
             if 'links' in changed_data:
-                note.links.extend(cleaned_data.get('links'))
+                l = cleaned_data.get('links')
+                if l.get('edit'):
+                    for key in l.get('edit'):
+                        note.links[int(key)-1] = l.get('edit').get(key)
+                else:
+                    if l.get('added'):
+                        note.links.extend(l.get('added'))
             if 'understand' in changed_data:
                 note.understand = cleaned_data.get('understand')
             note.save()
