@@ -23,7 +23,16 @@
 </div>
 {% endblock %}
 {% block form_links %}
-<div class="iteration-input">
+<div class="iteration-input" style="display: flex; flex-direction: column; align-items: flex-start;">
+    <div style="display: flex;">
+        <label for="forwhich">Link for iteration: </label>
+        <select name="forwhich" id="forwhich">
+            {% for iteration in note.iterations_one %}
+            <option value="{{ forloop.counter }}">{{ forloop.counter }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <input type="text" placeholder="Link Title" id="link-title">
     {{ form.links }}
     <button class="add-button" type="button" data-which=0 data-length={{note.links|length}}>Add Link</button>
 </div>
@@ -68,17 +77,15 @@
 
         const container = document.createElement('div');
         container.classList.add('table-data')
-
         const iterationHeader = document.createElement('h4');
-        iterationHeader.innerText = `Iteration: ${target.dataset.length}`;
+
 
         const dataContainer = document.createElement('div'); 
         dataContainer.classList.add('data')
 
+
         const input = target.previousElementSibling;
 
-        const p = document.createElement('p');
-        p.innerText = input.value;
         const editButton = document.createElement('button');
         editButton.setAttribute('type', 'button')
         editButton.classList.add('edit-iteration')
@@ -87,10 +94,6 @@
         editButton.innerText = 'Edit';
         editButton.addEventListener('click', editButtonFunctionality)
 
-        container.appendChild(iterationHeader)
-        dataContainer.appendChild(p)
-        dataContainer.appendChild(editButton);
-        container.appendChild(dataContainer)
 
         // this means that there were no iterations in the current step, therefore remove the message indicating that there are no iterations
         // since one is being added
@@ -98,16 +101,51 @@
             target.parentElement.parentElement.removeChild(target.parentElement.parentElement.querySelector('p'))
         }
 
-        target.parentElement.parentElement.insertBefore(container, target.parentElement)
         if (target.dataset.added == null) {
             // for empty values, if p (No iterations) exist then remove it
             iterations[target.dataset.which].added = [];
             target.dataset.added = true;
         }
 
-        iterations[target.dataset.which].added = iterations[target.dataset.which].added.concat(input.value);
+        if (target.dataset.which == 0) {
+            const iterationChoosen = parseInt(document.querySelector('#forwhich').value);
+            iterations[target.dataset.which].added.push([iterationChoosen, document.querySelector('#link-title').value, input.value]);
+            const a = document.createElement('a');
+            a.setAttribute('href', input.value)
+            a.setAttribute('target', '_blank')
+            a.innerText = document.querySelector('#link-title').value;
+            dataContainer.appendChild(a)
+            iterationHeader.innerText = `Links for iteration: ${iterationChoosen}`;
+        } else {
+            iterations[target.dataset.which].added = iterations[target.dataset.which].added.concat(input.value);
+            if (target.dataset.which == 1) {
+                // add new option to links
+                const option = document.createElement('option');
+                option.value = target.dataset.length;
+                option.innerText = target.dataset.length;
+                document.querySelector('#forwhich').appendChild(option)
+            }
+            iterationHeader.innerText = `Iteration: ${target.dataset.length}`;
+            const p = document.createElement('p');
+            p.innerText = input.value;
+            dataContainer.appendChild(p)
+        }
 
-        input.value = "";
+        // the link container for the iteration does not exist, so add it
+        dataContainer.appendChild(editButton);
+        if (target.dataset.which != 0) { 
+            container.appendChild(iterationHeader)
+            container.appendChild(dataContainer)
+            target.parentElement.parentElement.insertBefore(container, target.parentElement)
+            input.value = "";
+        } else if (target.dataset.which == 0 && document.querySelector('#links-data').querySelectorAll('.table-data').length >= parseInt(document.querySelector('#forwhich').value)) {
+            document.querySelector('#links-data').querySelectorAll('.table-data')[parseInt(document.querySelector('#forwhich').value)-1].appendChild(dataContainer)
+        } else if (target.dataset.which == 0 && document.querySelector('#links-data').querySelectorAll('.table-data').length <  parseInt(document.querySelector('#forwhich').value)) {
+            container.appendChild(iterationHeader)
+            container.appendChild(dataContainer)
+            target.parentElement.parentElement.insertBefore(container, target.parentElement)
+            input.value = "";
+        }
     }
 
     addButtons.forEach(item => {
@@ -122,6 +160,10 @@
     })
 
     function editButtonFunctionality(object) {
+        const saveEditButton = this.parentElement.parentElement.querySelector('.save-edit');
+        saveEditButton.dataset.which = this.dataset.which;
+        saveEditButton.dataset.iteration = this.dataset.iteration;
+        // left off ehre was going to check whether the dataset was link to create a new input and save the title there, but no. don't give orde,r but group the links based on the iteration the user wants to add them too
         if (editIterationContainer.classList.contains('busy')) {
             editIterationContainer.querySelector('textarea').value = '';
             editIterationContainer.parentElement.querySelector('.data').classList.remove('hidden')
@@ -132,8 +174,6 @@
         editIterationContainer.classList.remove('hidden')
         editIterationContainer.querySelector('textarea').value = this.previousElementSibling.innerText;
         editIterationContainer.classList.add('busy')
-        this.parentElement.parentElement.querySelector('.save-edit').dataset.which = this.dataset.which;
-        this.parentElement.parentElement.querySelector('.save-edit').dataset.iteration = this.dataset.iteration;
     }
 
     document.querySelectorAll('.edit-iteration').forEach(item => {
@@ -158,7 +198,11 @@
         if (iterations[this.dataset.which].edit == null) {
             iterations[this.dataset.which].edit = {};
         }
-        iterations[this.dataset.which].edit[iteration] = value.trim();
+        if (this.dataset.which ==  0) {
+            iterations[this.dataset.which].edit[iteration][1] = value.trim();
+        } else {
+            iterations[this.dataset.which].edit[iteration] = value.trim();
+        }
         this.parentElement.parentElement.querySelector('.data').querySelector('p').innerText = value;
 
         toggleEditIterationContainer()

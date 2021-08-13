@@ -17,7 +17,8 @@ class Note(models.Model):
     # step three text
     step_three = models.TextField(blank=True)
     # links for step one
-    links = ArrayField(default=list, blank=True, base_field=ArrayField(size=2, base_field=models.TextField(blank=True)))
+    links = ArrayField(default=list, blank=True,
+    base_field=ArrayField(default=list,  base_field=models.TextField(blank=True)))
     # links = ArrayField(default=list, blank=True, base_field=models.TextField(blank=True))
     # does user understand new note
     understand = models.BooleanField(default=False)
@@ -27,7 +28,16 @@ class Note(models.Model):
     def basic_information(self):
         return {'id': self.id, 'title': self.title}
 
+
+    def format_links(self):
+        result = {}
+        for link_item in self.links:
+            if result.get(link_item[0]) is None:
+                result[link_item[0]] = [] 
+            result[link_item[0]].append(link_item)
+        return result
     
+
     def more_information(self):
         return {
             'id': self.id, 
@@ -35,6 +45,6 @@ class Note(models.Model):
             'iterations_one': self.step_one_iterations,
             'iterations_two': self.step_two_iterations, 
             'step_three': self.step_three,
-            'links': self.links, 
+            'links': self.format_links(), 
             'understand': self.understand, 
             'owner': self.owner}

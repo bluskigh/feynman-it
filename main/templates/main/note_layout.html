@@ -28,18 +28,21 @@
     </tr>
     <tr>
         <th><h2>1: Links</h2></th>
-        <td>
-            {% if note.links %}
+        <td id="links-data">
+            {% load layout_tags %}
+            {% if note.links|length > 0 %}
             {% for iteration in note.links %}
             <div class="table-data">
-                <h4>Iteration: {{ forloop.counter }}</h4>
+                <h4>Links for iteration: {{ iteration }}</h4>
+                {% for link in note.links|get_value:iteration %}
                 <div class="data">
                     <!-- Links for iteration {iteration here} -->
-                    <a href="{{ iteration }}" target="_blank">{{ iteration }}</a>
+                    <a href="{{ link|get_value:2 }}" target="_blank">{{ link|get_value:1 }}</a>
                     {% if 'edit' in request.path %}
-                    <button type="button" class="edit-iteration" data-iteration={{forloop.counter}} data-which=0>Edit</button>
+                    <button type="button" class="edit-iteration" data-forwhich={{link|get_value:2}} data-which=0>Edit</button>
                     {% endif %}
                 </div>
+                {% endfor %}
             </div>
             {% endfor %}
             {% else %}
@@ -74,9 +77,13 @@
     <tr>
         <th>3: Final Statement</th>
         {% if note.step_three|length %}
-        <td>{{ note.step_three }}</td>
+        <td>
+            <p>{{ note.step_three }}</p>
+        </td>
         {% else %}
-        <p>No step three stated.</p>
+        <td>
+            <p>No step three stated.</p>
+        </td>
         {% endif %}
     </tr>
     {% block rest %}

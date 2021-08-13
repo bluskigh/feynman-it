@@ -75,8 +75,9 @@ class LargeTextField(forms.Field):
     widget = forms.Textarea
 
 
-    def __init__(self, *, empty_value='', **kwargs):
-        self.empty_value = ''
+    def __init__(self, *, placeholder='', empty_value='', **kwargs):
+        self.empty_value = empty_value
+        self.placeholder = placeholder 
         super().__init__(**kwargs)
 
 
@@ -89,9 +90,17 @@ class LargeTextField(forms.Field):
             return self.empty_value 
 
 
+    def widget_attrs(self, widget):
+        attrs = super().widget_attrs(widget)
+        if self.placeholder not in self.empty_value:
+            attrs['placeholder'] = self.placeholder
+        return attrs
+
+
 class NoteForm(ModelForm):
-    step_one_iterations = LargeTextField(required=False)
-    step_two_iterations = LargeTextField(required=False)
+    step_one_iterations = LargeTextField(required=False, placeholder='Enter iteration for step one')
+    step_two_iterations = LargeTextField(required=False, placeholder='Enter iteration for step two')
+    links = LargeTextField(required=False, placeholder='Enter link here') 
     class Meta:
         model = Note
         exclude = ['owner']
@@ -178,7 +187,9 @@ def edit_note(request, id):
                         note.links[int(key)-1] = l.get('edit').get(key)
                 else:
                     if l.get('added'):
-                        note.links.extend(l.get('added'))
+                        for arr in l.get('added'):
+                            note.links.append(arr)
+                            # note.links.extend(l.get('added'))
             if 'understand' in changed_data:
                 note.understand = cleaned_data.get('understand')
             note.save()
