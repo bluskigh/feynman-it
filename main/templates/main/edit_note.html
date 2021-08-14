@@ -3,8 +3,10 @@
 {% block container_start %}
 {{ form.errors }}
 <section id="edit-iteration-container" class="hidden">
-    <input type="text" name="title" class="hidden">
-    <textarea name="text" class="edit" cols="30" rows="10"></textarea>
+    <div style="display: flex; align-items: flex-start; flex-direction: column;">
+        <input type="text" name="title" class="hidden">
+        <textarea name="text" class="edit" cols="30" rows="10"></textarea>
+    </div>
     <button type="button" class="save-edit">Save Edit</button>
     <button type="button" class="close">Close</button>
 </section>
@@ -103,7 +105,7 @@
         // as stated before, target = button that was clicked, due to the layout of the form each add iteration(or link) button succeeds an input and or textarea.
         const input = target.previousElementSibling;
 
-        const emptyIterationP = target.parentElement.parentElement.querySelector('p');
+        let emptyIterationP = target.parentElement.parentElement.querySelector('p');
         if (emptyIterationP && emptyIterationP.innerText.startsWith('No')) {
             // remove since a new item is being added therefore no longer being empty 
             target.parentElement.parentElement.removeChild(emptyIterationP)
@@ -130,17 +132,6 @@
 
         // if add item button of links was clicked
         if (target.dataset.which == 0) {
-            // const deleteButton = document.createElement('button');
-            // deleteButton.innerText = 'Delete';
-            // deleteButton.addEvenListener('click', function() {
-            //     if (iterations[target.dataset.which].deleted == null) {
-            //         iterations[target.dataset.which].deleted = {}
-            //     }
-            //     // TODO ifnish this delete functionliaty
-            //     # iterations[teraget.dataset.which].deleted[target.dataset.iteration].push(l= [iterationChoosen, ]
-
-            // })
-            
             // stores the value of which iteration section was selected to add this link too (links are grouped into specific sections, aka the iteration a certian link belongs too) 
             const iterationChoosen = parseInt(document.querySelector('#forwhich').value);
             const linkTitle = document.querySelector('#link-title');
@@ -224,22 +215,32 @@
     })
 
     function editButtonFunctionality(object) {
-        const target = object.target;
-        console.log(target)
-        // left off ehre was going to check whether the dataset was link to create a new input and save the title there, but no. don't give orde,r but group the links based on the iteration the user wants to add them too
         if (editIterationContainer.classList.contains('busy')) {
-            editIterationContainer.querySelector('textarea').value = '';
-            editIterationContainer.parentElement.querySelector('.data').classList.remove('hidden')
+            // editIterationContainer.querySelector('textarea').value = '';
+            // editIterationContainer.parentElement.querySelector('.data').classList.remove('hidden')
+            toggleEditIterationContainer(object)
         }
-        const data = target.parentElement.parentElement.querySelector('.data');
+        // const data = target.parentElement.parentElement.querySelector('.data');
+        const target = object.target;
+        const data = target.parentElement;
         data.classList.add('hidden')
-        target.parentElement.parentElement.appendChild(editIterationContainer)
+
+        target.parentElement.parentElement.insertBefore(editIterationContainer, target.parentElement)
+
         editIterationContainer.classList.remove('hidden')
         editIterationContainer.querySelector('textarea').value = target.previousElementSibling.innerText;
         editIterationContainer.classList.add('busy')
-        const saveEditButton = target.parentElement.parentElement.querySelector('.save-edit');
-        saveEditButton.dataset.which = parseInt(target.dataset.which);
-        saveEditButton.dataset.iteration = parseInt(target.dataset.iteration);
+
+        let inputTitle = editIterationContainer.querySelector('input');
+
+        // if edit button of a link was clicked display the titl einput in the edit form 
+        if (object.target.parentElement.dataset.which == 0) {
+            inputTitle.value = target.previousElementSibling.innerText;
+            editIterationContainer.querySelector('textarea').value = target.previousElementSibling.getAttribute('href')
+            inputTitle.classList.remove('hidden');
+        } else {
+            editIterationContainer.querySelector('input').classList.add('hidden')
+        }
     }
 
     document.querySelectorAll('.edit-iteration').forEach(item => {
@@ -247,29 +248,54 @@
     })
 
     function toggleEditIterationContainer() {
+        // can either be close or save edit button on the edit form
+
         editIterationContainer.classList.add('hidden')
         editIterationContainer.classList.remove('busy')
-        editIterationContainer.parentElement.querySelector('.data').classList.remove('hidden')
+        // parent of form which is table-data
+        let parent = editIterationContainer.parentElement;
+        if (parent.dataset.length == null) {
+            parent = editIterationContainer.nextElementSibling;
+        }
+        const value = parent.dataset.iteration;
+        if (parent.dataset.which == 0) {
+            parent.classList.remove('hidden')
+        } else {
+            editIterationContainer.parentElement.querySelector('.data').classList.remove('hidden')
+        }
         editIterationContainer.querySelector('textarea').value = '';
+        editIterationContainer.querySelector('input').value = '';
+        editIterationContainer.querySelector('input').classList.add('hidden')
         document.querySelector('body').appendChild(editIterationContainer)
     }
 
     // send back to body and hide
     editIterationContainer.querySelector('.close').addEventListener('click', toggleEditIterationContainer)
 
-    editIterationContainer.querySelector('.save-edit').addEventListener('click', function() {
+    editIterationContainer.querySelector('.save-edit').addEventListener('click', function(object) {
         // save response 
-        const value = this.previousElementSibling.value;
-        const iteration = this.dataset.iteration;
-        if (iterations[this.dataset.which].edit == null) {
-            iterations[this.dataset.which].edit = {};
+        let parent = editIterationContainer.parentElement;
+        if (parent.dataset.length == null) {
+            parent = editIterationContainer.nextElementSibling;
         }
-        if (this.dataset.which ==  0) {
-            iterations[this.dataset.which].edit[iteration][1] = value.trim();
+        const value = this.previousElementSibling.querySelector('textarea').value.trim();
+        const iteration = parent.dataset.iteration;
+        if (iterations[parent.dataset.which].edit == null) {
+            iterations[parent.dataset.which].edit = {};
+        }
+        if (parent.dataset.which ==  0) {
+            const inputTitleValue = this.previousElementSibling.querySelector('input').value.trim(); 
+            iterations[parent.dataset.which].edit[iteration] = [iteration, inputTitleValue, value];
+            // iterations[this.dataset.which].edit[iteration][0] = this.previousElementSibling.querySelector('input').value.trim();
+            // iterations[this.dataset.which].edit[iteration][1] = value.trim();
+            this.parentElement.parentElement.querySelector('.data').querySelector('a').innerText = inputTitleValue;
+            this.parentElement.parentElement.querySelector('.data').querySelector('a').setAttribute('href', value);
         } else {
-            iterations[this.dataset.which].edit[iteration] = value.trim();
+            iterations[parent.dataset.which].edit[iteration] = value;
+            this.parentElement.parentElement.querySelector('.data').querySelector('p').innerText = value;
         }
-        this.parentElement.parentElement.querySelector('.data').querySelector('p').innerText = value;
+
+        // TODO: link edit functionality 
 
         toggleEditIterationContainer()
     })

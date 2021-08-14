@@ -9,12 +9,12 @@
         <td>
             {% if note.iterations_one %}
             {% for iteration in note.iterations_one %}
-            <div class="table-data">
+            <div class="table-data" data-iteration={{forloop.counter}} data-which=1>
                 <h4>Iteration: {{ forloop.counter }}</h4>
                 <div class="data">
                     <p>{{ iteration }}</p>
                     {% if 'edit' in request.path %}
-                    <button type="button" class="edit-iteration" data-iteration={{forloop.counter}} data-which=1>Edit</button>
+                    <button type="button" class="edit-iteration">Edit</button>
                     {% endif %}
                 </div>
             </div>
@@ -35,11 +35,11 @@
             <div class="table-data">
                 <h4>Links for iteration: {{ iteration }}</h4>
                 {% for link in note.links|get_value:iteration %}
-                <div class="data">
+                <div class="data" data-forwhich={{link|get_value:0}} data-iteration={{forloop.counter}} data-which=0>
                     <!-- Links for iteration {iteration here} -->
                     <a href="{{ link|get_value:2 }}" target="_blank">{{ link|get_value:1 }}</a>
                     {% if 'edit' in request.path %}
-                    <button type="button" class="edit-iteration" data-forwhich={{link|get_value:2}} data-which=0>Edit</button>
+                    <button type="button" class="edit-iteration">Edit</button>
                     {% endif %}
                 </div>
                 {% endfor %}
@@ -57,13 +57,13 @@
         <td>
             {% if note.iterations_two %}
             {% for iteration in note.iterations_two %}
-            <div class="table-data">
-                <div class="data">
+            <div class="table-data" data-iteration={{forloop.counter}} data-which=2>
+                <div class="data" data-iteration={{forloop.counter}}>
                     <h4>Iteration: {{ forloop.counter }}</h4>
                     <p>{{ iteration }}</p>
                 </div>
                 {% if 'edit' in request.path %}
-                <button type="button" class="edit-iteration" data-iteration={{forloop.counter}} data-which=2>Edit</button>
+                <button type="button" class="edit-iteration">Edit</button>
                 {% endif %}
             </div>
             {% endfor %}
