@@ -184,7 +184,7 @@ def edit_note(request, id):
                 l = cleaned_data.get('links')
                 if l.get('edit'):
                     for key in l.get('edit'):
-                        note.links[int(key)-1] = l.get('edit').get(key)
+                        note.links[int(key)] = l.get('edit').get(key)
                 else:
                     if l.get('added'):
                         for arr in l.get('added'):

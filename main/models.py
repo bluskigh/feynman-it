@@ -30,11 +30,17 @@ class Note(models.Model):
 
 
     def format_links(self):
+        links = self.links
+        if len(links) == 3:
+            # only one item in links return that
+            return {links[0]: links}
         result = {}
-        for link_item in self.links:
-            if result.get(link_item[0]) is None:
-                result[link_item[0]] = [] 
-            result[link_item[0]].append(link_item)
+        for index, link_item in enumerate(self.links):
+            forwhich = link_item[0]
+            if result.get(forwhich) is None:
+                result[forwhich] = [] 
+            link_item.append(index)
+            result[forwhich].append(link_item)
         return result
     
 

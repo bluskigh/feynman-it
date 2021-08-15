@@ -279,19 +279,18 @@
             parent = editIterationContainer.nextElementSibling;
         }
         const value = this.previousElementSibling.querySelector('textarea').value.trim();
-        const iteration = parent.dataset.iteration;
         if (iterations[parent.dataset.which].edit == null) {
             iterations[parent.dataset.which].edit = {};
         }
         if (parent.dataset.which ==  0) {
             const inputTitleValue = this.previousElementSibling.querySelector('input').value.trim(); 
-            iterations[parent.dataset.which].edit[iteration] = [iteration, inputTitleValue, value];
+            iterations[parent.dataset.which].edit[parent.dataset.iteration] = [parent.dataset.forwhich, inputTitleValue, value];
             // iterations[this.dataset.which].edit[iteration][0] = this.previousElementSibling.querySelector('input').value.trim();
             // iterations[this.dataset.which].edit[iteration][1] = value.trim();
-            this.parentElement.parentElement.querySelector('.data').querySelector('a').innerText = inputTitleValue;
-            this.parentElement.parentElement.querySelector('.data').querySelector('a').setAttribute('href', value);
+            this.parentElement.nextElementSibling.querySelector('a').innerText = inputTitleValue;
+            this.parentElement.nextElementSibling.querySelector('a').setAttribute('href', value);
         } else {
-            iterations[parent.dataset.which].edit[iteration] = value;
+            iterations[parent.dataset.which].edit[parent.dataset.iteration] = value;
             this.parentElement.parentElement.querySelector('.data').querySelector('p').innerText = value;
         }
 
