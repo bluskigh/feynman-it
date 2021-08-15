@@ -41,7 +41,14 @@ class Note(models.Model):
                 result[forwhich] = [] 
             link_item.append(index)
             result[forwhich].append(link_item)
-        return result
+        keys = list(result.keys())
+        for index, key in enumerate(keys):
+            for index2 in range(index+1, len(keys)):
+                if keys[index] > keys[index2]:
+                    temp = key
+                    keys[index] = keys[index2]
+                    keys[index2] = temp
+        return {key: result.get(key) for key in keys}
     
 
     def more_information(self):

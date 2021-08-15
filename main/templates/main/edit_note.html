@@ -134,10 +134,13 @@
         if (target.dataset.which == 0) {
             // stores the value of which iteration section was selected to add this link too (links are grouped into specific sections, aka the iteration a certian link belongs too) 
             const iterationChoosen = parseInt(document.querySelector('#forwhich').value);
-            const linkTitle = document.querySelector('#link-title');
+            let linkTitle = document.querySelector('#link-title');
 
             // each link contains the following format: [iteration of step 1 choosen, link title to be displayed when rendering, link href to be used]
             iterations[target.dataset.which].added.push([iterationChoosen, linkTitle.value, input.value]);
+
+            linkTitle.value = "";
+            input.value = "";
 
             // creating the a tag to store the newly added link
             const a = document.createElement('a');
@@ -192,14 +195,13 @@
             document.querySelector('#links-data').querySelectorAll('.table-data')[parseInt(document.querySelector('#forwhich').value)-1].appendChild(dataContainer)
         } else if (target.dataset.which == 0 && document.querySelector('#links-data').querySelectorAll('.table-data').length <  parseInt(document.querySelector('#forwhich').value)) {
             // ^ otherwise if button in links section and links section td does not contain a table data of index equal to selected forwhich value
-            iterationHeader.innerText = `Links for iteration: ${iterationChoosen}`;
+            iterationHeader.innerText = `Links for iteration: ${document.querySelector('#forwhich').value}`;
             // append the container that encapsulates dataContainer (<div.table-data>__space for edit form___<div.data>__space for actual information such as p, a)
             container.appendChild(iterationHeader)
             container.appendChild(dataContainer)
             target.parentElement.parentElement.insertBefore(container, target.parentElement)
         }
 
-        linkInput ? linkInput.value = "" : null;
         input.value = "";
     }
 
