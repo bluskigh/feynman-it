@@ -247,11 +247,19 @@ def view_folder(request, id):
     if request.method == 'GET':
         # filtering all notes by the current user, and notes that are not in the current folder.
         form = FolderForm(usernotes=request.user.notes, folder=folder)
+        return render(request, 'main/view_folder.html', {'folder': folder, 'notes': request.user.notes.exclude(folder=folder), 'form': form})
     elif request.method == 'POST':
         form = FolderForm(usernotes=request.user.notes, folder=folder, data=request.POST)
         if form.is_valid():
             cd = form.cleaned_data
-    return render(request, 'main/view_folder.html', {'folder': folder, 'notes': notes, 'form': form})
+            for option in cd.get('available_notes'):
+                option = int(option)
+                note = Note.objects.get(id=option)
+                note.folder = folder
+                note.save()
+            return HttpResponseRedirect(reverse('view_folder', kwargs={'id': id}))
+        else:
+            return render(request, 'main/view_folder.html', {'folder': folder, 'notes': request.user.notes.exclude(folder=folder), 'form': form})
 
 
 def register(request):
