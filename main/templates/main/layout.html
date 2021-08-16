@@ -40,8 +40,22 @@
         .current {
             border-bottom: 1px solid white;
         }
+        table {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: left;
+        }
+        tr {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            flex-direction: column;
+            margin: 2em 0;
+        }
         th {
             vertical-align: text-top;
+            padding: 1em 0;
         }
         .table-data {
             padding: .5em 0;
@@ -50,11 +64,9 @@
             border-top: 1px solid black;
             border-bottom: 1px solid black;
         }
-        .table-data h4 {
-            margin: .5em 0;
-        }
         .iteration-input {
             display: flex;
+            flex-direction: column;
             align-items: flex-end;
         }
         .iteration-input button {
@@ -73,14 +85,31 @@
             color: darkred;
         }
         .success {
-            background: green;
-            color: darkgreen;
+            background: darkgreen;
+            color: lightgreen;
         }
         .note {
-            background: gray;
-            color: black;
+            background: #102020;
+            color: #A7B5B7;
             text-align: center;
             margin: .5em 0;
+            padding: 2em;
+        }
+        form {
+            margin: 0;
+        }
+        button {
+            border: none;
+            padding: .2em 2em;
+            margin: .5em 0;
+            border-radius: 1em;
+            font-size: .7em;
+            transition: transform .5s ease;
+        }
+        button:hover {
+            background: rgb(95, 95, 95);
+            transform: translateY(-2px);
+            cursor: pointer;
         }
         main {
             width: 100%;
@@ -88,9 +117,19 @@
             flex-direction: column;
             text-align: center;
             justify-content: center;
-            align-items: flex-start;
+            align-items: center;
+            padding: 2em 0;
         }
-
+        #notes {
+            margin: 1em 0;
+        }
+        .helper {
+            color: gray;
+            font-size: .7em;
+        }
+        h4 {
+            margin: 0;
+        }
     </style>
     <style>
     {% block style %}{% endblock %}
@@ -114,14 +153,10 @@
         </ul>
     </nav>
 
-    {% if messages %}
-    {% load layout_tags %}
-    {% for message in messages %}
-    {{ message }}
-    {% endfor %}
-    {% endif %}
 
+    <main>
     {% block body %}{% endblock %}
+    </main>
     {% block scripts %}{% endblock %}
 </body>
 </html>

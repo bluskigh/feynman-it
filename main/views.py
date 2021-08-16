@@ -175,7 +175,7 @@ def edit_note(request, id):
     if note is None:
         messages.info(request, f'404: Could not locate note of id: {id}')
     if request.method == 'GET':
-        return render(request, 'main/edit_note.html', {'note': note.more_information(), 'form': NoteForm(initial={'step_three': note.step_three, 'title': note.title})})
+        return render(request, 'main/edit_note.html', {'note': note.more_information(), 'form': NoteForm(initial={'step_three': note.step_three, 'title': note.title, 'understand': note.understand})})
     elif request.method == 'POST':
         form = NoteForm(request.POST)
         if form.is_valid():
@@ -213,8 +213,7 @@ def edit_note(request, id):
                         for arr in l.get('added'):
                             note.links.append(arr)
                             # note.links.extend(l.get('added'))
-            if 'understand' in changed_data:
-                note.understand = cleaned_data.get('understand')
+            note.understand = cleaned_data.get('understand')
             note.save()
             return HttpResponseRedirect(reverse('view_note', kwargs={'id': id}))
         else:

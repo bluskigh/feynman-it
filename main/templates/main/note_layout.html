@@ -5,7 +5,7 @@
     {% block note_title %}
     {% endblock %}
     <tr>
-        <th><h2>1: Write what you know</h2></th>
+        <th><h3>1: Write what you know</h3></th>
         <td>
             {% if note.iterations_one %}
             {% for iteration in note.iterations_one %}
@@ -27,36 +27,47 @@
         </td>
     </tr>
     <tr>
-        <th><h2>1: Links</h2></th>
+        <th><h3>1: Links</h3></th>
         <td id="links-data">
             {% load layout_tags %}
-            {% if note.links|length > 0 %}
-            {% for iteration in note.links %}
+            {% with l=note.links %}
             <div class="table-data">
-                {% if iteration == '0' %}
                 <h4>General Links</h4>
-                {% else %}
-                <h4>Links for iteration: {{ iteration }}</h4>
-                {% endif %}
-                {% for link in note.links|get_value:iteration %}
-                <div class="data" data-forwhich={{link|get_value:0}} data-iteration={{link|get_value:3}} data-which=0>
-                    <a href="{{ link|get_value:2 }}" target="_blank">{{ link|get_value:1 }}</a>
-                    {% if 'edit' in request.path %}
-                    <button type="button" class="edit-iteration">Edit</button>
+                <p class="helper">Links that apply to all iterations.</p>
+                    {% if l|length != '0' %}
+                        {% for link in l|get_value:'0' %}
+                        <div class="data" data-forwhich={{link|get_value:0}} data-iteration={{link|get_value:3}} data-which=0>
+                            <a href="{{ link|get_value:2 }}" target="_blank">{{ link|get_value:1 }}</a>
+                            {% if 'edit' in request.path %}
+                            <button type="button" class="edit-iteration">Edit</button>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
                     {% endif %}
+            </div>
+            {% if l|length != 1 %}
+                {% for iteration in l %}
+                <div class="table-data">
+                    <h4>Links for iteration: {{ iteration }}</h4>
+                    {% for link in l|get_value:iteration %}
+                    <div class="data" data-forwhich={{link|get_value:0}} data-iteration={{link|get_value:3}} data-which=0>
+                        <a href="{{ link|get_value:2 }}" target="_blank">{{ link|get_value:1 }}</a>
+                        {% if 'edit' in request.path %}
+                        <button type="button" class="edit-iteration">Edit</button>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
                 </div>
                 {% endfor %}
-            </div>
-            {% endfor %}
-            {% else %}
-            <p>No links</p>
             {% endif %}
+            {% endwith %}
+
             {% block form_links %}
             {% endblock %}
         </td>
     </tr>
     <tr>
-        <th><h2>2: Identify gaps in explanation</h2></th>
+        <th><h3>2: Identify gaps in explanation</h3></th>
         <td>
             {% if note.iterations_two %}
             {% for iteration in note.iterations_two %}

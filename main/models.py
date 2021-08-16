@@ -38,6 +38,8 @@ class Note(models.Model):
 
     def format_links(self):
         links = self.links
+        if len(links) == 0:
+            return {}
         # if the list only has one item then format is: [1, 2, 3] but greater than 1: [[1, 2, 3], [1, 2, 3]]
         # therefore checking for type of first item in list, if its not a list meaning there is one item
         # just return a dictionary of the item instead of looping logic
