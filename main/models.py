@@ -9,7 +9,7 @@ class User(AbstractUser):
 
 class Folder(models.Model):
     title = models.CharField(max_length=64)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='subjects')
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='folders')
 
 
 class Note(models.Model):

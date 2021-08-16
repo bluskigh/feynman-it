@@ -18,6 +18,10 @@
         </div>
         {% endfor %}
     </section>
+    <form action="{% url 'delete_folder' folder.id %}" method="POST">
+        {% csrf_token %}
+        <button type="submit">Delete Folder</button>
+    </form>
 </main>
 
 {% endblock %}

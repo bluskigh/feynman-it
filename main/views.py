@@ -151,7 +151,8 @@ def new_note(request):
         form = NewNoteForm(data)
         if form.is_valid():
             cd = form.cleaned_data
-            note = Note.objects.create(title=cd.get('title'), owner=request.user)
+            add_folder = request.user.folders.all()[0]
+            note = Note.objects.create(title=cd.get('title'), owner=request.user, folder=add_folder)
             return JsonResponse(note.basic_information(), status=200)
         else:
             return JsonResponse({'errors': form.errors, 'status': 400}, status=400)
@@ -262,6 +263,22 @@ def view_folder(request, id):
             return render(request, 'main/view_folder.html', {'folder': folder, 'notes': request.user.notes.filter(folder=folder), 'form': form})
 
 
+@login_required
+@permission_required('main.delete_folder')
+def delete_folder(request, id):
+    folder = Folder.objects.get(id=id)
+    delete_folder = request.user.folders.all()[1]
+    if folder != delete_folder:
+        for note in folder.folder_notes.all():
+            note.folder = delete_folder
+            note.save()
+        folder.delete()
+    else:
+        for note in folder.folder_notes.all():
+            note.delete()
+    return HttpResponseRedirect(reverse('folders'))
+
+
 def register(request):
     error_css_class = 'error' 
     required_css_class = 'required'
@@ -281,7 +298,10 @@ def register(request):
             # add all permissions related to notes
             # permissions = Permission.objects.filter(codename__contains='_note')
             # user.user_permissions.add(*permissions)
-
+            
+            # create delete and all folders, now should be [0] = add, [1] = delete when attemping to access users folders
+            all_folder = Folder.objects.create(title='All', owner=user)
+            delete_folder = Folder.objects.create(title='Delete', owner=user)
             return HttpResponseRedirect(reverse('login'))
         else:
             return render(request, 'main/register.html', 
