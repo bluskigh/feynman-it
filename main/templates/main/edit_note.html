@@ -35,8 +35,8 @@
             <option value="{{ forloop.counter|add:1 }}">Iteration {{ forloop.counter|add:1 }}</option>
             {% endfor %}
         </select>
+        <input type="text" placeholder="Link Title" id="link-title">
     </div>
-    <input type="text" placeholder="Link Title" id="link-title">
     {{ form.links }}
     <button class="add-button" type="button" data-which=0 data-length={{note.links|length}}>Add Link</button>
 </div>
@@ -47,19 +47,14 @@
     <button class="add-button" type="button" data-which=2 data-length={{note.iterations_two|length}}>Add Iteration</button>
 </div>
 {% endblock %}
-{% block rest %}
-<tr>
-    <th>{{ form.step_three.label }}</th>
-    <td>{{ form.step_three }}</td>
-</tr>
+{% block step_three %}
+    <td class="table-data-container">{{ form.step_three }}</td>
+{% endblock %}
+{% block container_end %}
 <tr>
     <th>{{ form.understand.label }}</th>
     <td>{{ form.understand }}</td>
 </tr>
-<tr>
-</tr>
-{% endblock %}
-{% block container_end %}
 </form>
 <button class="submit">Save</button>
 {% endblock %}

@@ -39,6 +39,11 @@ function addItem(object) {
     // as stated before, target = button that was clicked, due to the layout of the form each add iteration(or link) button succeeds an input and or textarea.
     const input = target.previousElementSibling;
 
+    const editButton = document.createElement('button');
+    editButton.setAttribute('type', 'button')
+    editButton.classList.add('edit-iteration')
+    editButton.addEventListener('click', editButtonFunctionality)
+    editButton.innerText = 'Edit';
 
     // if the current button dataset value added does not exist
     if (target.dataset.added == null) {
@@ -47,14 +52,6 @@ function addItem(object) {
         iterations[target.dataset.which].added = [];
         // update buttons dataset added value 
         target.dataset.added = true;
-    }
-
-    const generateSecret = () => {
-        let result = '';
-        for (let i = 0; i < 5; i++) {
-            result += String.fromCharCode(Math.floor(Math.random()*126+1));
-        }
-        return result;
     }
 
     // if add item button of links was clicked
@@ -87,7 +84,12 @@ function addItem(object) {
         dataContainer.dataset.forwhich = forwhich;
         dataContainer.dataset.iteration = tempp.children.length+1;
         dataContainer.dataset.which = 0;
+
+        // settings the iteration dataset value to be the current buttons parents parent total length of .table-data divs plus one (plus one because we are adding this item)
+        editButton.dataset.iteration = target.parentElement.parentElement.querySelector('.table-data').length+1;
+
     } else {
+        editButton.dataset.iteration = target.dataset.length;
         let emptyIterationP = target.parentElement.parentElement.querySelector('p');
         if (emptyIterationP && emptyIterationP.innerText.startsWith('No')) {
             // remove since a new item is being added therefore no longer being empty 
@@ -115,14 +117,7 @@ function addItem(object) {
         dataContainer.appendChild(p)
     }
 
-    const editButton = document.createElement('button');
-    editButton.setAttribute('type', 'button')
-    editButton.classList.add('edit-iteration')
-    // settings the iteration dataset value to be the current buttons parents parent total length of .table-data divs plus one (plus one because we are adding this item)
-    editButton.dataset.iteration = target.parentElement.parentElement.querySelector('.table-data').length+1;
     editButton.dataset.which = target.dataset.which;
-    editButton.innerText = 'Edit';
-    editButton.addEventListener('click', editButtonFunctionality)
     dataContainer.appendChild(editButton);
 
     // if button clicked to add new item is not links section

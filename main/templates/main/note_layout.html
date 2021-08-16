@@ -1,4 +1,9 @@
 {% extends 'main/layout.html' %}
+{% block style %}
+th {
+    padding-bottom: 0;
+}
+{% endblock %}
 {% block body %}
 {% block container_start %}{% endblock %}
 <table>
@@ -6,7 +11,7 @@
     {% endblock %}
     <tr>
         <th><h3>1: Write what you know</h3></th>
-        <td>
+        <td class="table-data-container">
             {% if note.iterations_one %}
             {% for iteration in note.iterations_one %}
             <div class="table-data" data-iteration={{forloop.counter}} data-which=1>
@@ -27,8 +32,8 @@
         </td>
     </tr>
     <tr>
-        <th><h3>1: Links</h3></th>
-        <td id="links-data">
+        <th style="padding-bottom: 0em;"><h3>1: Links</h3></th>
+        <td id="links-data" class="table-data-container">
             {% load layout_tags %}
             {% with l=note.links %}
             <div class="table-data">
@@ -68,7 +73,7 @@
     </tr>
     <tr>
         <th><h3>2: Identify gaps in explanation</h3></th>
-        <td>
+        <td class="table-data-container">
             {% if note.iterations_two %}
             {% for iteration in note.iterations_two %}
             <div class="table-data" data-iteration={{forloop.counter}} data-which=2>
@@ -90,15 +95,17 @@
     </tr>
     <tr>
         <th>3: Final Statement</th>
-        {% if note.step_three|length %}
-        <td>
-            <p>{{ note.step_three }}</p>
-        </td>
-        {% else %}
-        <td>
-            <p>No step three stated.</p>
-        </td>
+        {% if 'edit' not in request.path %}
+            <td class="table-data-container">
+            {% if note.step_three|length > 0 %}
+                <p>{{ note.step_three }}</p>
+            {% else %}
+                <p>No step three stated.</p>
+            {% endif %}
+            </td>
         {% endif %}
+        {% block step_three %}
+        {% endblock %}
     </tr>
     {% block rest %}
     {% endblock %}
