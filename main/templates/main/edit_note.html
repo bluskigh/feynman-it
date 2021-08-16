@@ -139,9 +139,6 @@
             // each link contains the following format: [iteration of step 1 choosen, link title to be displayed when rendering, link href to be used]
             iterations[target.dataset.which].added.push([iterationChoosen, linkTitle.value, input.value]);
 
-            linkTitle.value = "";
-            input.value = "";
-
             // creating the a tag to store the newly added link
             const a = document.createElement('a');
             a.setAttribute('href', input.value)
@@ -150,6 +147,9 @@
 
             // adding link to dataContainer
             dataContainer.appendChild(a)
+
+            linkTitle.value = "";
+            input.value = "";
 
             // garbage collect
             linkTitle = null;
@@ -230,7 +230,6 @@
         target.parentElement.parentElement.insertBefore(editIterationContainer, target.parentElement)
 
         editIterationContainer.classList.remove('hidden')
-        editIterationContainer.querySelector('textarea').value = target.previousElementSibling.innerText;
         editIterationContainer.classList.add('busy')
 
         let inputTitle = editIterationContainer.querySelector('input');
@@ -241,6 +240,7 @@
             editIterationContainer.querySelector('textarea').value = target.previousElementSibling.getAttribute('href')
             inputTitle.classList.remove('hidden');
         } else {
+            editIterationContainer.querySelector('textarea').value = target.previousElementSibling.innerText;
             editIterationContainer.querySelector('input').classList.add('hidden')
         }
     }
@@ -295,8 +295,6 @@
             iterations[parent.dataset.which].edit[parent.dataset.iteration] = value;
             this.parentElement.parentElement.querySelector('.data').querySelector('p').innerText = value;
         }
-
-        // TODO: link edit functionality 
 
         toggleEditIterationContainer()
     })

@@ -1,7 +1,9 @@
 {% extends 'main/note_layout.html' %}
 {% block title %}View Note{% endblock %}
 {% block container_end %}
+{% if note.owner == request.user %}
 <form action="{% url 'edit_note' note.id %}" method="GET">
     <button type="submit">Edit</button>
 </form>
+{% endif %}
 {% endblock %}

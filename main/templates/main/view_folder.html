@@ -9,4 +9,15 @@
     </table>
     <button type="submit">Add Notes</button>
 </form>
+
+<main>
+    <section id="notes">
+        {% for note in notes %}
+        <div class="note">
+            <a href="{% url 'view_note' note.id %}"><h2>{{ note.title }}</h2></a>
+        </div>
+        {% endfor %}
+    </section>
+</main>
+
 {% endblock %}

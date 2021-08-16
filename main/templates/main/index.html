@@ -1,20 +1,5 @@
 {% extends 'main/layout.html' %}
 {% block title %}Notes{% endblock %}
-{% block style %}
-main {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-    justify-content: center;
-    align-items: flex-start;
-}
-.note {
-    background: gray;
-    color: black;
-    text-align: center;
-}
-{% endblock %}
 {% block body %}
 <main>
     <h1>Notes</h1>
@@ -65,7 +50,7 @@ main {
         h2.innerText = title;
         container.appendChild(h2)
         const editForm = document.createElement('form');
-        editForm.setAttribute('action', `view_note/${id}`)
+        editForm.setAttribute('action', `${id}`)
         const editButton = document.createElement('button');
         editButton.setAttribute('type', 'submit')
         editButton.innerText = 'Edit'

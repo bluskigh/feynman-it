@@ -10,6 +10,7 @@ def get_path(value):
     value =  value.lower()
     # path is simple, just the name
     if value in ['folders', 'notes', 'login', 'register', 'logout']:
+        print(value)
         return reverse(value)
 
 
