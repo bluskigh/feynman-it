@@ -30,8 +30,9 @@
     <div style="display: flex;">
         <label for="forwhich">Link for iteration: </label>
         <select name="forwhich" id="forwhich">
+            <option value="0">General</option>
             {% for iteration in note.iterations_one %}
-            <option value="{{ forloop.counter }}">{{ forloop.counter }}</option>
+            <option value="{{ forloop.counter|add:1 }}">Iteration {{ forloop.counter|add:1 }}</option>
             {% endfor %}
         </select>
     </div>
@@ -105,13 +106,6 @@
         // as stated before, target = button that was clicked, due to the layout of the form each add iteration(or link) button succeeds an input and or textarea.
         const input = target.previousElementSibling;
 
-        let emptyIterationP = target.parentElement.parentElement.querySelector('p');
-        if (emptyIterationP && emptyIterationP.innerText.startsWith('No')) {
-            // remove since a new item is being added therefore no longer being empty 
-            target.parentElement.parentElement.removeChild(emptyIterationP)
-        }
-        // garbage collect object
-        emptyIterationP = null;
 
         // if the current button dataset value added does not exist
         if (target.dataset.added == null) {
@@ -141,6 +135,7 @@
 
             // creating the a tag to store the newly added link
             const a = document.createElement('a');
+            let temp = input.value;
             a.setAttribute('href', input.value)
             a.setAttribute('target', '_blank')
             a.innerText = linkTitle.value;
@@ -154,6 +149,14 @@
             // garbage collect
             linkTitle = null;
         } else {
+            let emptyIterationP = target.parentElement.parentElement.querySelector('p');
+            if (emptyIterationP && emptyIterationP.innerText.startsWith('No')) {
+                // remove since a new item is being added therefore no longer being empty 
+                target.parentElement.parentElement.removeChild(emptyIterationP)
+            }
+            // garbage collect object
+            emptyIterationP = null;
+
             const editButton = document.createElement('button');
             editButton.setAttribute('type', 'button')
             editButton.classList.add('edit-iteration')
@@ -192,7 +195,7 @@
             target.parentElement.parentElement.insertBefore(container, target.parentElement)
         } else if (target.dataset.which == 0 && document.querySelector('#links-data').querySelectorAll('.table-data').length >= parseInt(document.querySelector('#forwhich').value)) {
             // ^ if button was in links section and links section td contains table data whose index is relative to the forwhich value selected then append link to thus container
-            document.querySelector('#links-data').querySelectorAll('.table-data')[parseInt(document.querySelector('#forwhich').value)-1].appendChild(dataContainer)
+            document.querySelector('#links-data').querySelectorAll('.table-data')[parseInt(document.querySelector('#forwhich').value)].appendChild(dataContainer)
         } else if (target.dataset.which == 0 && document.querySelector('#links-data').querySelectorAll('.table-data').length <  parseInt(document.querySelector('#forwhich').value)) {
             // ^ otherwise if button in links section and links section td does not contain a table data of index equal to selected forwhich value
             iterationHeader.innerText = `Links for iteration: ${document.querySelector('#forwhich').value}`;

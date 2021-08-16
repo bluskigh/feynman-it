@@ -10,7 +10,6 @@ def get_path(value):
     value =  value.lower()
     # path is simple, just the name
     if value in ['folders', 'notes', 'login', 'register', 'logout']:
-        print(value)
         return reverse(value)
 
 
@@ -30,7 +29,10 @@ def has_permission(user, permission):
 
 @register.filter(name='get_value')
 def get_value(value, index):
-    return value[index]
+    try:
+        return value[index]
+    except Exception as e:
+        return []
 
 
 @register.filter(name='to_string')

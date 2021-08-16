@@ -38,7 +38,7 @@ class Note(models.Model):
 
     def format_links(self):
         links = self.links
-        if len(links) == 3:
+        if type(links[0]) != type([]):
             # only one item in links return that
             return {links[0]: links}
         result = {}
