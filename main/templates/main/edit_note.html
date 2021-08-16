@@ -78,8 +78,9 @@
     // 1 = iterations_one
     // 0 = links
     // 2 = iterations_two
+    // 3 = general 
     // this object will be queried when the main form is submitted to retrieve information regarding (added, deleted, edited) iterations. 
-    var iterations = {1: {}, 0: {}, 2:{}}; 
+    var iterations = {1: {}, 0: {}, 2:{}, 3: {}}; 
 
     // this function is run as an event funciton therefore, is passed e
     function addItem(object) {
@@ -148,6 +149,12 @@
 
             // garbage collect
             linkTitle = null;
+
+            const forwhich = document.querySelector('#forwhich').value;
+            const tempp = target.parentElement.parentElement.children[forwhich];
+            dataContainer.dataset.forwhich = forwhich;
+            dataContainer.dataset.iteration = tempp.children.length+1;
+            dataContainer.dataset.which = 0;
         } else {
             let emptyIterationP = target.parentElement.parentElement.querySelector('p');
             if (emptyIterationP && emptyIterationP.innerText.startsWith('No')) {
@@ -156,17 +163,6 @@
             }
             // garbage collect object
             emptyIterationP = null;
-
-            const editButton = document.createElement('button');
-            editButton.setAttribute('type', 'button')
-            editButton.classList.add('edit-iteration')
-            // settings the iteration dataset value to be the current buttons parents parent total length of .table-data divs plus one (plus one because we are adding this item)
-            editButton.dataset.iteration = target.parentElement.parentElement.querySelector('.table-data') && target.parentElement.parentElement.querySelector('.table-data').length+1;
-            editButton.dataset.which = target.dataset.which;
-            editButton.innerText = 'Edit';
-            editButton.addEventListener('click', editButtonFunctionality)
-
-            dataContainer.appendChild(editButton);
 
             // format here is different than the format for links because this is simply adding text unlike links which contains iteration choosen, title, and text therefore we can simply concat a value with existing array in added
             iterations[target.dataset.which].added = iterations[target.dataset.which].added.concat(input.value);
@@ -186,6 +182,16 @@
             p.innerText = input.value;
             dataContainer.appendChild(p)
         }
+
+        const editButton = document.createElement('button');
+        editButton.setAttribute('type', 'button')
+        editButton.classList.add('edit-iteration')
+        // settings the iteration dataset value to be the current buttons parents parent total length of .table-data divs plus one (plus one because we are adding this item)
+        editButton.dataset.iteration = target.parentElement.parentElement.querySelector('.table-data').length+1;
+        editButton.dataset.which = target.dataset.which;
+        editButton.innerText = 'Edit';
+        editButton.addEventListener('click', editButtonFunctionality)
+        dataContainer.appendChild(editButton);
 
         // if button clicked to add new item is not links section
         if (target.dataset.which != 0) { 
@@ -235,6 +241,8 @@
         editIterationContainer.classList.remove('hidden')
         editIterationContainer.classList.add('busy')
 
+        editIterationContainer.dataset.which = target.parentElement.dataset.which;
+
         let inputTitle = editIterationContainer.querySelector('input');
 
         // if edit button of a link was clicked display the titl einput in the edit form 
@@ -280,9 +288,12 @@
     editIterationContainer.querySelector('.save-edit').addEventListener('click', function(object) {
         // save response 
         let parent = editIterationContainer.parentElement;
-        if (parent.dataset.length == null) {
+        if (parent.dataset.which == null) {
+            // edit container when using links is appended before the data div taht we are trying to edit, therefore if in links we want to get the next element
             parent = editIterationContainer.nextElementSibling;
         }
+        console.log(parent.dataset)
+        console.log(parent)
         const value = this.previousElementSibling.querySelector('textarea').value.trim();
         if (iterations[parent.dataset.which].edit == null) {
             iterations[parent.dataset.which].edit = {};
