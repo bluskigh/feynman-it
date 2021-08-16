@@ -1,0 +1,21 @@
+{% extends 'main/layout.html' %}
+{% block title %}Folders{% endblock %}
+{% block body %}
+<h1>Folders</h1>
+<form action="{% url 'new_folder' %}" method="POST">
+    {% csrf_token %}
+    <table>
+    {{ form.as_table }}
+    </table>
+    <button type="submit">Add Folder</button>
+</form>
+{% if folders|length > 0 %}
+{% for folder in folders %}
+<div>
+    <a href="{% url 'view_folder' folder.id %}">{{ folder.title }}</a>
+</div>
+{% endfor %}
+{% else %}
+<p>No folders.</p>
+{% endif %}
+{% endblock %}

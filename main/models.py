@@ -7,6 +7,11 @@ class User(AbstractUser):
     pass
 
 
+class Folder(models.Model):
+    title = models.CharField(max_length=64)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='subjects')
+
+
 class Note(models.Model):
     # title of the note
     title = models.CharField(blank=True, max_length=64)

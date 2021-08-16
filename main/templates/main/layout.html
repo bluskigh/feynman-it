@@ -63,6 +63,19 @@
         .hidden {
             display: none;
         }
+        .message {
+            width: 100%;
+            padding: 1.5em 1em;
+            box-sizing: border-box;
+        }
+        .warning {
+            background: red; 
+            color: darkred;
+        }
+        .success {
+            background: green;
+            color: darkgreen;
+        }
     </style>
     <style>
     {% block style %}{% endblock %}
@@ -85,6 +98,14 @@
             {% endfor %}
         </ul>
     </nav>
+
+    {% if messages %}
+    {% load layout_tags %}
+    {% for message in messages %}
+    {{ message }}
+    {% endfor %}
+    {% endif %}
+
     {% block body %}{% endblock %}
     {% block scripts %}{% endblock %}
 </body>

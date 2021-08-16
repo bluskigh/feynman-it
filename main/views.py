@@ -8,12 +8,20 @@ from django.contrib.auth.models import Permission
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 from django.contrib import messages
+from django.contrib.messages import get_messages
 from django import forms
 from django.forms import ModelForm
+from django.db.models import Q
 
 from json import loads, dumps
 
-from .models import User, Note
+from .models import User, Note, Folder 
+
+
+class NewFolderForm(ModelForm):
+    class Meta:
+        model = Folder 
+        exclude = ['owner']
 
 
 class LoginForm(forms.Form):
@@ -199,6 +207,31 @@ def edit_note(request, id):
             return render(request, 'main/edit_note.html', {'note': note.more_information(), 'form': form})
 
 
+@login_required
+def folders(request):
+    return render(request, 'main/folders.html', {'form': NewFolderForm(), 'folders': Folder.objects.filter(owner=request.user)})
+
+
+@login_required
+@permission_required('main.add_folder')
+def new_folder(request):
+    form = NewFolderForm(request.POST)
+    if form.is_valid():
+        cd = form.cleaned_data
+        Folder.objects.create(title=cd.get('title').strip(), owner=request.user)
+        return HttpResponseRedirect(reverse('folders'))
+    else:
+        return render(request, 'main/folders.html', {'form': form, 'folders': Folder.objects.filter(owner=request.user)})
+
+
+@login_required
+def view_folder(request, id):
+    folder = Folder.objects.get(id=id)
+    if folder is None:
+        messages.info(request, f'404: Could not find foler with id of {id}')
+    return render(request, 'main/view_folder.html', {'folder': folder})
+
+
 def register(request):
     error_css_class = 'error' 
     required_css_class = 'required'
@@ -216,8 +249,8 @@ def register(request):
                     password=cd.get('password'))
 
             # add all permissions related to notes
-            permissions = Permission.objects.filter(codename__contains='_note')
-            user.user_permissions.add(*permissions)
+            # permissions = Permission.objects.filter(codename__contains='_note')
+            # user.user_permissions.add(*permissions)
 
             return HttpResponseRedirect(reverse('login'))
         else:
@@ -236,9 +269,17 @@ def login(request):
             auth_login(request, user)
             # in case of an update we want to check if this user has 
             # certain permissions otherwise if so ignore otherwise add
-            permissions = Permission.objects.filter(codename__contains='_note')
-            if user.has_perms([p.codename for p in permissions]):
-                user.user_permissions.add(*permissions)
+            note_query = Q(codename__contains='_note')
+            folder_query = Q(codename__contains='_folder')
+            note_permissions = Permission.objects.filter(note_query)
+            folder_permissions = Permission.objects.filter(folder_query)
+            # THIS may be a bit silly, since a user can have old model permissions and not new model permissions therefore the adding of permission will run
+            # but we don't want to readd permission he already has, therefore instead look by group
+            if not user.has_perms([p.codename for p in folder_permissions]):
+                user.user_permissions.add(*folder_permissions)
+            if not user.has_perms([p.codename for p in note_permissions]):
+                user.user_permissions.add(*note_permissions)
+
             return HttpResponseRedirect(reverse('index'))
         else:
             return render(request, 'main/login.html', {'form': form})
