@@ -93,7 +93,7 @@
             {% endif %}
             {% for li in lis %}
             {% with path=li|get_path %}
-            <li class="{% if request.path == path %}current{% endif %}"><a href="{{ path }}">{{ li }}</a></li>
+            <li class="{% if path in request.path %}current{% endif %}"><a href="{{ path }}">{{ li }}</a></li>
             {% endwith %}
             {% endfor %}
         </ul>

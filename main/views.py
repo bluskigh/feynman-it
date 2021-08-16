@@ -114,8 +114,22 @@ class NoteForm(ModelForm):
         exclude = ['owner']
 
 
+class FolderForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        self.usernotes = kwargs.pop('usernotes', None)
+        self.folder = kwargs.pop('folder', None)
+        notes = self.usernotes.exclude(folder=self.folder)
+        super(FolderForm, self).__init__(*args, **kwargs)
+        self.fields['available_notes'] = forms.MultipleChoiceField(choices=[(note.id, note.title) for note in notes])
+
+
 @login_required
 def index(request):
+    return HttpResponse('<a href="notes/">Go to notes</a>')
+
+
+@login_required
+def notes(request):
     # right now index handles rendering all notes
     return render(request, 'main/index.html', {
         'notes': [n.basic_information() for n in Note.objects.all()], 
@@ -229,7 +243,15 @@ def view_folder(request, id):
     folder = Folder.objects.get(id=id)
     if folder is None:
         messages.info(request, f'404: Could not find foler with id of {id}')
-    return render(request, 'main/view_folder.html', {'folder': folder})
+    notes = request.user.notes.exclude(folder=folder)
+    if request.method == 'GET':
+        # filtering all notes by the current user, and notes that are not in the current folder.
+        form = FolderForm(usernotes=request.user.notes, folder=folder)
+    elif request.method == 'POST':
+        form = FolderForm(usernotes=request.user.notes, folder=folder, data=request.POST)
+        if form.is_valid():
+            cd = form.cleaned_data
+    return render(request, 'main/view_folder.html', {'folder': folder, 'notes': notes, 'form': form})
 
 
 def register(request):

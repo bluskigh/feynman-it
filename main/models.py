@@ -29,6 +29,8 @@ class Note(models.Model):
     understand = models.BooleanField(default=False)
     # who owns the note
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notes', default=None)
+    # what folder is it in
+    folder = models.ForeignKey(Folder, on_delete=models.CASCADE, related_name='folder_notes', default=None, null=True)
 
     def basic_information(self):
         return {'id': self.id, 'title': self.title}

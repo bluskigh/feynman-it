@@ -8,16 +8,16 @@ register = template.Library()
 @register.filter(name='get_path')
 def get_path(value):
     value =  value.lower()
-    if value in ['profile', 'login', 'register', 'logout']:
+    # path is simple, just the name
+    if value in ['folders', 'notes', 'login', 'register', 'logout']:
         return reverse(value)
-    elif value == 'notes':
-        return reverse('index')
 
 
 @register.simple_tag
 def define(authenticated=None):
+    """Returns a list of lis to be displayed if the user is authenticated"""
     if authenticated:
-        return ['Notes', 'Profile', 'Logout']
+        return ['Folders', 'Notes', 'Logout']
     else:
         return ['Login', 'Register']
 
