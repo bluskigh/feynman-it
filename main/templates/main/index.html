@@ -13,115 +13,145 @@ tr {
 {% endblock %}
 {% block title %}Notes{% endblock %}
 {% block body %}
-    {% load layout_tags %}
-    {% if request.user|has_permission:'main.add_note' %}
-    <form action="{% url 'new_note' %}" id='new-note-form'>
-        {% csrf_token %}
-        <table>
-            {{ new_note_form.as_table }}
-        </table>
-        <button type="submit">Create</button>
-    </form>
-    {% endif %}
     <section id="items-flex-container">
     {% if notes|length == 0 %}
     <p>No notes.</p>
     {% else %}
         {% for note in notes %}
-        <a href="{% url 'view_note' note.id %}" class="item">
+        <a href="{% url 'view_note' note.id %}" class="item item-animate">
             <div class="item-shader hidden"></div>
             <div class="understand-bar {% if note.understand %}understand{% endif %}"></div>
             <h3>{{ note.title }}</h3>
         </a>
         {% endfor %}
+        {% load layout_tags %}
+        {% if request.user|has_permission:'main.add_note' %}
         <div class="item">
             <button class="item-add">+</button>
+            <form action="{% url 'new_note' %}" class="new-item-form hidden">
+                <div class="item-shader"></div>
+                {% csrf_token %}
+                <table>
+                    {{ new_note_form.as_table }}
+                </table>
+                <button type="submit">Create</button>
+            </form>
         </div>
+        {% endif %}
     {% endif %}
     </section>
 {% endblock %}
 {% block scripts %}
 <script>
-    const items = document.querySelectorAll('.item');
-    items.forEach(item => {
-        item.addEventListener('mouseenter', function() {
-            // initiate shader
-            item.firstElementChild.classList.toggle('hidden')
-        })
-        item.addEventListener('mouseleave', function() {
-            // deactivate shader
-            item.firstElementChild.classList.toggle('hidden')
-        })
-    })
+    document.addEventListener('DOMContentLoaded', function() {
 
-    const notesContainer = document.querySelector('#notes');
-    const newNoteTitle = document.querySelector('#id_title');
-    const newNoteBody = newNoteTitle.parentElement.parentElement.parentElement;
-    const newNoteButton = document.querySelector('#new-note-form button');
+        // querySelectorAll returns a NodeList therefore does not have slice() method built in 
+        let items = Array.from(document.querySelectorAll('.item')).slice(0, -1);
 
-    newNoteTitle.addEventListener('keydown', function(e) {
-        if (this.value.length > 0 && newNoteBody.children.length >= 2) {
-            newNoteBody.removeChild(newNoteBody.lastChild)
-            if (newNoteButton.disabled) {
-                newNoteButton.disabled = false;
-            }
-        }
-    })
-
-    function addNote(id, title, route) {
-        try {
-            const p = notesContainer.querySelector('p');
-            notesContainer.removeChild(p)
-        } catch(Exception) {
-            // continue
-        }
-
-        const container = document.createElement('div'); 
-        container.classList.add('note')
-        const a = document.createElement('a');
-        a.setAttribute('href', route)
-        const h3 = document.createElement('h3'); 
-        h3.innerText = title;
-        a.appendChild(h3)
-        container.appendChild(a)
-        notesContainer.appendChild(container)
-        newNoteTitle.value = "";
-    }
-
-    document.querySelector('#new-note-form').addEventListener('submit', function(e) {
-        e.preventDefault()
-        newNoteButton.disabled = true;
-        fetch(this.getAttribute('action'), {
-            method: 'POST', 
-            mode: 'same-origin',
-            headers: new Headers({
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-                'Content-Type': 'application/json'
-            }), 
-            body: JSON.stringify({
-                'title': newNoteTitle.value
+        items.forEach(item => {
+            item.addEventListener('mouseenter', function() {
+                // initiate shader
+                item.firstElementChild.classList.toggle('hidden')
+            })
+            item.addEventListener('mouseleave', function() {
+                // deactivate shader
+                item.firstElementChild.classList.toggle('hidden')
             })
         })
-        .then(async r => {
-            const data = await r.json(); 
-            if (r.status == 200) {
-                addNote(data.id, data.title, data.route)
-                newNoteButton.disabled = false;
-            } else if (r.status == 400) {
-                for (const error_key in data.errors) {
-                    const error = document.createElement('p');
-                    error.innerText = data.errors[error_key];
-                    const row = document.createElement('tr');
-                    const th = document.createElement('th');
-                    const td = document.createElement('td');
-                    td.appendChild(error)
-                    row.appendChild(th)
-                    row.appendChild(td)
-                    newNoteBody.appendChild(row)
+
+        const itemAdd = document.querySelector('.item-add');
+        itemAdd.addEventListener('click', function() {
+            itemAdd.style.animationPlayState = 'running';
+            itemAdd.parentElement.querySelector('form').classList.toggle('hidden')
+        })
+        let iteration = 0;
+        itemAdd.addEventListener('animationiteration', function() {
+            itemAdd.style.animationPlayState = 'paused';
+            iteration+=1;
+            if (iteration % 2 == 0) {
+                // original state
+                itemAdd.parentElement.querySelector('form').firstElementChild.style.zIndex = 'initial';
+            } else {
+                // creation state
+                itemAdd.parentElement.querySelector('form').firstElementChild.style.zIndex = -1;
+            }
+        })
+        // itemAdd.parentElement.addEventListener('mouseleave', function() {
+        //     if (itemAdd.dataset.stage == 1) {
+        //         itemAdd.style.animationPlayState = 'running';
+        //     }
+        // })
+
+        const notesContainer = document.querySelector('#notes');
+        const newNoteTitle = document.querySelector('#id_title');
+        const newNoteBody = newNoteTitle.parentElement.parentElement.parentElement;
+        const newNoteButton = document.querySelector('#new-note-form button');
+
+        newNoteTitle.addEventListener('keydown', function(e) {
+            if (this.value.length > 0 && newNoteBody.children.length >= 2) {
+                newNoteBody.removeChild(newNoteBody.lastChild)
+                if (newNoteButton.disabled) {
+                    newNoteButton.disabled = false;
                 }
             }
         })
-        .catch(e => {console.log(e)})
+
+        function addNote(id, title, route) {
+            try {
+                const p = notesContainer.querySelector('p');
+                notesContainer.removeChild(p)
+            } catch(Exception) {
+                // continue
+            }
+
+            const container = document.createElement('div'); 
+            container.classList.add('note')
+            const a = document.createElement('a');
+            a.setAttribute('href', route)
+            const h3 = document.createElement('h3'); 
+            h3.innerText = title;
+            a.appendChild(h3)
+            container.appendChild(a)
+            notesContainer.appendChild(container)
+            newNoteTitle.value = "";
+        }
+
+        document.querySelector('#new-note-form').addEventListener('submit', function(e) {
+            e.preventDefault()
+            newNoteButton.disabled = true;
+            fetch(this.getAttribute('action'), {
+                method: 'POST', 
+                mode: 'same-origin',
+                headers: new Headers({
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                    'Content-Type': 'application/json'
+                }), 
+                body: JSON.stringify({
+                    'title': newNoteTitle.value
+                })
+            })
+            .then(async r => {
+                const data = await r.json(); 
+                if (r.status == 200) {
+                    addNote(data.id, data.title, data.route)
+                    newNoteButton.disabled = false;
+                } else if (r.status == 400) {
+                    for (const error_key in data.errors) {
+                        const error = document.createElement('p');
+                        error.innerText = data.errors[error_key];
+                        const row = document.createElement('tr');
+                        const th = document.createElement('th');
+                        const td = document.createElement('td');
+                        td.appendChild(error)
+                        row.appendChild(th)
+                        row.appendChild(td)
+                        newNoteBody.appendChild(row)
+                    }
+                }
+            })
+            .catch(e => {console.log(e)})
+        })
+
     })
 </script>
 {% endblock %}

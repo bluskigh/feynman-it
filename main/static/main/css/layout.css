@@ -11,7 +11,7 @@ html, body, nav, ul, p, h1, h2, h3, h4, h5, h6 {margin: 0; padding: 0;}
 li { list-style-type: none; }
 a { color: white; text-decoration: none; }
 a:hover { text-decoration: underline; }
-.hidden { z-index: -1; user-select: none; opacity: 0; }
+.hidden { z-index: -1; user-select: none; opacity: 0% !important; }
 /* End of General Styling */
 
 
@@ -86,9 +86,6 @@ textarea {
 .iteration-input button {
     height: fit-content;
 }
-.hidden {
-    display: none;
-}
 .message {
     width: 100%;
     padding: 1.5em 1em;
@@ -113,11 +110,7 @@ button {
     font-size: .7em;
     transition: transform .5s ease;
 }
-button:hover {
-    background: rgb(95, 95, 95);
-    transform: translateY(-2px);
-    cursor: pointer;
-}
+button:hover { cursor: pointer; }
 main {
     width: 100%;
     display: flex;
@@ -161,6 +154,8 @@ a:hover {
     text-align: center;
     /* otherwise items are going to be touching one another */
     margin: .5em; padding: 2em;
+}
+.item-animate {
     /* transition-timing-function: ease; */
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     transition: transform .5s, box-shadow .35s; 
@@ -173,7 +168,7 @@ a:hover {
     opacity: .5;
     top: 0; left: 0;
 }
-.item:hover { cursor: pointer; box-shadow: -5px 5px 0 black; transform: translateY(-5px); }
+.item-animate:hover { cursor: pointer; box-shadow: -5px 5px 0 black; transform: translateY(-5px); }
 .item a { color: var(--accent); }
 /* default color of understand bar "does not understand" color*/
 .understand-bar { 
@@ -184,3 +179,46 @@ a:hover {
     top: 0; left: 5%;
  }
 .understand { background: var(--accent-two); }
+
+@keyframes new-item-clicked {
+    100% {
+        border-radius: 50%;
+    }
+    0% {
+        border-radius: 0%;
+        right: 90%;
+        transform: translate(0%, 0%);
+        top: 0%;
+    }
+}
+.item-add {
+    position: absolute;
+    right: 50%; top: 50%;
+    transform: translate(50%, -50%);
+    border: none;
+    border-radius: 50%;
+    padding: 1em 1.5em; margin: 0;
+    background: var(--accent);
+    color: black;
+    animation-name: new-item-clicked;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+    animation-play-state: paused;
+    animation-iteration-count: infinite;
+    animation-direction: alternate-reverse;
+    z-index: 2;
+}
+
+.new-item-form {
+    opacity: 100%;
+    transition-timing-function: ease;
+    transition: z-index .5s, opacity .5s;
+    z-index: 1;
+}
+.new-item-form .item-shader {
+    background: transparent;
+    z-index: 1;
+}
+.new-item-form.hidden {
+    z-index: 0;
+}
