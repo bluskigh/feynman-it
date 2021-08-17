@@ -23,21 +23,37 @@ tr {
         <button type="submit">Create</button>
     </form>
     {% endif %}
-    <section id="notes">
+    <section id="items-flex-container">
     {% if notes|length == 0 %}
     <p>No notes.</p>
     {% else %}
         {% for note in notes %}
-        {{ note.undersatnd }}
-        <div class="note {% if note.understand %}learned{% else %}learning{%endif%}">
-            <a href="{% url 'view_note' note.id %}"><h3>{{ note.title }}</h3></a>
-        </div>
+        <a href="{% url 'view_note' note.id %}" class="item">
+            <div class="item-shader hidden"></div>
+            <div class="understand-bar {% if note.understand %}understand{% endif %}"></div>
+            <h3>{{ note.title }}</h3>
+        </a>
         {% endfor %}
+        <div class="item">
+            <button class="item-add">+</button>
+        </div>
     {% endif %}
     </section>
 {% endblock %}
 {% block scripts %}
 <script>
+    const items = document.querySelectorAll('.item');
+    items.forEach(item => {
+        item.addEventListener('mouseenter', function() {
+            // initiate shader
+            item.firstElementChild.classList.toggle('hidden')
+        })
+        item.addEventListener('mouseleave', function() {
+            // deactivate shader
+            item.firstElementChild.classList.toggle('hidden')
+        })
+    })
+
     const notesContainer = document.querySelector('#notes');
     const newNoteTitle = document.querySelector('#id_title');
     const newNoteBody = newNoteTitle.parentElement.parentElement.parentElement;

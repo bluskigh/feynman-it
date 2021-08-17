@@ -20,10 +20,10 @@ tr {
     </table>
     <button type="submit">Add Folder</button>
 </form>
-<section id="notes">
+<section id="items-flex-container">
 {% if folders|length > 0 %}
 {% for folder in folders %}
-<div class="note">
+<div class="item">
     <a href="{% url 'view_folder' folder.id %}"><h3>{{ folder.title }}</h3></a>
     <p class="helper" style="color: white;">Contains {{ folder.notes_length }} note(s)</p>
 </div>

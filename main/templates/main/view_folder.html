@@ -21,9 +21,9 @@ th {
 
 <main>
     <h4>Notes in folder</h4>
-    <section id="notes">
+    <section id="items-flex-container">
         {% for note in notes %}
-        <div class="note">
+        <div class="item">
             <a href="{% url 'view_note' note.id %}"><h2>{{ note.title }}</h2></a>
         </div>
         {% endfor %}

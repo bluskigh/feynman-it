@@ -1,0 +1,186 @@
+:root {
+    --accent: #E9C46A;
+    --main: #264653;
+    --accent-two: #2A9D8F;
+    --accent-three: #E76F51;
+}
+
+/* General Styling */
+/* removing default margin from nodes */
+html, body, nav, ul, p, h1, h2, h3, h4, h5, h6 {margin: 0; padding: 0;}
+li { list-style-type: none; }
+a { color: white; text-decoration: none; }
+a:hover { text-decoration: underline; }
+.hidden { z-index: -1; user-select: none; opacity: 0; }
+/* End of General Styling */
+
+
+/* Navigation Styling */
+nav {
+    /* flex box for centering items center of navbar */
+    display: flex;
+    align-items: center;
+    /* pushes items away from each other */
+    justify-content: space-between;
+    /* want to occupy 100% of X axis */
+    width: 100%;
+    /* no constraints on height, let it flow like water */
+    height: auto;
+    /* since space-between is pushing items away we dont want them touching the left/right edges of nav */
+    padding: 0 2em;
+    /* including the padding in the calculation for width/height of nav (otherwise overflow on x axis will occur) */
+    box-sizing: border-box;
+    background: var(--main);
+    color: var(--accent);
+}
+nav ul {
+    /* want to align items in a row vertically centered */
+    display: flex;
+    align-items: center;
+}
+/* provide space on even lis */
+nav ul li:nth-of-type(even) { margin: 0 .5em; }
+.current {
+    /* 1.6em on bottom since .4em of space is being used by the border bottom */
+    padding: 3em 0 2.6em 0;
+    border-bottom: .4em solid var(--accent);
+}
+.current:hover { border-bottom-color: #e9c56a8f; }
+/* End of Navigation Styling */
+/* Start of Table Styling */
+table {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: left;
+}
+tr {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: column;
+    margin: 2em 0;
+}
+th {
+    vertical-align: text-top;
+    padding: 1em 0;
+}
+.table-data-container {
+    max-width: 80%;
+    width: 100%;
+    text-align: center;
+}
+textarea {
+    width: 100%;
+}
+.table-data {
+    padding: .5em 0;
+    text-align: center;
+}
+.iteration-input {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    width: 100%;
+}
+.iteration-input button {
+    height: fit-content;
+}
+.hidden {
+    display: none;
+}
+.message {
+    width: 100%;
+    padding: 1.5em 1em;
+    box-sizing: border-box;
+}
+.warning {
+    background: red; 
+    color: darkred;
+}
+.success {
+    background: darkgreen;
+    color: lightgreen;
+}
+form {
+    margin: 0;
+}
+button {
+    border: none;
+    padding: .2em 2em;
+    margin: .5em 0;
+    border-radius: 1em;
+    font-size: .7em;
+    transition: transform .5s ease;
+}
+button:hover {
+    background: rgb(95, 95, 95);
+    transform: translateY(-2px);
+    cursor: pointer;
+}
+main {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    padding: 2em 0;
+}
+.helper {
+    color: gray;
+    font-size: .7em;
+}
+h4 {
+    margin: 0;
+}
+a:hover {
+    color: gray;
+}
+.static-button {
+}
+.static-button:hover {
+    transform: none;
+}
+
+/* Start of Note Styling */
+#items-flex-container {
+    display: flex;
+    flex-wrap: wrap;
+    /* otherwise items will touch edges of screen (left, right) */
+    max-width: 80%;
+    justify-content: flex-start;
+    align-items: center;
+}
+.item {
+    /* allows for absolute positioned children to be positioned relative to this parent item, instead of the viewport/and or document */
+    position: relative;
+    flex-grow: 1;
+    /* default color is learning color */
+    background: var(--main);
+    text-align: center;
+    /* otherwise items are going to be touching one another */
+    margin: .5em; padding: 2em;
+    /* transition-timing-function: ease; */
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform .5s, box-shadow .35s; 
+}
+.item-shader {
+    /* position relative to nearest positioned ancestor */
+    position: absolute;
+    width: 100%; height: 100%;
+    background: black;
+    opacity: .5;
+    top: 0; left: 0;
+}
+.item:hover { cursor: pointer; box-shadow: -5px 5px 0 black; transform: translateY(-5px); }
+.item a { color: var(--accent); }
+/* default color of understand bar "does not understand" color*/
+.understand-bar { 
+    /* positioned relative to nearest positioned ancestor (.item) */
+    position: absolute;
+    width: 1em; height: 1.5em; 
+    background: var(--accent-three);
+    top: 0; left: 5%;
+ }
+.understand { background: var(--accent-two); }
