@@ -31,10 +31,13 @@ tr {
             <form action="{% url 'new_note' %}" class="new-item-form hidden">
                 <div class="item-shader"></div>
                 {% csrf_token %}
-                <table>
-                    {{ new_note_form.as_table }}
-                </table>
-                <button type="submit">Create</button>
+                <div class="form-item">
+                    <p>Title: </p>
+                    <div class="input-add-container">
+                        {{ new_note_form.title }}
+                        <button type="submit">Create</button>
+                    </div>
+                </div>
             </form>
         </div>
         {% endif %}
@@ -59,42 +62,41 @@ tr {
             })
         })
 
-        const itemAdd = document.querySelector('.item-add');
-        itemAdd.addEventListener('click', function() {
-            itemAdd.style.animationPlayState = 'running';
-            itemAdd.parentElement.querySelector('form').classList.toggle('hidden')
-        })
+
+        // iteration would be the parts of the keyframe that are reached 
+        // in this case, 0% and 100% are cause the iteration event listener to fire 
+        // therefore we can track where in the animation process we are at by 
+        // tracking the iteration event listener
         let iteration = 0;
+
+        const itemAdd = document.querySelector('.item-add');
+        function itemAddClicked() {
+            itemAdd.style.animationPlayState = 'running';
+            if (iteration % 2 != 0) {
+                // animation going back to original state therefore hide form first
+                itemAdd.parentElement.querySelector('form').classList.toggle('hidden')
+            }
+        }
+        itemAdd.addEventListener('click', itemAddClicked)
+
         itemAdd.addEventListener('animationiteration', function() {
             itemAdd.style.animationPlayState = 'paused';
             iteration+=1;
             if (iteration % 2 == 0) {
-                // original state
+                // original state, user may have exited therefore clear input and "reveal" shader so that the user cannot click on the inputs of the form
                 itemAdd.parentElement.querySelector('form').firstElementChild.style.zIndex = 'initial';
+                newNoteTitle.value = "";
             } else {
-                // creation state
+                // creation state, hide the shader (shader is always the first element in the form)
                 itemAdd.parentElement.querySelector('form').firstElementChild.style.zIndex = -1;
+                // after the button has reached creation iteration then reveal
+                itemAdd.parentElement.querySelector('form').classList.toggle('hidden')
             }
         })
-        // itemAdd.parentElement.addEventListener('mouseleave', function() {
-        //     if (itemAdd.dataset.stage == 1) {
-        //         itemAdd.style.animationPlayState = 'running';
-        //     }
-        // })
 
-        const notesContainer = document.querySelector('#notes');
+        const notesContainer = document.querySelector('#items-flex-container');
         const newNoteTitle = document.querySelector('#id_title');
-        const newNoteBody = newNoteTitle.parentElement.parentElement.parentElement;
-        const newNoteButton = document.querySelector('#new-note-form button');
-
-        newNoteTitle.addEventListener('keydown', function(e) {
-            if (this.value.length > 0 && newNoteBody.children.length >= 2) {
-                newNoteBody.removeChild(newNoteBody.lastChild)
-                if (newNoteButton.disabled) {
-                    newNoteButton.disabled = false;
-                }
-            }
-        })
+        const newNoteButton = document.querySelector('.new-item-form button');
 
         function addNote(id, title, route) {
             try {
@@ -104,19 +106,27 @@ tr {
                 // continue
             }
 
-            const container = document.createElement('div'); 
-            container.classList.add('note')
-            const a = document.createElement('a');
-            a.setAttribute('href', route)
+            const container = document.createElement('a'); 
+            container.classList.add('item', 'item-animate')
+            container.setAttribute('href', route)
+            const shader = document.createElement('div');
+            shader.classList.add('item-shader', 'hidden')
+            const understandBar = document.createElement('div');
+            understandBar.classList.add('understand-bar')
             const h3 = document.createElement('h3'); 
             h3.innerText = title;
-            a.appendChild(h3)
-            container.appendChild(a)
-            notesContainer.appendChild(container)
+            container.appendChild(shader)
+            container.appendChild(understandBar)
+            container.appendChild(h3)
+            // notesContainer.appendChild(container)
+            notesContainer.insertBefore(container, notesContainer.lastElementChild)
             newNoteTitle.value = "";
+
+            // after adding, revert back to original stage in animation
+            itemAddClicked()
         }
 
-        document.querySelector('#new-note-form').addEventListener('submit', function(e) {
+        document.querySelector('.new-item-form').addEventListener('submit', function(e) {
             e.preventDefault()
             newNoteButton.disabled = true;
             fetch(this.getAttribute('action'), {

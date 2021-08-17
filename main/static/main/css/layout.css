@@ -143,7 +143,7 @@ a:hover {
     /* otherwise items will touch edges of screen (left, right) */
     max-width: 80%;
     justify-content: flex-start;
-    align-items: center;
+    align-items: stretch;
 }
 .item {
     /* allows for absolute positioned children to be positioned relative to this parent item, instead of the viewport/and or document */
@@ -151,9 +151,10 @@ a:hover {
     flex-grow: 1;
     /* default color is learning color */
     background: var(--main);
-    text-align: center;
     /* otherwise items are going to be touching one another */
     margin: .5em; padding: 2em;
+    display: flex;
+    align-items: center; justify-content: center;
 }
 .item-animate {
     /* transition-timing-function: ease; */
@@ -189,6 +190,7 @@ a:hover {
         right: 90%;
         transform: translate(0%, 0%);
         top: 0%;
+        padding: 1em;
     }
 }
 .item-add {
@@ -221,4 +223,30 @@ a:hover {
 }
 .new-item-form.hidden {
     z-index: 0;
+}
+
+.form-item {
+    text-align: left;
+    margin: 0 auto;
+    width: fit-content;
+    color: var(--accent);
+}
+.input-add-container { height: 60%; }
+.input-add-container button {
+    background: black;
+    color: var(--accent);
+    max-width: fit-content;
+    border: none;
+    height: 100%;
+    border-radius: 0;
+}
+.input-add-container input {
+    background: none;
+    border: 3px solid black;
+    color: var(--accent);
+    height: 100%;
+}
+.input-add-container input:focus {
+    outline: none;
+    box-shadow: -5px 2px 5px gray;
 }
