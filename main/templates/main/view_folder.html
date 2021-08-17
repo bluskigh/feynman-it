@@ -20,6 +20,7 @@ th {
 </form>
 
 <main>
+    <h4>Notes in folder.</h4>
     <section id="notes">
         {% for note in notes %}
         <div class="note">
@@ -29,7 +30,11 @@ th {
     </section>
     <form action="{% url 'delete_folder' folder.id %}" method="POST">
         {% csrf_token %}
+        {% if folder.title == 'Deleted' %}
+        <button type="submit">Clear Folder</button>
+        {% else %}
         <button type="submit">Delete Folder</button>
+        {% endif %}
     </form>
 </main>
 

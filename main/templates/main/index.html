@@ -26,11 +26,15 @@ tr {
     </form>
     {% endif %}
     <section id="notes">
+    {% if notes|length == 0 %}
+    <p>No notes.</p>
+    {% else %}
         {% for note in notes %}
         <div class="note">
             <a href="{% url 'view_note' note.id %}"><h2>{{ note.title }}</h2></a>
         </div>
         {% endfor %}
+    {% endif %}
     </section>
 </main>
 {% endblock %}
@@ -50,21 +54,24 @@ tr {
         }
     })
 
-    function addNote(id, title) {
+    function addNote(id, title, route) {
+        try {
+            const p = notesContainer.querySelector('p');
+            notesContainer.removeChild(p)
+        } catch(Exception) {
+            // continue
+        }
+
         const container = document.createElement('div'); 
         container.classList.add('note')
+        const a = document.createElement('a');
+        a.setAttribute('href', route)
         const h2 = document.createElement('h2'); 
         h2.innerText = title;
-        container.appendChild(h2)
-        const editForm = document.createElement('form');
-        editForm.setAttribute('action', `${id}`)
-        const editButton = document.createElement('button');
-        editButton.setAttribute('type', 'submit')
-        editButton.innerText = 'Edit'
-        editForm.appendChild(editButton)
-        container.appendChild(h2)
-        container.appendChild(editForm)
+        a.appendChild(h2)
+        container.appendChild(a)
         notesContainer.appendChild(container)
+        newNoteTitle.value = "";
     }
 
     document.querySelector('#new-note-form').addEventListener('submit', function(e) {
@@ -84,8 +91,7 @@ tr {
         .then(async r => {
             const data = await r.json(); 
             if (r.status == 200) {
-                console.log(r)
-                addNote(data.id, data.title)
+                addNote(data.id, data.title, data.route)
                 newNoteButton.disabled = false;
             } else if (r.status == 400) {
                 for (const error_key in data.errors) {

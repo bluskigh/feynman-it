@@ -21,13 +21,15 @@ tr {
     </table>
     <button type="submit">Add Folder</button>
 </form>
+<section id="notes">
 {% if folders|length > 0 %}
 {% for folder in folders %}
-<div>
+<div class="note">
     <a href="{% url 'view_folder' folder.id %}">{{ folder.title }}</a>
 </div>
 {% endfor %}
 {% else %}
 <p>No folders.</p>
 {% endif %}
+</section>
 {% endblock %}

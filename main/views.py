@@ -132,7 +132,7 @@ def index(request):
 def notes(request):
     # right now index handles rendering all notes
     return render(request, 'main/index.html', {
-        'notes': [n.basic_information() for n in Note.objects.all()], 
+        'notes': [n.basic_information() for n in Note.objects.filter(owner=request.user)], 
         'new_note_form': NewNoteForm()})
 
 
@@ -153,7 +153,9 @@ def new_note(request):
             cd = form.cleaned_data
             add_folder = request.user.folders.all()[0]
             note = Note.objects.create(title=cd.get('title'), owner=request.user, folder=add_folder)
-            return JsonResponse(note.basic_information(), status=200)
+            result = note.basic_information()
+            result['route'] = reverse('view_note', kwargs={'id': note.id})
+            return JsonResponse(result, status=200)
         else:
             return JsonResponse({'errors': form.errors, 'status': 400}, status=400)
 
@@ -266,10 +268,10 @@ def view_folder(request, id):
 @permission_required('main.delete_folder')
 def delete_folder(request, id):
     folder = Folder.objects.get(id=id)
-    delete_folder = request.user.folders.all()[1]
-    if folder != delete_folder:
+    deleted_folder = request.user.folders.all()[1]
+    if folder != deleted_folder:
         for note in folder.folder_notes.all():
-            note.folder = delete_folder
+            note.folder = deleted_folder 
             note.save()
         folder.delete()
     else:
@@ -299,8 +301,8 @@ def register(request):
             # user.user_permissions.add(*permissions)
             
             # create delete and all folders, now should be [0] = add, [1] = delete when attemping to access users folders
-            all_folder = Folder.objects.create(title='All', owner=user)
-            delete_folder = Folder.objects.create(title='Delete', owner=user)
+            Folder.objects.create(title='All', owner=user)
+            Folder.objects.create(title='Deleted', owner=user)
             return HttpResponseRedirect(reverse('login'))
         else:
             return render(request, 'main/register.html', 
