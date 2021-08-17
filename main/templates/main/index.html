@@ -1,4 +1,16 @@
 {% extends 'main/layout.html' %}
+{% block style %}
+th {
+    margin: 0;
+    padding: 0;
+}
+tr {
+    margin: 0;
+}
+#new-note-form {
+    margin: 2em 0;
+}
+{% endblock %}
 {% block title %}Notes{% endblock %}
 {% block body %}
 <main>
@@ -16,12 +28,7 @@
     <section id="notes">
         {% for note in notes %}
         <div class="note">
-            <h2>{{ note.title }}</h2>
-            {% if request.user|has_permission:'main.change_note' %}
-            <form action="{% url 'view_note' note.id %}">
-                <button>Edit</button>
-            </form>
-            {% endif %}
+            <a href="{% url 'view_note' note.id %}"><h2>{{ note.title }}</h2></a>
         </div>
         {% endfor %}
     </section>

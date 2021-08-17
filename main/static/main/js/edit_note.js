@@ -79,11 +79,6 @@ function addItem(object) {
         // garbage collect
         linkTitle = null;
 
-        const forwhich = document.querySelector('#forwhich').value;
-        const tempp = target.parentElement.parentElement.children[forwhich];
-        dataContainer.dataset.forwhich = forwhich;
-        dataContainer.dataset.iteration = tempp.children.length+1;
-        dataContainer.dataset.which = 0;
 
         // settings the iteration dataset value to be the current buttons parents parent total length of .table-data divs plus one (plus one because we are adding this item)
         editButton.dataset.iteration = target.parentElement.parentElement.querySelector('.table-data').length+1;
@@ -120,22 +115,33 @@ function addItem(object) {
     editButton.dataset.which = target.dataset.which;
     dataContainer.appendChild(editButton);
 
+    const forwhich = parseInt(document.querySelector('#forwhich').value);
+    const tempp = target.parentElement.parentElement.children[forwhich];
+    dataContainer.dataset.forwhich = forwhich;
+    dataContainer.dataset.which = 0;
+
     // if button clicked to add new item is not links section
     if (target.dataset.which != 0) { 
         iterationHeader.innerText = `Iteration: ${target.dataset.length}`;
         container.appendChild(iterationHeader)
         container.appendChild(dataContainer)
         target.parentElement.parentElement.insertBefore(container, target.parentElement)
-    } else if (target.dataset.which == 0 && document.querySelector('#links-data').querySelectorAll('.table-data').length >= parseInt(document.querySelector('#forwhich').value)) {
+    } else if (target.dataset.which == 0 && document.querySelector('#links-data').querySelectorAll('.table-data').length > parseInt(document.querySelector('#forwhich').value)) {
+        console.log('this should not be created')
         // ^ if button was in links section and links section td contains table data whose index is relative to the forwhich value selected then append link to thus container
-        document.querySelector('#links-data').querySelectorAll('.table-data')[parseInt(document.querySelector('#forwhich').value)].appendChild(dataContainer)
-    } else if (target.dataset.which == 0 && document.querySelector('#links-data').querySelectorAll('.table-data').length <  parseInt(document.querySelector('#forwhich').value)) {
+        const forwhichcontainer = document.querySelector('#links-data').querySelectorAll('.table-data')[parseInt(document.querySelector('#forwhich').value)];
+        forwhichcontainer.appendChild(dataContainer)
+        dataContainer.dataset.iteration = forwhichcontainer.querySelector('.data').length+1;
+    } else if (target.dataset.which == 0 && document.querySelector('#links-data').querySelectorAll('.table-data').length <= parseInt(document.querySelector('#forwhich').value)) {
+        console.log('something here should be create ')
         // ^ otherwise if button in links section and links section td does not contain a table data of index equal to selected forwhich value
         iterationHeader.innerText = `Links for iteration: ${document.querySelector('#forwhich').value}`;
         // append the container that encapsulates dataContainer (<div.table-data>__space for edit form___<div.data>__space for actual information such as p, a)
         container.appendChild(iterationHeader)
         container.appendChild(dataContainer)
         target.parentElement.parentElement.insertBefore(container, target.parentElement)
+        // just created so the length is goign to be 1
+        dataContainer.dataset.iteration = 1;
     }
 
     input.value = "";

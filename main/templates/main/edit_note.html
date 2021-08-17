@@ -3,7 +3,7 @@
 {% block container_start %}
 {{ form.errors }}
 <section id="edit-iteration-container" class="hidden">
-    <div style="display: flex; align-items: flex-start; flex-direction: column;">
+    <div style="display: flex; align-items: center; flex-direction: column;">
         <input type="text" name="title" class="hidden">
         <textarea name="text" class="edit" cols="30" rows="10"></textarea>
     </div>
@@ -32,7 +32,7 @@
         <select name="forwhich" id="forwhich">
             <option value="0">General</option>
             {% for iteration in note.iterations_one %}
-            <option value="{{ forloop.counter|add:1 }}">Iteration {{ forloop.counter|add:1 }}</option>
+            <option value="{{ forloop.counter }}">Iteration {{ forloop.counter }}</option>
             {% endfor %}
         </select>
         <input type="text" placeholder="Link Title" id="link-title">

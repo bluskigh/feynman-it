@@ -1,8 +1,20 @@
 {% extends 'main/layout.html' %}
+{% block style %}
+th {
+    margin: 0;
+    padding: 0;
+}
+tr {
+    margin: 0;
+}
+#new-folder-form {
+    margin: 2em 0;
+}
+{% endblock %}
 {% block title %}Folders{% endblock %}
 {% block body %}
 <h1>Folders</h1>
-<form action="{% url 'new_folder' %}" method="POST">
+<form action="{% url 'new_folder' %}" method="POST" id="new-folder-form">
     {% csrf_token %}
     <table>
     {{ form.as_table }}

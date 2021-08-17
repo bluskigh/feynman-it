@@ -1,4 +1,13 @@
 {% extends 'main/layout.html' %}
+{% block style %}
+tr {
+    flex-direction: row;
+    align-items: flex-start;
+}
+th {
+    padding: 0 1em 0 0;
+}
+{% endblock %}
 {% block title %}{{ folder.title }}{% endblock %}
 {% block body %}
 <h2>{{ folder.title }}</h2>
