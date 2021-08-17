@@ -20,7 +20,7 @@ th {
 </form>
 
 <main>
-    <h4>Notes in folder.</h4>
+    <h4>Notes in folder</h4>
     <section id="notes">
         {% for note in notes %}
         <div class="note">
@@ -28,13 +28,21 @@ th {
         </div>
         {% endfor %}
     </section>
+
     <form action="{% url 'delete_folder' folder.id %}" method="POST">
-        {% csrf_token %}
-        {% if folder.title == 'Deleted' %}
-        <button type="submit">Clear Folder</button>
+    {% csrf_token %}
+    {% if folder.notes_length > 0 %}
+        {% if folder.title == 'Deleted' or folder.title == 'All' %}
+            <button type="submit">Clear Folder</button>
         {% else %}
-        <button type="submit">Delete Folder</button>
+            <button type="submit">Clear Folder</button>
         {% endif %}
+    {% else %}
+        <p>No notes</p>
+        {% if folder.title != 'Deleted' and folder.title != 'All' %}
+            <button type="submit">Delete Folder</button>
+        {% endif %}
+    {% endif %}
     </form>
 </main>
 

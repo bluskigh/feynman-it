@@ -8,13 +8,11 @@ tr {
     margin: 0;
 }
 #new-note-form {
-    margin: 2em 0;
+    margin-bottom: 2em;
 }
 {% endblock %}
 {% block title %}Notes{% endblock %}
 {% block body %}
-<main>
-    <h1>Notes</h1>
     {% load layout_tags %}
     {% if request.user|has_permission:'main.add_note' %}
     <form action="{% url 'new_note' %}" id='new-note-form'>
@@ -30,13 +28,13 @@ tr {
     <p>No notes.</p>
     {% else %}
         {% for note in notes %}
-        <div class="note">
-            <a href="{% url 'view_note' note.id %}"><h2>{{ note.title }}</h2></a>
+        {{ note.undersatnd }}
+        <div class="note {% if note.understand %}learned{% else %}learning{%endif%}">
+            <a href="{% url 'view_note' note.id %}"><h3>{{ note.title }}</h3></a>
         </div>
         {% endfor %}
     {% endif %}
     </section>
-</main>
 {% endblock %}
 {% block scripts %}
 <script>
@@ -66,9 +64,9 @@ tr {
         container.classList.add('note')
         const a = document.createElement('a');
         a.setAttribute('href', route)
-        const h2 = document.createElement('h2'); 
-        h2.innerText = title;
-        a.appendChild(h2)
+        const h3 = document.createElement('h3'); 
+        h3.innerText = title;
+        a.appendChild(h3)
         container.appendChild(a)
         notesContainer.appendChild(container)
         newNoteTitle.value = "";

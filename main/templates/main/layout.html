@@ -94,13 +94,6 @@
             background: darkgreen;
             color: lightgreen;
         }
-        .note {
-            background: #102020;
-            color: #A7B5B7;
-            text-align: center;
-            margin: .5em 0;
-            padding: 2em;
-        }
         form {
             margin: 0;
         }
@@ -133,9 +126,6 @@
         h4 {
             margin: 0;
         }
-        .note a {
-            color: white;
-        }
         a:hover {
             color: gray;
         }
@@ -144,9 +134,30 @@
         .static-button:hover {
             transform: none;
         }
+        #notes {
+            display: flex;
+            flex-wrap: wrap;
+            max-width: 80%;
+            justify-content: center;
+            align-items: center;
+        }
+        .note {flex-grow: 1;}
+        .note {
+            /* default color is learning color */
+            background: #102020;
+            text-align: center;
+            margin: .5em;
+            padding: 2em;
+            color: white;
+        }
+        .note a {
+            color: white;
+        }
         .learning {
             background: darkgrey;
-            color: white;
+        }
+        .learned {
+            background: #487549;
         }
     </style>
     <style>

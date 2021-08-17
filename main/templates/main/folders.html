@@ -8,12 +8,11 @@ tr {
     margin: 0;
 }
 #new-folder-form {
-    margin: 2em 0;
+    margin-bottom: 2em;
 }
 {% endblock %}
 {% block title %}Folders{% endblock %}
 {% block body %}
-<h1>Folders</h1>
 <form action="{% url 'new_folder' %}" method="POST" id="new-folder-form">
     {% csrf_token %}
     <table>
@@ -25,7 +24,8 @@ tr {
 {% if folders|length > 0 %}
 {% for folder in folders %}
 <div class="note">
-    <a href="{% url 'view_folder' folder.id %}">{{ folder.title }}</a>
+    <a href="{% url 'view_folder' folder.id %}"><h3>{{ folder.title }}</h3></a>
+    <p class="helper" style="color: white;">Contains {{ folder.notes_length }} note(s)</p>
 </div>
 {% endfor %}
 {% else %}

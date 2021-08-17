@@ -27,15 +27,15 @@
 {% endblock %}
 {% block form_links %}
 <div class="iteration-input">
-    <div style="display: flex; flex-direction: column; align-items: flex-start; width: 100%;">
-        <label for="forwhich">Link for iteration: </label>
+    <div style="display: flex; width: 100%;">
+        <!-- <label for="forwhich">Link for iteration: </label> -->
         <select name="forwhich" id="forwhich">
             <option value="0">General</option>
             {% for iteration in note.iterations_one %}
             <option value="{{ forloop.counter }}">Iteration {{ forloop.counter }}</option>
             {% endfor %}
         </select>
-        <input type="text" placeholder="Link Title" id="link-title">
+        <input type="text" placeholder="Link Title" id="link-title" style="width: 100%;">
     </div>
     {{ form.links }}
     <button class="add-button" type="button" data-which=0 data-length={{note.links|length}}>Add Link</button>

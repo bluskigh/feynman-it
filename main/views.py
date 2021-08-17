@@ -125,7 +125,7 @@ class FolderForm(forms.Form):
 
 @login_required
 def index(request):
-    return HttpResponse('<a href="notes/">Go to notes</a>')
+    return HttpResponseRedirect(reverse('notes'))
 
 
 @login_required
@@ -225,7 +225,8 @@ def edit_note(request, id):
 
 @login_required
 def folders(request):
-    return render(request, 'main/folders.html', {'form': NewFolderForm(), 'folders': Folder.objects.filter(owner=request.user)})
+    return render(request, 'main/folders.html', {'form': NewFolderForm(), 
+        'folders': [folder.basic_information() for folder in Folder.objects.filter(owner=request.user)]})
 
 
 @login_required
@@ -249,7 +250,8 @@ def view_folder(request, id):
     if request.method == 'GET':
         # filtering all notes by the current user, and notes that are not in the current folder.
         form = FolderForm(usernotes=request.user.notes, folder=folder)
-        return render(request, 'main/view_folder.html', {'folder': folder, 'notes': request.user.notes.filter(folder=folder), 'form': form})
+        return render(request, 'main/view_folder.html', {'folder': folder.basic_information(), 
+            'notes': request.user.notes.filter(folder=folder), 'form': form})
     elif request.method == 'POST':
         form = FolderForm(usernotes=request.user.notes, folder=folder, data=request.POST)
         if form.is_valid():
@@ -269,14 +271,18 @@ def view_folder(request, id):
 def delete_folder(request, id):
     folder = Folder.objects.get(id=id)
     deleted_folder = request.user.folders.all()[1]
+    all_folder = request.user.folders.all()[0]
     if folder != deleted_folder:
         for note in folder.folder_notes.all():
             note.folder = deleted_folder 
             note.save()
-        folder.delete()
     else:
         for note in folder.folder_notes.all():
             note.delete()
+
+    if folder != all_folder and folder != deleted_folder:
+        folder.delete()
+
     return HttpResponseRedirect(reverse('folders'))
 
 

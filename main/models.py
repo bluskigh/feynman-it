@@ -11,6 +11,9 @@ class Folder(models.Model):
     title = models.CharField(max_length=64)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='folders')
 
+    def basic_information(self):
+        return {'id': self.id, 'title': self.title, 'owner': self.owner, 'notes_length': self.folder_notes.count()}
+
 
 class Note(models.Model):
     # title of the note
@@ -33,7 +36,7 @@ class Note(models.Model):
     folder = models.ForeignKey(Folder, on_delete=models.CASCADE, related_name='folder_notes', default=None, null=True)
 
     def basic_information(self):
-        return {'id': self.id, 'title': self.title}
+        return {'id': self.id, 'title': self.title, 'understand': self.understand}
 
 
     def format_links(self):
