@@ -21,7 +21,7 @@ tr {
         <a href="{% url 'view_note' note.id %}" class="item item-animate">
             <div class="item-shader hidden"></div>
             <div class="understand-bar {% if note.understand %}understand{% endif %}"></div>
-            <h3>{{ note.title }}</h3>
+            <h5>{{ note.title }}</h5>
         </a>
         {% endfor %}
         {% load layout_tags %}
@@ -113,11 +113,11 @@ tr {
             shader.classList.add('item-shader', 'hidden')
             const understandBar = document.createElement('div');
             understandBar.classList.add('understand-bar')
-            const h3 = document.createElement('h3'); 
-            h3.innerText = title;
+            const h5 = document.createElement('h5'); 
+            h5.innerText = title;
             container.appendChild(shader)
             container.appendChild(understandBar)
-            container.appendChild(h3)
+            container.appendChild(h5)
             // notesContainer.appendChild(container)
             notesContainer.insertBefore(container, notesContainer.lastElementChild)
             newNoteTitle.value = "";

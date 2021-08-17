@@ -8,10 +8,15 @@
 /* General Styling */
 /* removing default margin from nodes */
 html, body, nav, ul, p, h1, h2, h3, h4, h5, h6 {margin: 0; padding: 0;}
-li { list-style-type: none; }
-a { color: white; text-decoration: none; }
+li { list-style-type: none; line-height: 1em; }
+a { color: white; text-decoration: none; font-size: .8em; }
+p { font-size: .8em; }
 a:hover { text-decoration: underline; }
 .hidden { z-index: -1; user-select: none; opacity: 0% !important; }
+body {
+    font-family: 'Poppins', sans-serif;
+    background: lightgrey;
+}
 /* End of General Styling */
 
 
@@ -112,11 +117,11 @@ button {
 }
 button:hover { cursor: pointer; }
 main {
-    width: 100%;
+    min-height: 65%;
     display: flex;
     flex-direction: column;
     text-align: center;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     padding: 2em 0;
 }
@@ -136,7 +141,7 @@ a:hover {
     transform: none;
 }
 
-/* Start of Note Styling */
+/* Start of Item Styling */
 #items-flex-container {
     display: flex;
     flex-wrap: wrap;
@@ -158,7 +163,7 @@ a:hover {
 }
 .item-animate {
     /* transition-timing-function: ease; */
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-timing-function: ease;
     transition: transform .5s, box-shadow .35s; 
 }
 .item-shader {
@@ -166,7 +171,7 @@ a:hover {
     position: absolute;
     width: 100%; height: 100%;
     background: black;
-    opacity: .5;
+    opacity: .3;
     top: 0; left: 0;
 }
 .item-animate:hover { cursor: pointer; box-shadow: -5px 5px 0 black; transform: translateY(-5px); }
@@ -250,3 +255,40 @@ a:hover {
     outline: none;
     box-shadow: -5px 2px 5px gray;
 }
+/* End of Item Styling */
+
+/* Start of Footer Styling */
+footer {
+    background: var(--main);
+    max-width: 100%;
+    padding: 2em 2em 4em 2em;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    color: lightgrey;
+}
+footer h2 { color: var(--accent); margin-bottom: .5em; }
+footer a { color: lightgrey; }
+footer .navigation {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: .5em;
+}
+.navigation ul:nth-of-type(even) {
+    margin: 0 1.5em;
+}
+.social {
+    display: inline-block;
+    padding: 1em;
+    background: gray;
+    border-radius: 50%;
+}
+.copyright {
+    position: absolute;
+    bottom: 5%;
+    left: 3%;
+}
+/* End of Footer Styling */
