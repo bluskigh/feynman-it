@@ -1,6 +1,7 @@
 :root {
     --accent: #E9C46A;
     --main: #264653;
+    --main-two: #F4A261;
     --accent-two: #2A9D8F;
     --accent-three: #E76F51;
 }
@@ -32,7 +33,7 @@ nav {
     /* no constraints on height, let it flow like water */
     height: auto;
     /* since space-between is pushing items away we dont want them touching the left/right edges of nav */
-    padding: 0 2em;
+    padding: 0 4em;
     /* including the padding in the calculation for width/height of nav (otherwise overflow on x axis will occur) */
     box-sizing: border-box;
     background: var(--main);
@@ -126,7 +127,7 @@ main {
     padding: 2em 0;
 }
 .helper {
-    color: gray;
+    color: rgb(56, 54, 54);
     font-size: .7em;
 }
 h4 {
@@ -207,8 +208,9 @@ a:hover {
     padding: 1em 1.5em; margin: 0;
     background: var(--accent);
     color: black;
+    animation-timing-function: ease;
     animation-name: new-item-clicked;
-    animation-duration: 1s;
+    animation-duration: .8s;
     animation-fill-mode: forwards;
     animation-play-state: paused;
     animation-iteration-count: infinite;
@@ -255,13 +257,20 @@ a:hover {
     outline: none;
     box-shadow: -5px 2px 5px gray;
 }
+.folder {
+    background: var(--main-two);
+    color: var(--main);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 /* End of Item Styling */
 
 /* Start of Footer Styling */
 footer {
     background: var(--main);
     max-width: 100%;
-    padding: 2em 2em 4em 2em;
+    padding: 2em 4em 4em 4em;
     box-sizing: border-box;
     display: flex;
     justify-content: space-between;
@@ -291,4 +300,15 @@ footer .navigation {
     bottom: 5%;
     left: 3%;
 }
+#quote {
+    position: absolute;
+    top: 50%; right: 50%;
+    transform: translate(50%, -50%);
+}
 /* End of Footer Styling */
+
+@media screen and (max-width: 500px) {
+    #quote {
+        display: none;
+    }
+}

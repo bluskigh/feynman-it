@@ -13,23 +13,84 @@ tr {
 {% endblock %}
 {% block title %}Folders{% endblock %}
 {% block body %}
-<form action="{% url 'new_folder' %}" method="POST" id="new-folder-form">
-    {% csrf_token %}
-    <table>
-    {{ form.as_table }}
-    </table>
-    <button type="submit">Add Folder</button>
-</form>
 <section id="items-flex-container">
 {% if folders|length > 0 %}
 {% for folder in folders %}
-<div class="item">
-    <a href="{% url 'view_folder' folder.id %}"><h3>{{ folder.title }}</h3></a>
-    <p class="helper" style="color: white;">Contains {{ folder.notes_length }} note(s)</p>
-</div>
+<a href="{% url 'view_folder' folder.id %}" class="item folder">
+    <div class="item-shader hidden"></div>
+    <h3>{{ folder.title }}</h3>
+    <p class="helper">Contains {{ folder.notes_length }} note(s)</p>
+</a>
 {% endfor %}
+{% load layout_tags %}
+{% if request.user|has_permission:'main.add_folder' %}
+<div class="item">
+    <button class="item-add">+</button>
+    <form action="{% url 'new_folder' %}" class="new-item-form hidden" method="POST">
+        <div class="item-shader"></div>
+        {% csrf_token %}
+        <div class="form-item">
+            <p>Title: </p>
+            <div class="input-add-container">
+                {{ form.title }}
+                <button type="submit">Create</button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endif %}
 {% else %}
 <p>No folders.</p>
 {% endif %}
 </section>
+{% endblock %}
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // querySelectorAll returns a NodeList therefore does not have slice() method built in 
+        let items = Array.from(document.querySelectorAll('.item')).slice(0, -1);
+
+        items.forEach(item => {
+            item.addEventListener('mouseenter', function() {
+                // initiate shader
+                item.firstElementChild.classList.toggle('hidden')
+            })
+            item.addEventListener('mouseleave', function() {
+                // deactivate shader
+                item.firstElementChild.classList.toggle('hidden')
+            })
+        })
+
+        // iteration would be the parts of the keyframe that are reached 
+        // in this case, 0% and 100% are cause the iteration event listener to fire 
+        // therefore we can track where in the animation process we are at by 
+        // tracking the iteration event listener
+        let iteration = 0;
+
+        const itemAdd = document.querySelector('.item-add');
+        function itemAddClicked() {
+            itemAdd.style.animationPlayState = 'running';
+            if (iteration % 2 != 0) {
+                // animation going back to original state therefore hide form first
+                itemAdd.parentElement.querySelector('form').classList.toggle('hidden')
+            }
+        }
+        itemAdd.addEventListener('click', itemAddClicked)
+
+        itemAdd.addEventListener('animationiteration', function() {
+            itemAdd.style.animationPlayState = 'paused';
+            iteration+=1;
+            if (iteration % 2 == 0) {
+                // original state, user may have exited therefore clear input and "reveal" shader so that the user cannot click on the inputs of the form
+                itemAdd.parentElement.querySelector('form').firstElementChild.style.zIndex = 'initial';
+                newNoteTitle.value = "";
+            } else {
+                // creation state, hide the shader (shader is always the first element in the form)
+                itemAdd.parentElement.querySelector('form').firstElementChild.style.zIndex = -1;
+                // after the button has reached creation iteration then reveal
+                itemAdd.parentElement.querySelector('form').classList.toggle('hidden')
+            }
+        })
+    })
+</script>
 {% endblock %}
