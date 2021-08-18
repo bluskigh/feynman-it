@@ -328,6 +328,15 @@ textarea::placeholder {
     transition: z-index .5s, opacity .5s;
     z-index: 1;
 }
+.new-item-form input {
+    width: 70%;
+}
+.new-item-form button {
+    padding: 0 .5em;
+}
+.new-item-form button:hover  {
+    opacity: .8;
+}
 .new-item-form .item-shader {
     background: transparent;
     z-index: 1;
@@ -434,6 +443,21 @@ footer .navigation {
     }
 }
 @media screen and (max-width: 500px) {
+    #responsive-nav-button {
+        display: initial;
+    }
+    nav {
+        padding: 1em 2em;
+    }
+    nav section {
+        text-align: right;
+    }
+    nav ul {
+        flex-direction: column;
+    }
+    nav ul li {
+        padding: 0 !important;
+    }
     #quote {
         display: none;
     }
