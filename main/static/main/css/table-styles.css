@@ -1,0 +1,79 @@
+/* Start of Table Styling */
+#item-table tr { position: relative; margin: 5em 0; }
+#item-table th {
+    /* always behind the actual content */
+    opacity: .5;
+    z-index: 0;
+    font-size: 3.5em;
+    position: absolute;
+    /* font comes with a large amount of line height */
+    line-height: .1em;
+    padding: 0; 
+    transition-timing-function: ease;
+    transition: background .5s, opacity .5s;
+    cursor: help;
+}
+#item-table td {
+    background: var(--main);
+    color: white;
+    /* always in front of the label (header) */
+    z-index: 1;
+    opacity: 1;
+    /* moving the element to bottom of large th text */
+    margin-top: 1.5em;
+    /* providing space uptop */
+    padding: 2em 1em;
+    box-shadow: 0 0 1em black;
+    width: 50%;
+    transition-timing-function: ease;
+    transition: background .5s, opacity .5s;
+}
+.note-iteration {
+    margin: .5em 0;
+    text-align: left;
+}
+.tableitem-mouseenter {
+    opacity: 1 !important;
+    z-index: 2 !important;
+}
+.tableitem-mouseleave {
+    opacity: .5 !important;
+    z-index: 0 !important;
+}
+/* this way its children can inherit the width and when viewing
+the note, relative headers won't break immediately */
+tbody { width: 100%; }
+table {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: left;
+    width: 100%;
+}
+tr {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: column;
+    margin: 2em 0;
+    width: 100%;
+}
+th {
+    vertical-align: text-top;
+    padding: 1em 0;
+}
+.table-data-container {
+    max-width: 80%;
+    width: 100%;
+    text-align: center;
+}
+.iteration-input {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    width: 100%;
+}
+.iteration-input button {
+    height: fit-content;
+}
+/* End of Table Styling */

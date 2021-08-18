@@ -125,9 +125,12 @@ class FolderForm(forms.Form):
 
 @login_required
 def index(request):
-    if request.GET.get('ignore_authentication'):
-        return render(request, 'main/index.html')
     return HttpResponseRedirect(reverse('notes'))
+
+
+@login_required
+def home(request):
+    return render(request, 'main/index.html')
 
 
 @login_required

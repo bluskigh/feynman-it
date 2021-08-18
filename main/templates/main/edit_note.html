@@ -1,5 +1,10 @@
 {% extends 'main/note_layout.html' %}
 {% block title %}Editing Note{% endblock %}
+{% block style %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'main/css/note-styling.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'main/css/table-styles.css' %}" type="text/css">
+{% endblock %}
 {% block container_start %}
 {{ form.errors }}
 <section id="edit-iteration-container" class="display-none">
@@ -59,7 +64,6 @@
 {% endblock %}
 
 {% block scripts %}
-{% load static %}
 <script src="{% static 'main/js/edit_note.js' %}"></script>
 <script src="{% static 'main/js/note-animation.js' %}"></script>
 {% endblock %}

@@ -1,0 +1,131 @@
+/* Start of Item Styling */
+#items-flex-container {
+    display: flex;
+    flex-wrap: wrap;
+    /* otherwise items will touch edges of screen (left, right) */
+    max-width: 80%;
+    justify-content: flex-start;
+    align-items: stretch;
+}
+.item {
+    /* allows for absolute positioned children to be positioned relative to this parent item, instead of the viewport/and or document */
+    position: relative;
+    flex-grow: 1;
+    /* default color is learning color */
+    background: var(--main);
+    /* otherwise items are going to be touching one another */
+    margin: .5em; padding: 2em;
+    display: flex;
+    align-items: center; justify-content: center;
+}
+.item-animate {
+    /* transition-timing-function: ease; */
+    transition-timing-function: ease;
+    transition: transform .5s, box-shadow .35s; 
+}
+.item-shader {
+    /* position relative to nearest positioned ancestor */
+    position: absolute;
+    width: 100%; height: 100%;
+    background: black;
+    opacity: .3;
+    top: 0; left: 0;
+}
+.item-animate:hover { cursor: pointer; box-shadow: -5px 5px 0 black; transform: translateY(-5px); }
+.item a { color: var(--accent); }
+/* default color of understand bar "does not understand" color*/
+.understand-bar { 
+    /* positioned relative to nearest positioned ancestor (.item) */
+    position: absolute;
+    width: 1em; height: 1.5em; 
+    background: var(--accent-three);
+    top: 0; left: 5%;
+ }
+.understand { background: var(--accent-two); }
+
+@keyframes new-item-clicked {
+    100% {
+        border-radius: 50%;
+    }
+    0% {
+        background: darkred;
+        border-radius: 0%;
+        right: 5%;
+        transform: translate(0%, 0%);
+        top: 0%;
+        padding: 1em;
+    }
+}
+.item-add {
+    position: absolute;
+    right: 50%; top: 50%;
+    transform: translate(50%, -50%);
+    border: none;
+    border-radius: 50%;
+    padding: 1em 1.5em; margin: 0;
+    background: var(--accent);
+    color: black;
+    animation-timing-function: ease;
+    animation-name: new-item-clicked;
+    animation-duration: .8s;
+    animation-fill-mode: forwards;
+    animation-play-state: paused;
+    animation-iteration-count: infinite;
+    animation-direction: alternate-reverse;
+    z-index: 2;
+}
+
+.new-item-form {
+    opacity: 100%;
+    transition-timing-function: ease;
+    transition: z-index .5s, opacity .5s;
+    z-index: 1;
+}
+.new-item-form input {
+    width: 70%;
+}
+.new-item-form button {
+    padding: 0 .5em;
+}
+.new-item-form button:hover  {
+    opacity: .8;
+}
+.new-item-form .item-shader {
+    background: transparent;
+    z-index: 1;
+}
+.new-item-form.hidden { z-index: 0; }
+
+.form-item {
+    text-align: left;
+    margin: 0 auto;
+    width: fit-content;
+    color: var(--accent);
+}
+.input-add-container { height: 60%; }
+.input-add-container button {
+    background: black;
+    color: var(--accent);
+    max-width: fit-content;
+    border: none;
+    height: 100%;
+    border-radius: 0;
+}
+.input-add-container input {
+    background: none;
+    border: 3px solid black;
+    color: var(--accent);
+    height: 100%;
+}
+.input-add-container input:focus {
+    outline: none;
+    box-shadow: -5px 2px 5px gray;
+}
+.folder {
+    background: var(--main-two);
+    color: var(--main);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+/* End of Item Styling */

@@ -1,5 +1,10 @@
 {% extends 'main/note_layout.html' %}
 {% block title %}Viewing Note{% endblock %}
+{% block style %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'main/css/note-styling.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'main/css/table-styles.css' %}" type="text/css">
+{% endblock %}
 {% block container_start %}
 <h1>{{ note.title }}</h1>
 {% if note.understand %}

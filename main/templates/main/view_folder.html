@@ -1,5 +1,7 @@
 {% extends 'main/layout.html' %}
 {% block style %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'main/css/item-styling.css' %}" type="text/css">
 <style>
 tr {
     display: flex;
@@ -23,33 +25,26 @@ th {
     <button type="submit">Add Notes</button>
 </form>
 
-<main>
-    <h4>Notes in folder</h4>
-    <section id="items-flex-container">
-        {% for note in notes %}
-        <a href="{% url 'view_note' note.id %}" class="item item-animate">
-            <div class="item-shader hidden"></div>
-            <div class="understand-bar {% if note.understand %}understand{% endif %}"></div>
-            <h5>{{ note.title }}</h5>
-        </a>
-        {% endfor %}
-    </section>
+<h4>Notes in folder</h4>
+<section id="items-flex-container">
+    {% for note in notes %}
+    <a href="{% url 'view_note' note.id %}" class="item item-animate">
+        <div class="item-shader hidden"></div>
+        <div class="understand-bar {% if note.understand %}understand{% endif %}"></div>
+        <h5>{{ note.title }}</h5>
+    </a>
+    {% endfor %}
+</section>
 
-    <form action="{% url 'delete_folder' folder.id %}" method="POST">
-    {% csrf_token %}
-    {% if folder.notes_length > 0 %}
-        {% if folder.title == 'Deleted' or folder.title == 'All' %}
-            <button type="submit">Clear Folder</button>
-        {% else %}
-            <button type="submit">Clear Folder</button>
-        {% endif %}
-    {% else %}
-        <p>No notes</p>
-        {% if folder.title != 'Deleted' and folder.title != 'All' %}
-            <button type="submit" class="dangerous">Delete Folder</button>
-        {% endif %}
+<form action="{% url 'delete_folder' folder.id %}" method="POST">
+{% csrf_token %}
+{% if folder.notes_length > 0 %}
+    <button type="submit" class="dangerous">Clear Folder</button>
+{% else %}
+    <p>No notes</p>
+    {% if folder.title != 'Deleted' and folder.title != 'All' %}
+        <button type="submit" class="dangerous">Delete Folder</button>
     {% endif %}
-    </form>
-</main>
-
+{% endif %}
+</form>
 {% endblock %}
