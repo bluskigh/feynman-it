@@ -1,6 +1,7 @@
 {% extends 'main/layout.html' %}
 {% block title %}{% endblock %}
 {% block style %}
+<style>
 .errorlist {
     display: flex;
     flex-direction: column;
@@ -12,8 +13,7 @@ form {
     right: 50%;
     transform: translate(50%, -50%);
 }
-tr {
-}
+</style>
 {% endblock %}
 {% block body %}
 <form action="{% block where %}{% endblock %}" method="POST">

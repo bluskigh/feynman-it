@@ -1,51 +1,121 @@
 {% extends 'main/layout.html' %}
+{% block title %}Home{% endblock %}
 {% block style %}
-th {
-    margin: 0;
-    padding: 0;
-}
-tr {
-    margin: 0;
-}
-#new-note-form {
-    margin-bottom: 2em;
-}
-{% endblock %}
-{% block title %}Notes{% endblock %}
-{% block body %}
-    <section id="items-flex-container">
-    {% if notes|length == 0 %}
-    <p>No notes.</p>
-    {% else %}
-        {% for note in notes %}
-        <a href="{% url 'view_note' note.id %}" class="item item-animate">
-            <div class="item-shader hidden"></div>
-            <div class="understand-bar {% if note.understand %}understand{% endif %}"></div>
-            <h5>{{ note.title }}</h5>
-        </a>
-        {% endfor %}
-        {% load layout_tags %}
-        {% if request.user|has_permission:'main.add_note' %}
-        <div class="item">
-            <button class="item-add">+</button>
-            <form action="{% url 'new_note' %}" class="new-item-form hidden" method="POST">
-                <div class="item-shader"></div>
-                {% csrf_token %}
-                <div class="form-item">
-                    <p>Title: </p>
-                    <div class="input-add-container">
-                        {{ new_note_form.title }}
-                        <button type="submit">Create</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-        {% endif %}
-    {% endif %}
-    </section>
-{% endblock %}
-{% block scripts %}
 {% load static %}
-<script src="{% static 'main/js/item-animation.js' %}"></script>
-<script src="{% static 'main/js/add-item.js' %}"></script>
+<link rel="stylesheet" href="{% static 'main/css/index.css' %}" type="text/css">
+{% endblock %}
+{% block body %}
+<section id="intro">
+    <h1>FeynmanIt</h1>
+    <p>This application was created with the intention of implementing the infamous learning technique called “The Feynman Technique”. As a way to provide others a chance to truly learn and understand topics from the comfort of their electronical devices. </p>
+</section>
+<section id="howto">
+    <h2>How to use this application</h2>
+    <div class="step">
+        <div class="step-information-container">
+            <span class="step-button">1.</span>
+            <div class="step-information">
+                <h3>Write what you know</h3>
+                <p>The first iteration of step one should be information you know about a topic prior to researching. This way you can build the foundation of what you should research. From then on, each iteration would be the result updated knowledg eafter researching.</p>
+            </div>
+        </div>
+        <div class="step-example">
+            <h3>Iteration X:</h3>
+            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Qui aliquid, adipisci cum, inventore expedita beatae voluptatem maiores ab delectus reprehenderit, dolores eaque aliquam. Minima, impedit atque? Quasi commodi repudiandae quisquam!</p>
+            <div class="continue-button-container">
+                <span class="example-continue-button"></span>
+                <span class="example-continue-button"></span>
+                <span class="example-continue-button"></span>
+            </div>
+            <div class="example-input">
+                Type new iteration here...
+            </div>
+            <div class="example-submit-button"></div>
+        </div>
+    </div>
+    <div class="step">
+        <div class="step-information-container">
+            <div class="step-information">
+                <h3>Links</h3>
+                <p>This step was added by the developers to assist users in providing sources to what helped them further understand gaps in their iterations. An example of how to use links: </p>
+                <ol>
+                    <li>Write knowledge on topic in step 1</li>
+                    <li>Identify gaps in knowledge in step 2</li>
+                    <li>Research topic to fill gaps</li>
+                    <li>Provide research links in step 1a</li>
+                    <li>Write updated knowledge on topic in step 1 </li>
+                    <li>Repeat until you can confidently and simply describe topic in step 3</li>
+                </ol>
+            </div>
+            <span class="step-button">1a</span>
+        </div>
+        <div class="step-example" style="text-align: center;">
+            <h3>General Links</h3>
+            <p class="helper">Links that apply to all iterations.</p>
+            <br>
+            <h3>Links for iteration: x</h3>
+            <a href="">[1] Lorem Ipsum</a>
+            <div class="continue-button-container">
+                <span class="example-continue-button"></span>
+                <span class="example-continue-button"></span>
+                <span class="example-continue-button"></span>
+            </div>
+            <div style="margin-bottom: .5em; display: flex; align-items: center; width: 100%; text-align: left;">
+                <div class="example-input" style="width: 15%; margin-right: .5em; height: fit-content; padding: .5em;">
+                    <p>Iteration 1</p>
+                </div> 
+                <div class="example-input" style="width: 90%; height: 1em; padding: .5em;">
+                    <p>Link Title</p>
+                </div> 
+            </div>
+            <div class="example-input" style="text-align: left;">
+                Type new iteration here...
+            </div>
+            <div class="example-submit-button"></div>
+        </div>
+    </div>
+    <div class="step">
+        <div class="step-information-container">
+            <span class="step-button">2.</span>
+            <div class="step-information">
+                <h3>Gaps in explanation</h3>
+                <p>This is the step where you will attempt to identify any gaps in your present expanation of the topic. This can be done by describing in very simple terms the topic to someone else, and or as done in the computer world by talking to a toy duck. If you are still unsure about certain aspects in the explanation, this is where you would write those uncertanties to see your thought process and solidify your understanding of the topic.</p>
+            </div>
+        </div>
+        <div class="step-example">
+            <h3>Iteration X:</h3>
+            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Qui aliquid, adipisci cum, inventore expedita beatae voluptatem maiores ab delectus reprehenderit, dolores eaque aliquam. Minima, impedit atque? Quasi commodi repudiandae quisquam!</p>
+            <div class="continue-button-container">
+                <span class="example-continue-button"></span>
+                <span class="example-continue-button"></span>
+                <span class="example-continue-button"></span>
+            </div>
+            <div class="example-input">
+                Type new iteration here...
+            </div>
+            <div class="example-submit-button"></div>
+        </div>
+    </div>
+    <div class="step">
+        <div class="step-information-container">
+            <div class="step-information">
+                <h3>Final Statement</h3>
+                <p>When you believe you have no more gaps in your explanation of the topic. This is the step where you would type your final statement (explanation) for future reference. </p>
+            </div>
+            <span class="step-button">3.</span>
+        </div>
+        <div class="step-example">
+            <div class="example-input">
+                Type final statement here...
+            </div>
+            <div class="example-submit-button"></div>
+        </div>
+    </div>
+</section>
+<section id="contact">
+    <h3>Have a question?</h3>
+    <div>
+        <p>mario.molinito9@gmail.com</p>
+    </div>
+</section>
 {% endblock %}

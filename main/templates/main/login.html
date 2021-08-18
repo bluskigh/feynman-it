@@ -1,9 +1,11 @@
 {% extends 'main/form_layout.html' %}
 {% block style %}
-th {
-    margin: 0;
-    padding: 0;
-}
+<style>
+    th {
+        margin: 0;
+        padding: 0;
+    }
+</style>
 {% endblock %}
 {% block title %}Login{% endblock %}
 {% block where %}{% url 'login' %}{% endblock %}

@@ -125,13 +125,15 @@ class FolderForm(forms.Form):
 
 @login_required
 def index(request):
+    if request.GET.get('ignore_authentication'):
+        return render(request, 'main/index.html')
     return HttpResponseRedirect(reverse('notes'))
 
 
 @login_required
 def notes(request):
     # right now index handles rendering all notes
-    return render(request, 'main/index.html', {
+    return render(request, 'main/notes.html', {
         'notes': [n.basic_information() for n in Note.objects.filter(owner=request.user)], 
         'new_note_form': NewNoteForm()})
 

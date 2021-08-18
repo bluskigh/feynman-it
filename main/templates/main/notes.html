@@ -1,0 +1,53 @@
+{% extends 'main/layout.html' %}
+{% block style %}
+<style>
+th {
+    margin: 0;
+    padding: 0;
+}
+tr {
+    margin: 0;
+}
+#new-note-form {
+    margin-bottom: 2em;
+}
+</style>
+{% endblock %}
+{% block title %}Notes{% endblock %}
+{% block body %}
+    <section id="items-flex-container">
+    {% if notes|length == 0 %}
+    <p>No notes.</p>
+    {% else %}
+        {% for note in notes %}
+        <a href="{% url 'view_note' note.id %}" class="item item-animate">
+            <div class="item-shader hidden"></div>
+            <div class="understand-bar {% if note.understand %}understand{% endif %}"></div>
+            <h5>{{ note.title }}</h5>
+        </a>
+        {% endfor %}
+        {% load layout_tags %}
+        {% if request.user|has_permission:'main.add_note' %}
+        <div class="item">
+            <button class="item-add">+</button>
+            <form action="{% url 'new_note' %}" class="new-item-form hidden" method="POST">
+                <div class="item-shader"></div>
+                {% csrf_token %}
+                <div class="form-item">
+                    <p>Title: </p>
+                    <div class="input-add-container">
+                        {{ new_note_form.title }}
+                        <button type="submit">Create</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        {% endif %}
+    {% endif %}
+    </section>
+{% endblock %}
+{% block scripts %}
+{% load static %}
+<script src="{% static 'main/js/item-animation.js' %}"></script>
+<script src="{% static 'main/js/add-item.js' %}"></script>
+{% endblock %}

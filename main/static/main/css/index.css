@@ -1,0 +1,121 @@
+nav ul li {
+    padding: 3em 0;
+}
+main {
+    margin: 0;
+    padding: 0;
+}
+/* Start of Intro Styling */
+#intro {
+    background: var(--accent);
+    color: var(--main);
+    max-width: 100%;
+    padding: 4em 0;
+    text-align: center;
+}
+#intro h1 {
+    margin-top: 0;
+    margin-bottom: 1em;
+    text-shadow: 0 3px 2px gray;
+}
+#intro p {
+    max-width: 50%;
+    margin: 0 auto;
+    cursor: help;
+}
+/* End of Intro Styling */
+
+/* Start of How To Styling */
+#howto { padding: 2em 0; max-width: 100%; }
+#howto h2 {
+    margin: 1em 0 2em 0;
+    color: var(--main);
+}
+.step {
+    max-width: 50%;
+    margin: 1em auto;
+}
+.step-information-container {
+    margin: .5em 0;
+    display: flex;
+    align-items: flex-start;
+}
+.step-button {
+    padding: 1em 1.5em;
+    background: var(--main);
+    color: white;
+    border-radius: 50%;
+    font-weight: 900;
+    font-size: 1.3em;
+}
+.step-information {
+    text-align: left;
+    margin-left: 1em;
+}
+.step-example {
+    background: gray;
+    text-align: left;
+    width: 60%;
+    margin: 0 auto; padding: 2em;
+}
+.continue-button-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 15%;
+    margin: 1em auto;
+}
+.example-continue-button {
+    border-radius: 50%;
+    padding: .5em .5em;
+    background: black;
+}
+.example-continue-button:nth-last-child(1) {
+    margin: 0;
+}
+.example-input {
+    background: var(--main);
+    height: 5em;
+    color: white;
+    padding: 1em 2em;
+    font-size: .7em;
+}
+.example-submit-button {
+    background: white;
+    border-radius: 1em;
+    padding: .5em 1.5em;
+    width: 1%;
+    float: right;
+    margin-top: .3em;
+}
+.step:nth-child(2n+1) {
+    margin: 3em auto;
+}
+ol li { list-style-type: decimal-leading-zero; font-size: .9em; margin: .5em 0; }
+.helper {
+    color: lightgrey;
+}
+/* End of How To Styling */
+
+/* Start of Contact Styling */
+#contact {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    background: #e76f51;
+    min-height: 5em;
+}
+#contact div {
+    height: fit-content; width: fit-content;
+    height: 100%;
+    background: white;
+    position: relative;
+    padding: .5em 1em;
+}
+/* End of Contact Styling */
+
+a:hover {
+    color: white;
+    opacity: .8;
+}

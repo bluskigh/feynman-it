@@ -97,6 +97,8 @@ nav ul {
     display: flex;
     align-items: center;
 }
+nav ul li{
+}
 /* provide space on even lis */
 nav ul li:nth-of-type(even) { margin: 0 .5em; }
 .current {
@@ -447,13 +449,14 @@ footer .navigation {
     nav ul li {
         padding: 0; 
         margin: .3em 0;
+        padding: 0;
     }
     nav ul li:nth-of-type(even) {
         margin: 0;
     }
     .current {
-        padding: 0;
         border: none;
+        padding: 0;
         border-left: 5px solid var(--accent);
         padding-left: .3em;
     }
