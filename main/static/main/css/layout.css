@@ -89,11 +89,13 @@ nav ul li:nth-of-type(even) { margin: 0 .5em; }
     opacity: .5 !important;
     z-index: 0 !important;
 }
+tbody { width: 100%; }
 table {
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: left;
+    width: 100%;
 }
 tr {
     display: flex;
@@ -101,6 +103,7 @@ tr {
     justify-content: flex-start;
     flex-direction: column;
     margin: 2em 0;
+    width: 100%;
 }
 th {
     vertical-align: text-top;
@@ -342,8 +345,35 @@ footer .navigation {
 }
 /* End of Footer Styling */
 
+@media screen and (max-width: 1300px) {
+    #item-table th {
+        font-size: 3em;
+    }
+    #item-table td {
+        margin-top: 1em;
+    }
+}
+@media screen and (max-width: 700px) {
+    #item-table th {
+        font-size: 2.5em;
+    }
+}
+@media screen and (max-width: 600px) {
+    #item-table th {
+        font-size: 2em;
+    }
+    #item-table td {
+        margin-top: .7em;
+    }
+}
 @media screen and (max-width: 500px) {
     #quote {
         display: none;
+    }
+    #item-table th {
+        font-size: 1.5em;
+    }
+    #item-table td {
+        margin-top: .5em;
     }
 }

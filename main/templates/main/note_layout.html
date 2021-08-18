@@ -1,15 +1,4 @@
 {% extends 'main/layout.html' %}
-{% block style %}
-th {
-    padding-bottom: 0;
-}
-form, table {
-    width: 100%;
-}
-tbody {
-    width: 80%;
-}
-{% endblock %}
 {% block body %}
 {% block container_start %}{% endblock %}
 <table id="item-table">
@@ -78,7 +67,7 @@ tbody {
         </td>
     </tr>
     <tr>
-        <th><h3>2: Identify gaps in explanation</h3></th>
+        <th><h3>2: Gaps in explanation</h3></th>
         <td class="table-data-container">
             {% if note.iterations_two %}
             {% for iteration in note.iterations_two %}
