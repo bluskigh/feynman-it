@@ -3,12 +3,12 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}{% endblock %}</title>
+    <title>FeynmanIt | {% block title %}{% endblock %}</title>
     {% load static %}
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
     <!-- Styles -->
     <link rel="stylesheet" type="text/css" href="{% static 'main/css/layout.css' %}">
     <style>
@@ -20,7 +20,7 @@
         <h3>FeynmanIt</h3>
         <section>
             <label id="responsive-nav-button" class="display-none">|||</label>
-            <ul class="display-none">
+            <ul>
                 {% load layout_tags %}
                 {% if request.user.is_authenticated %}
                 {% define True as lis %}
@@ -42,17 +42,21 @@
         <section>
             <h2>FeynmanIt</h2>
             <div class="navigation">
+                {% with isauth=request.user.is_authenticated %}
+                    {% with ignoreauth='?ignore_authentication=True' %}
                 <ul class="footer-list">
-                    <li><a href="#">Home</a></li>
-                    <li><a href="#">About Us</a></li>
-                    <li><a href="#">Technique</a></li>
-                    <li><a href="#">Contact</a></li>
+                    <li><a href="/{% if isauth %}{{ignoreauth}}{% endif %}">Home</a></li>
+                    <li><a href="/#about-us{% if isauth %}{{ignoreauth}}{% endif %}">About Us</a></li>
+                    <li><a href="/#technique{% if isauth %}{{ignoreauth}}{% endif %}">Technique</a></li>
+                    <li><a href="/#contact{% if isauth %}{{ignoreauth}}{% endif %}">Contact</a></li>
                 </ul>
                 <ul class="footer-list">
-                    <li><a href="#">Folders</a></li>
-                    <li><a href="#">Notes</a></li>
-                    <li><a href="#">Profile</a></li>
+                    <li><a href="{% url 'folders' %}">Folders</a></li>
+                    <li><a href="{% url 'notes' %}">Notes</a></li>
+                    <!-- <li><a href="#">Profile</a></li> -->
                 </ul>
+                    {% endwith %}
+                {% endwith %}
                 {% if not request.user.is_authenticated %}
                 <ul class="footer-list">
                     <li><a href="#">Register</a></li>
@@ -75,11 +79,10 @@
             document.addEventListener('DOMContentLoaded', function() {
                 const navButton = document.querySelector('#responsive-nav-button');
                 navButton.addEventListener('click', function() {
-                    navButton.nextElementSibling.classList.toggle('display-none');
+                    const ul = navButton.nextElementSibling;
+                    ul.style.display = ul.style.display == 'none' ? 'initial' : 'none';
                 })
             })
-        } else {
-            document.querySelector('nav').querySelector('ul').classList.remove('display-none')
         }
     </script>
 </body>

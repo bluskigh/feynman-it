@@ -10,7 +10,7 @@ th {
     padding: 0 1em 0 0;
 }
 {% endblock %}
-{% block title %}{{ folder.title }}{% endblock %}
+{% block title %}Viewing Folder{% endblock %}
 {% block body %}
 <h2>{{ folder.title }}</h2>
 <form action="{% url 'view_folder' folder.id %}" method="POST">
@@ -25,9 +25,11 @@ th {
     <h4>Notes in folder</h4>
     <section id="items-flex-container">
         {% for note in notes %}
-        <div class="item">
-            <a href="{% url 'view_note' note.id %}"><h2>{{ note.title }}</h2></a>
-        </div>
+        <a href="{% url 'view_note' note.id %}" class="item item-animate">
+            <div class="item-shader hidden"></div>
+            <div class="understand-bar {% if note.understand %}understand{% endif %}"></div>
+            <h5>{{ note.title }}</h5>
+        </a>
         {% endfor %}
     </section>
 

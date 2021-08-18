@@ -1,3 +1,5 @@
+let itemAddClicked = null;
+
 document.addEventListener('DOMContentLoaded', function() {
         const newNoteTitle = document.querySelector('#id_title');
 
@@ -22,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let iteration = 0;
 
         const itemAdd = document.querySelector('.item-add');
-        function itemAddClicked() {
+        itemAddClicked = () => {
             itemAdd.style.animationPlayState = 'running';
             if (iteration % 2 != 0) {
                 // animation going back to original state therefore hide form first

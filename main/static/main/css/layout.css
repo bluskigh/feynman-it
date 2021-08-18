@@ -38,8 +38,41 @@ body {
     background: red;
     color: darkred;
 }
+.static-button:hover { transform: none; cursor: default; }
+a:hover { color: gray; }
+.helper { color: gray; font-size: .7em; }
+main {
+    min-height: 65%;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 2em 0;
+    position: relative;
+}
+button {
+    border: none;
+    padding: .2em 2em; margin: .5em 0;
+    border-radius: 1em;
+    font-size: .7em;
+    transition: transform .5s ease;
+}
+button:hover { cursor: pointer; }
+.warning {
+    background: red; 
+    color: darkred;
+}
+.success {
+    background: darkgreen;
+    color: lightgreen;
+}
+.message {
+    width: 100%;
+    padding: 1.5em 1em;
+    box-sizing: border-box;
+}
 /* End of General Styling */
-
 
 /* Navigation Styling */
 nav {
@@ -152,53 +185,7 @@ th {
 .iteration-input button {
     height: fit-content;
 }
-.message {
-    width: 100%;
-    padding: 1.5em 1em;
-    box-sizing: border-box;
-}
-.warning {
-    background: red; 
-    color: darkred;
-}
-.success {
-    background: darkgreen;
-    color: lightgreen;
-}
-form {
-    margin: 0;
-}
-button {
-    border: none;
-    padding: .2em 2em; margin: .5em 0;
-    border-radius: 1em;
-    font-size: .7em;
-    transition: transform .5s ease;
-}
-button:hover { cursor: pointer; }
-main {
-    min-height: 65%;
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-    justify-content: flex-start;
-    align-items: center;
-    padding: 2em 0;
-    position: relative;
-}
-.helper {
-    color: gray;
-    font-size: .7em;
-}
-h4 {
-    margin: 0;
-}
-a:hover {
-    color: gray;
-}
-.static-button:hover {
-    transform: none;
-}
+/* End of Table Styling */
 
 /* Start of Note Styling */
 #item-table .note-title-row { margin: 0; margin-bottom: 5em; }
@@ -215,6 +202,7 @@ a:hover {
     border: none; border-bottom: 3px solid black;
     font-size: .5em;
     margin-left: 1em;
+    color: black;
 }
 .note-title-row input:focus {
     outline: none;
@@ -341,9 +329,7 @@ textarea::placeholder {
     background: transparent;
     z-index: 1;
 }
-.new-item-form.hidden {
-    z-index: 0;
-}
+.new-item-form.hidden { z-index: 0; }
 
 .form-item {
     text-align: left;
@@ -449,14 +435,27 @@ footer .navigation {
     nav {
         padding: 1em 2em;
     }
+    .social { margin: .5em; }
     nav section {
         text-align: right;
     }
     nav ul {
+        display: none;
         flex-direction: column;
+        align-items: flex-end;
     }
     nav ul li {
-        padding: 0 !important;
+        padding: 0; 
+        margin: .3em 0;
+    }
+    nav ul li:nth-of-type(even) {
+        margin: 0;
+    }
+    .current {
+        padding: 0;
+        border: none;
+        border-left: 5px solid var(--accent);
+        padding-left: .3em;
     }
     #quote {
         display: none;
