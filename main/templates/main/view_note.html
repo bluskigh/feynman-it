@@ -2,17 +2,17 @@
 {% block title %}View Note{% endblock %}
 {% block container_start %}
 <h1>{{ note.title }}</h1>
+{% if note.understand %}
+<button class="static-button success">Understand</button>
+{% else %}
+<button class="static-button learning">Learning</button>
+{% endif %}
 {% endblock %}
 
 {% block container_end %}
 {% if note.owner == request.user %}
 <form action="{% url 'edit_note' note.id %}" method="GET">
-    <button type="submit">Edit</button>
+    <button type="submit" id="note-edit-button">Edit</button>
 </form>
-    {% if note.understand %}
-    <button class="static-button success">Understand</button>
-    {% else %}
-    <button class="static-button learning">Learning</button>
-    {% endif %}
 {% endif %}
 {% endblock %}

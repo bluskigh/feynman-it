@@ -5,6 +5,10 @@
     --accent-two: #2A9D8F;
     --accent-three: #E76F51;
 }
+::selection {
+    background: var(--accent);
+    color: var(--main);
+}
 
 /* General Styling */
 /* removing default margin from nodes */
@@ -18,6 +22,16 @@ body {
     font-family: 'Poppins', sans-serif;
     background: lightgrey;
 }
+#note-edit-button {
+    position: absolute;
+    right: 5%;
+    bottom: 5%;
+    transition: background .5s ease; 
+}
+#note-edit-button:hover {
+    background: gray;
+}
+
 /* End of General Styling */
 
 
@@ -53,9 +67,11 @@ nav ul li:nth-of-type(even) { margin: 0 .5em; }
 }
 .current:hover { border-bottom-color: #e9c56a8f; }
 /* End of Navigation Styling */
+
 /* Start of Table Styling */
-#item-table tr { position: relative; margin: 3em 0; }
+#item-table tr { position: relative; margin: 5em 0; }
 #item-table th {
+    /* always behind the actual content */
     opacity: .5;
     z-index: 0;
     font-size: 3.5em;
@@ -68,18 +84,23 @@ nav ul li:nth-of-type(even) { margin: 0 .5em; }
     cursor: help;
 }
 #item-table td {
-    background: black;
+    background: var(--main);
     color: white;
+    /* always in front of the label (header) */
     z-index: 1;
+    opacity: 1;
     /* moving the element to bottom of large th text */
     margin-top: 1.5em;
     /* providing space uptop */
-    padding: 2em 0;
+    padding: 2em 1em;
     box-shadow: 0 0 1em black;
     width: 50%;
-    opacity: 1;
     transition-timing-function: ease;
     transition: background .5s, opacity .5s;
+}
+.note-iteration {
+    margin: .5em 0;
+    text-align: left;
 }
 .tableitem-mouseenter {
     opacity: 1 !important;
@@ -89,6 +110,8 @@ nav ul li:nth-of-type(even) { margin: 0 .5em; }
     opacity: .5 !important;
     z-index: 0 !important;
 }
+/* this way its children can inherit the width and when viewing
+the note, relative headers won't break immediately */
 tbody { width: 100%; }
 table {
     display: flex;
@@ -117,10 +140,6 @@ th {
 textarea {
     width: 100%;
 }
-.table-data {
-    padding: .5em 0;
-    text-align: center;
-}
 .iteration-input {
     display: flex;
     flex-direction: column;
@@ -148,8 +167,7 @@ form {
 }
 button {
     border: none;
-    padding: .2em 2em;
-    margin: .5em 0;
+    padding: .2em 2em; margin: .5em 0;
     border-radius: 1em;
     font-size: .7em;
     transition: transform .5s ease;
@@ -163,9 +181,10 @@ main {
     justify-content: flex-start;
     align-items: center;
     padding: 2em 0;
+    position: relative;
 }
 .helper {
-    color: rgb(56, 54, 54);
+    color: gray;
     font-size: .7em;
 }
 h4 {
@@ -345,6 +364,7 @@ footer .navigation {
 }
 /* End of Footer Styling */
 
+/* Start of Media Styling */
 @media screen and (max-width: 1300px) {
     #item-table th {
         font-size: 3em;
@@ -377,3 +397,4 @@ footer .navigation {
         margin-top: .5em;
     }
 }
+/* End of Media Styling */

@@ -9,7 +9,7 @@
         <td class="table-data-container">
             {% if note.iterations_one %}
             {% for iteration in note.iterations_one %}
-            <div class="table-data" data-iteration={{forloop.counter}} data-which=1>
+            <div class="table-data note-iteration" data-iteration={{forloop.counter}} data-which=1>
                 <h4>Iteration: {{ forloop.counter }}</h4>
                 <div class="data">
                     <p>{{ iteration }}</p>
@@ -20,14 +20,14 @@
             </div>
             {% endfor %}
             {% else %}
-            <p>No iterations so far.</p>
+            <p>No iterations</p>
             {% endif %}
             {% block iterations_one %}
             {% endblock %}
         </td>
     </tr>
     <tr>
-        <th style="padding-bottom: 0em;"><h3>1: Links</h3></th>
+        <th style="padding-bottom: 0em;"><h3>1a: Links</h3></th>
         <td id="links-data" class="table-data-container">
             {% load layout_tags %}
             {% with l=note.links %}
@@ -71,7 +71,7 @@
         <td class="table-data-container">
             {% if note.iterations_two %}
             {% for iteration in note.iterations_two %}
-            <div class="table-data" data-iteration={{forloop.counter}} data-which=2>
+            <div class="table-data note-iteration" data-iteration={{forloop.counter}} data-which=2>
                 <div class="data">
                     <h4>Iteration: {{ forloop.counter }}</h4>
                     <p>{{ iteration }}</p>
@@ -82,7 +82,7 @@
             </div>
             {% endfor %}
             {% else %}
-            <p>No iterations so far</p>
+            <p>No iterations</p>
             {% endif %}
             {% block step_two_iterations %}
             {% endblock %}
@@ -91,11 +91,11 @@
     <tr>
         <th>3: Final Statement</th>
         {% if 'edit' not in request.path %}
-            <td class="table-data-container">
+            <td class="table-data-container" style="text-align: left;">
             {% if note.step_three|length > 0 %}
                 <p>{{ note.step_three }}</p>
             {% else %}
-                <p>No step three stated.</p>
+                <p>No final statement.</p>
             {% endif %}
             </td>
         {% endif %}
