@@ -2,7 +2,7 @@
 {% block title %}Edit Note{% endblock %}
 {% block container_start %}
 {{ form.errors }}
-<section id="edit-iteration-container" class="hidden">
+<section id="edit-iteration-container" class="display-none">
     <div style="display: flex; align-items: center; flex-direction: column;">
         <input type="text" name="title" class="hidden">
         <textarea name="text" class="edit" cols="30" rows="10"></textarea>
@@ -14,9 +14,8 @@
 {% csrf_token %}
 {% endblock %}
 {% block note_title %}
-<tr>
-    <th><h2>{{ form.title.label }}</h2></th>
-    <td>{{ form.title }}</td>
+<tr class="note-title-row">
+    <th style="display: flex; align-items: center;"><h2>{{ form.title.label }}</h2> {{ form.title }}</th>
 </tr>
 {% endblock %}
 {% block iterations_one %}
@@ -62,4 +61,5 @@
 {% block scripts %}
 {% load static %}
 <script src="{% static 'main/js/edit_note.js' %}"></script>
+<script src="{% static 'main/js/note-animation.js' %}"></script>
 {% endblock %}

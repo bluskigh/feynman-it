@@ -18,10 +18,13 @@ a { color: white; text-decoration: none; font-size: .8em; }
 p { font-size: .8em; }
 a:hover { text-decoration: underline; }
 .hidden { z-index: -1; user-select: none; opacity: 0% !important; }
+.display-none { display: none; }
 body {
     font-family: 'Poppins', sans-serif;
     background: lightgrey;
+    overflow-x: hidden;
 }
+#note-edit-form { width: 100%; }
 #note-edit-button {
     position: absolute;
     right: 5%;
@@ -31,7 +34,10 @@ body {
 #note-edit-button:hover {
     background: gray;
 }
-
+.dangerous {
+    background: red;
+    color: darkred;
+}
 /* End of General Styling */
 
 
@@ -137,9 +143,6 @@ th {
     width: 100%;
     text-align: center;
 }
-textarea {
-    width: 100%;
-}
 .iteration-input {
     display: flex;
     flex-direction: column;
@@ -193,11 +196,54 @@ h4 {
 a:hover {
     color: gray;
 }
-.static-button {
-}
 .static-button:hover {
     transform: none;
 }
+
+/* Start of Note Styling */
+#item-table .note-title-row { margin: 0; margin-bottom: 5em; }
+#item-table .note-title-row th {
+    opacity: 1;
+    display: flex;
+    align-items: center;
+}
+#item-table .note-title-row h2 {
+    font-size: .5em;
+}
+.note-title-row input {
+    background: transparent;
+    border: none; border-bottom: 3px solid black;
+    font-size: .5em;
+    margin-left: 1em;
+}
+.note-title-row input:focus {
+    outline: none;
+    border-bottom-color: gray;
+}
+textarea, input {
+    width: 100%;
+    background: transparent;
+    border: 2px solid white;
+    color: white;
+}
+textarea::placeholder {
+    color: lightgrey;
+}
+#links-data .table-data:nth-of-type(even) {
+    border-bottom: 1px solid white;
+    padding-bottom: 1em;
+    margin: 1em 0;
+}
+#links-data .table-data:nth-of-type(odd) {
+    border-bottom: 1px solid white;
+    padding-bottom: 1em;
+}
+#links-data .table-data:nth-last-child(1) {
+    border: none;
+    padding: 0;
+}
+/* End of Note Styling */
+
 
 /* Start of Item Styling */
 #items-flex-container {
@@ -249,6 +295,7 @@ a:hover {
         border-radius: 50%;
     }
     0% {
+        background: darkred;
         border-radius: 0%;
         right: 5%;
         transform: translate(0%, 0%);

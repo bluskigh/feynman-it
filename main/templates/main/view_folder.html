@@ -1,8 +1,10 @@
 {% extends 'main/layout.html' %}
 {% block style %}
 tr {
-    flex-direction: row;
+    display: flex;
+    flex-direction: column;
     align-items: flex-start;
+    margin: 1em 0 0 0;
 }
 th {
     padding: 0 1em 0 0;
@@ -40,7 +42,7 @@ th {
     {% else %}
         <p>No notes</p>
         {% if folder.title != 'Deleted' and folder.title != 'All' %}
-            <button type="submit">Delete Folder</button>
+            <button type="submit" class="dangerous">Delete Folder</button>
         {% endif %}
     {% endif %}
     </form>

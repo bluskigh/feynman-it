@@ -103,7 +103,7 @@ function addItem(object) {
             const option = document.createElement('option');
             // recall in the beginning of this newItem function we incremented the length value by 1 (self explanatory) therefore no need to querySelectorAll(.table-data).length to recieve the index of newly added iteration 
             option.value = target.dataset.length;
-            option.innerText = target.dataset.length;
+            option.innerText = `Iteration ${target.dataset.length}`;
             document.querySelector('#forwhich').appendChild(option)
         }
 
@@ -118,22 +118,21 @@ function addItem(object) {
     const forwhich = parseInt(document.querySelector('#forwhich').value);
     const tempp = target.parentElement.parentElement.children[forwhich];
     dataContainer.dataset.forwhich = forwhich;
-    dataContainer.dataset.which = 0;
+    dataContainer.dataset.which = target.dataset.which;
 
     // if button clicked to add new item is not links section
     if (target.dataset.which != 0) { 
         iterationHeader.innerText = `Iteration: ${target.dataset.length}`;
+        container.classList.add('note-iteration')
         container.appendChild(iterationHeader)
         container.appendChild(dataContainer)
         target.parentElement.parentElement.insertBefore(container, target.parentElement)
     } else if (target.dataset.which == 0 && document.querySelector('#links-data').querySelectorAll('.table-data').length > parseInt(document.querySelector('#forwhich').value)) {
-        console.log('this should not be created')
         // ^ if button was in links section and links section td contains table data whose index is relative to the forwhich value selected then append link to thus container
         const forwhichcontainer = document.querySelector('#links-data').querySelectorAll('.table-data')[parseInt(document.querySelector('#forwhich').value)];
         forwhichcontainer.appendChild(dataContainer)
         dataContainer.dataset.iteration = forwhichcontainer.querySelector('.data').length+1;
     } else if (target.dataset.which == 0 && document.querySelector('#links-data').querySelectorAll('.table-data').length <= parseInt(document.querySelector('#forwhich').value)) {
-        console.log('something here should be create ')
         // ^ otherwise if button in links section and links section td does not contain a table data of index equal to selected forwhich value
         iterationHeader.innerText = `Links for iteration: ${document.querySelector('#forwhich').value}`;
         // append the container that encapsulates dataContainer (<div.table-data>__space for edit form___<div.data>__space for actual information such as p, a)
@@ -161,31 +160,36 @@ document.querySelector('.submit').addEventListener('click', function() {
 function editButtonFunctionality(object) {
     if (editIterationContainer.classList.contains('busy')) {
         // editIterationContainer.querySelector('textarea').value = '';
-        // editIterationContainer.parentElement.querySelector('.data').classList.remove('hidden')
+        // editIterationContainer.parentElement.querySelector('.data').classList.remove('display-none')
         toggleEditIterationContainer(object)
     }
     // const data = target.parentElement.parentElement.querySelector('.data');
     const target = object.target;
     const data = target.parentElement;
-    data.classList.add('hidden')
+    data.classList.add('display-none')
 
     target.parentElement.parentElement.insertBefore(editIterationContainer, target.parentElement)
 
-    editIterationContainer.classList.remove('hidden')
+    editIterationContainer.classList.remove('display-none')
     editIterationContainer.classList.add('busy')
 
     editIterationContainer.dataset.which = target.parentElement.dataset.which;
 
     let inputTitle = editIterationContainer.querySelector('input');
 
+    console.log(target)
+
     // if edit button of a link was clicked display the titl einput in the edit form 
-    if (object.target.parentElement.dataset.which == 0) {
+    if (target.dataset.which == 0) {
+        console.log('first if ran')
         inputTitle.value = target.previousElementSibling.innerText;
         editIterationContainer.querySelector('textarea').value = target.previousElementSibling.getAttribute('href')
-        inputTitle.classList.remove('hidden');
+        inputTitle.classList.remove('display-none');
     } else {
+        console.log('this ran')
+        console.log(target)
         editIterationContainer.querySelector('textarea').value = target.previousElementSibling.innerText;
-        editIterationContainer.querySelector('input').classList.add('hidden')
+        editIterationContainer.querySelector('input').classList.add('display-none')
     }
 }
 
@@ -196,7 +200,7 @@ document.querySelectorAll('.edit-iteration').forEach(item => {
 function toggleEditIterationContainer() {
     // can either be close or save edit button on the edit form
 
-    editIterationContainer.classList.add('hidden')
+    editIterationContainer.classList.add('display-none')
     editIterationContainer.classList.remove('busy')
     // parent of form which is table-data
     let parent = editIterationContainer.parentElement;
@@ -205,13 +209,13 @@ function toggleEditIterationContainer() {
     }
     const value = parent.dataset.iteration;
     if (parent.dataset.which == 0) {
-        parent.classList.remove('hidden')
+        parent.classList.remove('display-none')
     } else {
-        editIterationContainer.parentElement.querySelector('.data').classList.remove('hidden')
+        editIterationContainer.parentElement.querySelector('.data').classList.remove('display-none')
     }
     editIterationContainer.querySelector('textarea').value = '';
     editIterationContainer.querySelector('input').value = '';
-    editIterationContainer.querySelector('input').classList.add('hidden')
+    editIterationContainer.querySelector('input').classList.add('display-none')
     document.querySelector('body').appendChild(editIterationContainer)
 }
 
