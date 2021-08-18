@@ -54,6 +54,41 @@ nav ul li:nth-of-type(even) { margin: 0 .5em; }
 .current:hover { border-bottom-color: #e9c56a8f; }
 /* End of Navigation Styling */
 /* Start of Table Styling */
+#item-table tr { position: relative; margin: 3em 0; }
+#item-table th {
+    opacity: .5;
+    z-index: 0;
+    font-size: 3.5em;
+    position: absolute;
+    /* font comes with a large amount of line height */
+    line-height: .1em;
+    padding: 0; 
+    transition-timing-function: ease;
+    transition: background .5s, opacity .5s;
+    cursor: help;
+}
+#item-table td {
+    background: black;
+    color: white;
+    z-index: 1;
+    /* moving the element to bottom of large th text */
+    margin-top: 1.5em;
+    /* providing space uptop */
+    padding: 2em 0;
+    box-shadow: 0 0 1em black;
+    width: 50%;
+    opacity: 1;
+    transition-timing-function: ease;
+    transition: background .5s, opacity .5s;
+}
+.tableitem-mouseenter {
+    opacity: 1 !important;
+    z-index: 2 !important;
+}
+.tableitem-mouseleave {
+    opacity: .5 !important;
+    z-index: 0 !important;
+}
 table {
     display: flex;
     flex-direction: column;
@@ -193,7 +228,7 @@ a:hover {
     }
     0% {
         border-radius: 0%;
-        right: 90%;
+        right: 5%;
         transform: translate(0%, 0%);
         top: 0%;
         padding: 1em;

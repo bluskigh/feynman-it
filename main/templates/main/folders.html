@@ -16,9 +16,9 @@ tr {
 <section id="items-flex-container">
 {% if folders|length > 0 %}
 {% for folder in folders %}
-<a href="{% url 'view_folder' folder.id %}" class="item folder">
+<a href="{% url 'view_folder' folder.id %}" class="item item-animate folder">
     <div class="item-shader hidden"></div>
-    <h3>{{ folder.title }}</h3>
+    <h5>{{ folder.title }}</h5>
     <p class="helper">Contains {{ folder.notes_length }} note(s)</p>
 </a>
 {% endfor %}
