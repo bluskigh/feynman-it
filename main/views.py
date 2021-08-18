@@ -277,15 +277,16 @@ def delete_folder(request, id):
     folder = Folder.objects.get(id=id)
     deleted_folder = request.user.folders.all()[1]
     all_folder = request.user.folders.all()[0]
+    notes = folder.folder_notes.all()
     if folder != deleted_folder:
-        for note in folder.folder_notes.all():
+        for note in notes:
             note.folder = deleted_folder 
             note.save()
     else:
         for note in folder.folder_notes.all():
             note.delete()
 
-    if folder != all_folder and folder != deleted_folder:
+    if folder != all_folder and folder != deleted_folder and len(notes) == 0:
         folder.delete()
 
     return HttpResponseRedirect(reverse('folders'))
