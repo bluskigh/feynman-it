@@ -28,22 +28,31 @@ function sleep(time) {
     })
 }
 
-async function beginConsecutiveExecution() {
-    // flash every item with 500 break inbetween flash
-    for (const item of headers) {
-        await flashed(item)
-    }
-    // flash them all again *****
-    for (const item of headers) {
-        flashHeader(item)
-    }
+function assignListeners() {
 
-    // allow user to see final time
-    await sleep(500)
+}
+
+async function beginConsecutiveExecution() {
+    const editPage = document.location.pathname.indexOf('edit');
+    if (editPage < 0) {
+        // flash every item with 500 break inbetween flash
+        for (const item of headers) {
+            await flashed(item)
+        }
+        // flash them all again *****
+        for (const item of headers) {
+            flashHeader(item)
+        }
+
+        // allow user to see final time
+        await sleep(500)
+    }
 
     // return all headers back to original state
     for (const item of headers)  {
-        flashHeader(item)
+        if (editPage < 0) {
+            flashHeader(item)
+        }
         item.addEventListener('mouseenter', function() {
             flashHeader(item)
         })

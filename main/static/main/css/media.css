@@ -58,6 +58,10 @@
     }
     #item-table td {
         margin-top: .5em;
+        width: 80%;
+    }
+    #note-edit-button {
+        bottom: 2%;
     }
 }
 /* End of Media Styling */

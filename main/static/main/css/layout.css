@@ -93,6 +93,7 @@ nav {
     background: var(--main);
     color: var(--accent);
 }
+nav img { transition: opacity .5s ease; }
 nav ul {
     /* want to align items in a row vertically centered */
     display: flex;
