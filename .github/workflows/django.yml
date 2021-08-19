@@ -27,10 +27,10 @@ jobs:
         pip install -r requirements.txt
     - name: Setup postgres
       run: |
-        sudo apt-get install postgresql
         sudo -u postgres -i
         psql
-        CREATE USER temp WITH PASSWORD '1234';
+        CREATE USER mario WITH PASSWORD '1234';
+        ALTER USER mario WITH CREATEDB;
         \q
         exit
     - name: Run Tests
