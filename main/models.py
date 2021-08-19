@@ -25,8 +25,7 @@ class Note(models.Model):
     # step three text
     step_three = models.TextField(blank=True)
     # links for step one
-    links = ArrayField(default=list, blank=True,
-    base_field=ArrayField(default=list,  base_field=models.TextField(blank=True)))
+    links = ArrayField(default=list, blank=True, base_field=ArrayField(default=list,  base_field=models.TextField(blank=True)))
     # links = ArrayField(default=list, blank=True, base_field=models.TextField(blank=True))
     # does user understand new note
     understand = models.BooleanField(default=False)
