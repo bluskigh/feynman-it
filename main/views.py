@@ -293,8 +293,8 @@ def delete_folder(request, id):
 
 
 def register(request):
-    error_css_class = 'error' 
-    required_css_class = 'required'
+    if request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('index'))
 
     if request.method == 'GET':
         return render(request, 'main/register.html', 
@@ -322,6 +322,9 @@ def register(request):
 
 
 def login(request):
+    if request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('index'))
+
     if request.method == 'GET':
         return render(request, 'main/login.html', {'form': LoginForm()})
     elif request.method == 'POST':
