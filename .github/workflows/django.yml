@@ -22,6 +22,8 @@ jobs:
         pip install -r requirements.txt
     - name: Setup postgres
       run: |
+        sudo apt-get install postgresql libpq-dev
+        sudo service postgresql start
         sudo -u postgres -i
         psql
         CREATE USER mario WITH PASSWORD '1234';
