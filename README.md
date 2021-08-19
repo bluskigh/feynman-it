@@ -1,3 +1,5 @@
+![run-tests](https://github.com/molinitomario/feynman-it/actions/workflows/django.yml/badge.svg)
+
 ## Description
 The name given to this web application is "FeynmanIt" because it was inspired by Richard Feynman's learning technique. FeynmanIt utilizes the following stack: Django (backend), Python, JS, HTML, and CSS. Once a user signs up they are given certain permissions to create notes and folders. Each note has much thought put into its structure, this structure was inspired by the infamous learning technique "The Feynman Technique" which was, as the name suggests, made popular by Richard Feynman. Sought as the most efficient learning technique as it forces the learner to explain the topic in simple terms instead of tricking themselves into thinking they understand the topic by being complex. A folder can be created to store notes, organizing different learnings by subject, by default, there are two folders created called: "All", and "Deleted". Progress of learning is available to view as a heatmap in the profile section. 
 
