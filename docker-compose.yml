@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  db:
+    image: postgres
+  web:
+    # use dockerfile in current directory
+    build: .
+    # use specified path in current directory
+    volumes: 
+      - .:/usr/src/app 
+    # port on container: port on host computer
+    ports:
+      - "8000:8000"
