@@ -42,6 +42,7 @@ jobs:
         pip install -r requirements.txt
     - name: Run Tests
       run: |
+        echo $PRODUCTION
         python manage.py test
       env:
         PRODUCTION: False 
