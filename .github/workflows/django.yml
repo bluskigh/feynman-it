@@ -11,14 +11,20 @@ on:
 jobs:
   run-tests:
     runs-on: ubuntu-latest
+    # runner automatically cretes docker network to manage life cycle of the service container
     services:
+      # service id
       postgres:
+        # container image
         image: postgres
+        # map of env var in service container
         env:
           POSTGRES_PASSWORD: '1234'
           POSTGRES_USER: mario
           POSTGRES_DB: feynmanit-db
+        # ports to expose on the service container, since this job does not rely on a docker container, we have to expose otherwise there would be no need to expose
         ports:
+          # port 5432 on docker host (runner machine) to 5432 on postgres service container
           - 5432:5432
         # Set health checks to wait until postgres has started
         options: >-
