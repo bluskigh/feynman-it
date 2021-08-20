@@ -3,14 +3,14 @@ name: Tests
 on:
   push:
     branches: [ main ]
+    paths-ignore:
+      - 'README.md'
   pull_request:
     branches: [ main ]
 
 jobs:
   run-tests:
     runs-on: ubuntu-latest
-    paths-ignore:
-      - 'README.md'
     services:
       postgres:
         image: postgres
