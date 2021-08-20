@@ -57,6 +57,6 @@ jobs:
       - name: Login to Heroku Container Registery
         run: heroku container:login
       - name: Build and push
-        run: heroku containere:push - a ${{ secrets.HEROKU_API_KEY }} web
+        run: heroku container:push - a ${{ secrets.HEROKU_API_KEY }} web
       - name: Release
         run: heroku container:release -a ${{ secrets.HEROKU_APP_KEY }} web
