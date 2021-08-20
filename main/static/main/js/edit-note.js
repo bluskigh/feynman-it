@@ -214,7 +214,7 @@ document.addEventListener('DOMContentLoaded', function() {
             editIterationContainer.querySelector('textarea').value = target.previousElementSibling.getAttribute('href')
             inputTitle.classList.remove('display-none');
         } else {
-            editIterationContainer.querySelector('textarea').value = target.previousElementSibling.querySelector('p').innerText.trim();
+            editIterationContainer.querySelector('textarea').value = target.parentElement.querySelector('p').innerText.trim();
             editIterationContainer.querySelector('input').classList.add('display-none')
         }
     }
