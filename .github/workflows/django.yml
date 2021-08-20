@@ -45,4 +45,4 @@ jobs:
         echo $PRODUCTION
         python manage.py test
       env:
-        PRODUCTION: False 
+        DEVELOPMENT: True 

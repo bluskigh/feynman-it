@@ -1,2 +1,2 @@
-release: ./setup.sh
+release: python3 manage.py migrate
 web: gunicorn feynmanit.wsgi

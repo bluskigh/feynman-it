@@ -1,1 +1,1 @@
-export PRODUCTION=true;
+export DEVELOPMENT=true;
