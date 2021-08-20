@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function() {
             let linkTitle = document.querySelector('#link-title');
 
             // each link contains the following format: [iteration of step 1 choosen, link title to be displayed when rendering, link href to be used]
-            iterations[target.dataset.which].added.push([iterationChoosen, linkTitle.value, input.value]);
+            iterations[target.dataset.which].added.push([iterationChoosen, linkTitle.value.trim(), input.value.trim()]);
 
             // creating the a tag to store the newly added link
             const a = document.createElement('a');
@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', function() {
             emptyIterationP = null;
 
             // format here is different than the format for links because this is simply adding text unlike links which contains iteration choosen, title, and text therefore we can simply concat a value with existing array in added
-            iterations[target.dataset.which].added = iterations[target.dataset.which].added.concat(input.value);
+            iterations[target.dataset.which].added = iterations[target.dataset.which].added.concat(input.value.trim());
 
             // since links is mainly meant for step 1 (solve after acquiring gaps in explanation) each time this newItem function is run on 1 (1 = new step 1 iteration) then add an option to store links
             // in the newly added iteration for step 1
@@ -192,7 +192,6 @@ document.addEventListener('DOMContentLoaded', function() {
             // editIterationContainer.querySelector('textarea').value = '';
             // editIterationContainer.parentElement.querySelector('.data').classList.remove('display-none')
             toggleEditIterationContainer(object)
-            console.log('was busy')
         }
 
         // const data = target.parentElement.parentElement.querySelector('.data');
@@ -209,16 +208,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
         let inputTitle = editIterationContainer.querySelector('input');
 
-        console.log('This is the target: ', target)
-        console.log('This sit he parent elmeent', parent)
-
         // if edit button of a link was clicked display the titl einput in the edit form 
         if (parent.dataset.which == 0) {
             inputTitle.value = target.previousElementSibling.innerText;
             editIterationContainer.querySelector('textarea').value = target.previousElementSibling.getAttribute('href')
             inputTitle.classList.remove('display-none');
         } else {
-            editIterationContainer.querySelector('textarea').value = target.previousElementSibling.innerText;
+            editIterationContainer.querySelector('textarea').value = target.previousElementSibling.querySelector('p').innerText.trim();
             editIterationContainer.querySelector('input').classList.add('display-none')
         }
     }
@@ -259,8 +255,6 @@ document.addEventListener('DOMContentLoaded', function() {
             // edit container when using links is appended before the data div taht we are trying to edit, therefore if in links we want to get the next element
             parent = editIterationContainer.nextElementSibling;
         }
-        console.log(parent.dataset)
-        console.log(parent)
         const value = this.previousElementSibling.querySelector('textarea').value.trim();
         if (iterations[parent.dataset.which].edit == null) {
             iterations[parent.dataset.which].edit = {};
@@ -270,11 +264,11 @@ document.addEventListener('DOMContentLoaded', function() {
             iterations[parent.dataset.which].edit[parent.dataset.iteration] = [parent.dataset.forwhich, inputTitleValue, value];
             // iterations[this.dataset.which].edit[iteration][0] = this.previousElementSibling.querySelector('input').value.trim();
             // iterations[this.dataset.which].edit[iteration][1] = value.trim();
-            this.parentElement.nextElementSibling.querySelector('a').innerText = inputTitleValue;
-            this.parentElement.nextElementSibling.querySelector('a').setAttribute('href', value);
+            this.parentElement.nextElementSibling.querySelector('a').innerText = inputTitleValue.trim();
+            this.parentElement.nextElementSibling.querySelector('a').setAttribute('href', value.trim());
         } else {
-            iterations[parent.dataset.which].edit[parent.dataset.iteration] = value;
-            this.parentElement.parentElement.querySelector('.data').querySelector('p').innerText = value;
+            iterations[parent.dataset.which].edit[parent.dataset.iteration] = value.trim();
+            this.parentElement.parentElement.querySelector('.data').querySelector('p').innerText = value.trim();
         }
 
         toggleEditIterationContainer()
