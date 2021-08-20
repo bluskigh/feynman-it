@@ -64,9 +64,9 @@ source feynman_venv/bin/activate
 ```
 
 ## Running setup.sh
-File connects user to local postgres server instead of production. 
+File connects user to local Postgres server instead of production. 
 ```
-source seutp.sh
+source setup.sh
 ```
 
 ## Installing requirements
@@ -105,4 +105,10 @@ All of my stylings were exported into separate files to reduce clutter in HTML f
 - models.py: stores models
 - urls.py: stores URLs that are available in the project
 ### Dockerfile
-Since I am using a CI/CD workflow with the help of Github Actions. I need this file in order to build/push a new release to heroku after a push to the main branch on this github repo is performed. All it does is use a existing docker image to set up python3, copy data in current working directory to ```/usr/src/app```, and then changes working directory to ```/usr/src/app```. Install the necessary dependencies for the project to run. Finally it starts the server by running ```gunicorn feynmanit.wsgi```. 
+Since I am using a CI/CD workflow with the help of Github Actions. I need this file in order to build/push a new release to Heroku after a push to the main branch on this Github repo is performed. All it does is use an existing docker image to set up python3, copy data in the current working directory to ```/usr/src/app```, and then change the working directory to ```/usr/src/app```. Install the necessary dependencies for the project to run. Finally, it starts the server by running ```gunicorn feynmanit.wsgi```. 
+
+
+## Todo:
+- Make style much more modern
+- Add forums
+- ... 
