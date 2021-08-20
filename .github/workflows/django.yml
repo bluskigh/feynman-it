@@ -9,6 +9,8 @@ on:
 jobs:
   run-tests:
     runs-on: ubuntu-latest
+    paths-ignore:
+      - 'README.md'
     services:
       postgres:
         image: postgres
