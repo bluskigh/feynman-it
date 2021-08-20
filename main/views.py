@@ -128,7 +128,6 @@ def index(request):
     return HttpResponseRedirect(reverse('notes'))
 
 
-@login_required
 def home(request):
     return render(request, 'main/index.html')
 

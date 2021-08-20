@@ -18,9 +18,6 @@ tr {
 {% block title %}Notes{% endblock %}
 {% block body %}
     <section id="items-flex-container">
-    {% if notes|length == 0 %}
-    <p>No notes.</p>
-    {% else %}
         {% for note in notes %}
         <a href="{% url 'view_note' note.id %}" class="item item-animate">
             <div class="item-shader hidden"></div>
@@ -45,7 +42,6 @@ tr {
             </form>
         </div>
         {% endif %}
-    {% endif %}
     </section>
 {% endblock %}
 {% block scripts %}

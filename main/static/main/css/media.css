@@ -63,5 +63,10 @@
     #note-edit-button {
         bottom: 2%;
     }
+    footer { padding: 2em; }
+    footer .socials {
+        display: flex;
+        flex-direction: column;
+    }
 }
 /* End of Media Styling */
