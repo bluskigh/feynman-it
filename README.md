@@ -63,6 +63,12 @@ python3 -m venv feynman_venv
 source feynman_venv/bin/activate
 ```
 
+## Running setup.sh
+File connects user to local postgres server instead of production. 
+```
+source seutp.sh
+```
+
 ## Installing requirements
 To run this application you need to have the requirements that are listed in the requirements.txt file:
 ```
