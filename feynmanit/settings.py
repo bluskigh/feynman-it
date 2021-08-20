@@ -132,5 +132,5 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-if (environ.get('PRODUCTION')):
+if (environ.get('PRODUCTION') is True):
     django_heroku.settings(locals())
