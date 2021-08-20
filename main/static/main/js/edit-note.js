@@ -169,7 +169,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     addButtons.forEach(item => {
-        item.addEventListener('click', addItem)
+        item.addEventListener('click', function(object) {
+            // check textarea length
+            if (item.previousElementSibling.value.length > 0) {
+                if (item.dataset.which == 0 && item.parentElement.querySelector('input').value.length <= 0) { 
+                    return;
+                }
+                addItem(object)
+            }
+        })
     })
 
     document.querySelector('.submit').addEventListener('click', function() {

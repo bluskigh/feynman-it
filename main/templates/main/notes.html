@@ -17,6 +17,7 @@ tr {
 {% endblock %}
 {% block title %}Notes{% endblock %}
 {% block body %}
+    <h2>Notes</h2>
     <section id="items-flex-container">
         {% for note in notes %}
         <a href="{% url 'view_note' note.id %}" class="item item-animate">
