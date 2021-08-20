@@ -49,10 +49,16 @@ jobs:
   upload-release:
     needs: run-tests
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        env:
+          ${{ secrets.HEROKU_API_KEY }}
     steps:
       - name: Download code
         uses: actions/checkout@v2
       - name: Login to Heroku Container Registery
-        env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         run: heroku container:login
+      - name: Build and push
+        run: heroku containere:push - a ${{ secrets.HEROKU_API_KEY }} web
+      - name: Release
+        run: heroku container:release -a ${{ secrets.HEROKU_APP_KEY }} web
