@@ -1,13 +1,13 @@
 ![run-tests](https://github.com/molinitomario/feynman-it/actions/workflows/django.yml/badge.svg)
 
 ## Description
-The name given to this web application is "FeynmanIt" because it was inspired by Richard Feynman's learning technique. FeynmanIt utilizes the following stack: Django (backend), Python, JS, HTML, and CSS. Once a user signs up they are given certain permissions to create notes and folders. Each note has much thought put into its structure, this structure was inspired by the infamous learning technique "The Feynman Technique" which was, as the name suggests, made popular by Richard Feynman. Sought as the most efficient learning technique as it forces the learner to explain the topic in simple terms instead of tricking themselves into thinking they understand the topic by being complex. A folder can be created to store notes, organizing different learnings by subject, by default, there are two folders created called: "All", and "Deleted". Progress of learning is available to view as a heatmap in the profile section. 
+The name given to this web application is "FeynmanIt" because it was inspired by Richard Feynman's learning technique. FeynmanIt utilizes the following stack: Django (backend), Python, JS, HTML, and CSS. Once a user signs up they are given certain permissions to create notes and folders. Each note has much thought put into its structure, this structure was inspired by the infamous learning technique "The Feynman Technique" which was, as the name suggests, made popular by Richard Feynman. Sought as the most efficient learning technique as it forces the learner to explain the topic in simple terms instead of tricking themselves into thinking they understand the topic by being complex. A folder can be created to store notes, organizing different learnings by subject, by default, there are two folders created called: "All", and "Deleted". 
 
 ## Motivation
 I have been know of Richard Feynman's learning technique for quite a while, but always wanted a web application that utilized it. I never found a web application that has utilized it, therefore I thought it would be nice to have for not only me but for others to utilize too. I thought of how great an application like this can be for multiple uses such as classroom teaching, individuals, and parents. Of course the idea of helping others really motivated me to start this project, therefore with my limited knowledge of Django I thought I would give it a try. Hopefully in the future more advanced features can be implemented such as: sharing notes and having a forum where existing notes can be referenced as answers to questions for others to learn.
 
 ## Distinctiveness and Complexity 
-This web application is nothing like a social network as the main ideas such as "comments, likes, and posts" are not applied. Nor does this web application adhere to the likings of a commerce website because there are no listings, and products implemented. This web application is significantly different than past projects in CS50w because it falls under the topic of education. The comparison between WiKi and this project in hindsight could be made, but this is not an encyclopedia though they both do fall under the category of education. What makes this project distinct from WiKi is the functionality of note-taking and the application of how it's done. Therefore the parity between this web application and WiKi need not be augmented. 
+This web application is nothing like a social network as the main ideas such as "comments, likes, and posts" are not applied. Nor does this web application adhere to the likings of a commerce website because there are no listings, and products implemented. This web application is significantly different than past projects in CS50w because it falls under the category of education. The comparison between WiKi and this project in hindsight could be made, but this is not an encyclopedia though they both do fall under the category of education. What makes this project distinct from WiKi is the functionality of note-taking and the application of how it's done. Therefore the parity between this web application and WiKi need not be augmented. 
 
 ## Application is hosted at:
 ```
@@ -106,7 +106,8 @@ All of my stylings were exported into separate files to reduce clutter in HTML f
 - urls.py: stores URLs that are available in the project
 ### Dockerfile
 Since I am using a CI/CD workflow with the help of Github Actions. I need this file in order to build/push a new release to Heroku after a push to the main branch on this Github repo is performed. All it does is use an existing docker image to set up python3, copy data in the current working directory to ```/usr/src/app```, and then change the working directory to ```/usr/src/app```. Install the necessary dependencies for the project to run. Finally, it starts the server by running ```gunicorn feynmanit.wsgi```. 
-
+### Layout Tags
+In this file is where I register custom filters and tags for me to use in Django templating engine. 
 
 ## Todo:
 - Make style much more modern

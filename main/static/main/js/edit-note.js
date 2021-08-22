@@ -1,5 +1,11 @@
-let iterations = null;
 document.addEventListener('DOMContentLoaded', function() {
+
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    const customHeaders = {"X-CSRFToken": csrftoken, "Content-Type": "application/json"};
+    const noteid = parseInt(document.querySelector('[name=noteid]').value);
+
+    const linkWhich = document.querySelector('#links-data #forwhich');
+
     const brain = document.querySelector('nav img');
 
     function sleep() {
@@ -21,265 +27,455 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     learningAnimation()
 
-    // main form that encapsulates all the inputs
-    const form = document.querySelector('#note-edit-form');
+    const stepOneIterationsContainer = document.querySelector('#step_one_iterations_container');
+    const stepTwoIterationsContainer = document.querySelector('#step_two_iterations_container');
 
-    // add buttons that appear next to iterations and links sections. 
-    const addButtons = document.querySelectorAll('.add-button');
+    ///////////////////
+    // Adding 
+    ///////////////////
+    function addIteration(title, text, which, id) {
+        /*
+        <div class="table-data note-iteration">
+            <h4>{{title}}</h4>
+            <div class="data">
+                <p>{{text}}</p>
+                {{ edit button here}}
+                >>> links here
+            </div>
+        </div>
+        */
 
-    // 'form' section that contains all the inputs needed to edit iteration sections (and links).
-    const editIterationContainer = document.querySelector('#edit-iteration-container');
-
-    // 1 = iterations_one
-    // 0 = links
-    // 2 = iterations_two
-    // 3 = general 
-    // this object will be queried when the main form is submitted to retrieve information regarding (added, deleted, edited) iterations. 
-    iterations = {1: {}, 0: {}, 2:{}, 3: {}}; 
-
-    // this function is run as an event funciton therefore, is passed e
-    function addItem(object) {
-        // using e (object) to access what was clicked aka the 'target'
-        const target = object.target;
-        // since we are adding an item we are going to increase the length dataset value of the button indicating that total iterations in the buttons section has increased by 1
-        target.dataset.length = parseInt(target.dataset.length) + 1;
-
-        const container = document.createElement('div');
-        let dataContainer = null;
-        if (target.dataset.which == 0) {
-            // this will store all the information of an item
-            // purpose for separation is because the editIterationContainer is appended to each div.table-data giving the illusion of converting each row into its relative input.
-            // in order to perform the illusion, we need to reveal the appended form and hide the data in table-data which is why I encapsulated the item data into a div of its own.
-            container.classList.add('data')
-        } else {
-            dataContainer = document.createElement('div');
-            dataContainer.classList.add('data')
-            // table-data which will store each iteration (not used for links because each link is stored inside a container.table-data, each link is a div.data in a div.table-data)
-            container.classList.add('table-data')
+        let parentContainer = null; 
+        if (which == 1) {
+            parentContainer = stepOneIterationsContainer;
+        } else if (which == 2) {
+            parentContainer = stepTwoIterationsContainer;
         }
 
-        container.dataset.which = target.dataset.which;
-        // settings the iteration dataset value to be the current buttons parents parent total length of .table-data divs plus one (plus one because we are adding this item)
-        container.dataset.iteration = parseInt(target.dataset.length);
+        // if (parentContainer.querySelector('.nomessage')) {
+        //     parentContainer.removeChild(parentContainer.querySelector('.nomessage'))
+        // }
 
-        // each div.table-data contains an h4 that lets the user know what a current iteration is
-        // for normal iterations it would display what iteration a text is in example: Iteration X, followed by text
-        // for links if there is not a link section for a certain step 1 section then this iterationHeader is used to display the following in the .table-data: "Links for iteration: x"
-        const iterationHeader = document.createElement('h4');
+        const lastIteration = parentContainer.lastElementChild.previousElementSibling;
+        let count = null;
 
-        // add item button always succeeds a textarea field, grab that field as the values we want are going to be stored there
-        const textarea = target.previousElementSibling;
+        if (lastIteration) { 
+            count = parseInt(lastIteration.dataset.iteration) + 1;
+        } else {
+            count = 1;
+        }
 
-        // edit button that is used for all type of items (link, iteration)
+        // Adds an iteration to specified iteration container
+        const container = document.createElement('div');
+        container.dataset.id = id;
+        container.dataset.iteration = count;
+        container.classList.add('table-data')
+        container.classList.add('note-iteration')
+
+        const data = document.createElement('div');
+        data.classList.add('data')
+
+        const titleTag = document.createElement('h4'); 
+        titleTag.innerHTML = `<span class="iteration-count">(${count})</span> <span class="iteration-title">${title}</span>`;
+
+        const textTag = document.createElement('p');
+        textTag.classList.add('iteration-text')
+        textTag.innerText = text;
+
+        let links = null;
+        let nomessage = null;
+        if (parentContainer == stepOneIterationsContainer) {
+            links = document.createElement('div');
+            links.classList.add('links')
+            nomessage = document.createElement('p');
+            nomessage.classList.add('nomessage')
+            nomessage.innerText = 'No links.'
+        }
+
         const editButton = document.createElement('button');
+        editButton.style.marginRight = ".5em";
         editButton.setAttribute('type', 'button')
         editButton.classList.add('edit-iteration')
-        editButton.addEventListener('click', editButtonFunctionality)
+        editButton.addEventListener('click', ()=>{useEditForm(id)})
         editButton.innerText = 'Edit';
-        editButton.dataset.added = true;
 
-        // when we add a value we store all the added values in a map {'added': [list of added items]} in the server we check if added is in the available keys if so add the values
-        if (target.dataset.added == null) {
-            // assign an empty list to added key in the object
-            iterations[target.dataset.which]["added"] = [];
-            // update buttons dataset added value 
-            target.dataset.added = true;
+        const deleteButton = document.createElement('button');
+        deleteButton.setAttribute('type', 'button')
+        deleteButton.classList.add('delete-iteration')
+        deleteButton.classList.add('dangerous')
+        deleteButton.innerText = 'Delete';
+        deleteButton.addEventListener('click', ()=>{deleteIteration(id)})
+
+
+        data.appendChild(textTag)
+        data.appendChild(editButton)
+        data.appendChild(deleteButton)
+        if (parentContainer == stepOneIterationsContainer) {
+            const hr = document.createElement('hr');
+            hr.classList.add('links-separator')
+            data.appendChild(hr)
+            links.appendChild(nomessage)
+            data.appendChild(links)
         }
+        container.appendChild(titleTag)
+        container.appendChild(data)
 
-        // if add item button of links was clicked
-        if (target.dataset.which == 0) {
-            // stores the value of which iteration section was selected to add this link too (links are grouped into specific sections, aka the iteration a certian link belongs too) 
-            const iterationChoosen = parseInt(document.querySelector('#forwhich').value);
-            let linkTitle = document.querySelector('#link-title');
+        parentContainer.insertBefore(container, parentContainer.lastElementChild)
 
-            // each link contains the following format: [iteration of step 1 choosen, link title to be displayed when rendering, link href to be used]
-            iterations[target.dataset.which].added.push([iterationChoosen, linkTitle.value.trim(), textarea.value.trim()]);
-
-            // creating the a tag to store the newly added link
-            const a = document.createElement('a');
-            a.setAttribute('href', textarea.value.trim())
-            a.setAttribute('target', '_blank')
-            a.innerText = linkTitle.value.trim();
-
-            container.dataset.forwhich = iterationChoosen;
-
-            // adding link to dataContainer
-            container.appendChild(a)
-            container.appendChild(editButton)
-
-            // clearing link form fields (link title, link href (textarea))
-            linkTitle.value = "";
-            textarea.value = "";
-
-            // garbage collect
-            linkTitle = null;
-        } else {
-            let emptyIterationP = target.parentElement.parentElement.querySelector('p');
-            if (emptyIterationP && emptyIterationP.innerText.startsWith('No')) {
-                // remove since a new item is being added therefore no longer being empty 
-                target.parentElement.parentElement.removeChild(emptyIterationP)
-            }
-            // garbage collect object
-            emptyIterationP = null;
-
-            // format here is different than the format for links because this is simply adding text unlike links which contains iteration choosen, title, and text therefore we can simply concat a value with existing array in added
-            iterations[target.dataset.which].added = iterations[target.dataset.which].added.concat(textarea.value.trim());
-
-            // since links is mainly meant for step 1 (solve after acquiring gaps in explanation) each time this newItem function is run on 1 (1 = new step 1 iteration) then add an option to store links
-            // in the newly added iteration for step 1
-            if (target.dataset.which == 1) {
-                // add new option to links
-                const option = document.createElement('option');
-                // recall in the beginning of this newItem function we incremented the length value by 1 (self explanatory) therefore no need to querySelectorAll(.table-data).length to recieve the index of newly added iteration 
-                option.value = target.dataset.length;
-                option.innerText = `Iteration ${target.dataset.length}`;
-                document.querySelector('#forwhich').appendChild(option)
-            }
-
-            const p = document.createElement('p');
-            p.innerText = textarea.value;
-            dataContainer.appendChild(p)
-            dataContainer.appendChild(editButton)
-        }
-        
-        // if button clicked to add new item is not links section
-        if (target.dataset.which != 0) { 
-            iterationHeader.innerText = `Iteration: ${target.dataset.length}`;
-            container.classList.add('note-iteration')
-            container.appendChild(iterationHeader)
-            container.appendChild(dataContainer)
-            // insert newly added container before the add form of the iteration container
-            target.parentElement.parentElement.insertBefore(container, target.parentElement)
-        }else if (target.dataset.which == 0) {
-            const linksData = document.querySelector('#links-data');
-            const tableData = linksData.querySelectorAll('.table-data');
-            const forwhich = document.querySelector('#forwhich').value;
-            if (tableData.length > parseInt(forwhich.value)) {
-                // ^ if button was in links section and links section td contains table data whose index is relative to the forwhich value selected then append link to thus container
-                const forwhichcontainer = tableData[parseInt(forwhich)];
-                forwhichcontainer.appendChild(dataContainer)
-                // dataContainer.dataset.iteration = forwhichcontainer.querySelector('.data').length+1;
-            } else if (tableData.length <= parseInt(forwhich)) {
-                // ^ otherwise if button in links section and links section td does not contain a table data of index equal to selected forwhich value
-                iterationHeader.innerText = `Links for iteration: ${document.querySelector('#forwhich').value}`;
-                // append the container that encapsulates dataContainer (<div.table-data>__space for edit form___<div.data>__space for actual information such as p, a)
-                container.insertBefore(iterationHeader, container.firstChild)
-                target.parentElement.parentElement.insertBefore(container, target.parentElement)
-                // just created so the length is goign to be 1
-                // dataContainer.dataset.iteration = 1;
-            }
-        }
-        textarea.value = "";
+        // add a new option to select forwhich field
+        const option = document.createElement('option'); 
+        option.setAttribute('value', id)
+        option.innerText = `Iteration: ${count}`;
+        linkWhich.appendChild(option)
     }
 
-    addButtons.forEach(item => {
-        item.addEventListener('click', function(object) {
-            // check textarea length
-            if (item.previousElementSibling.value.length > 0) {
-                if (item.dataset.which == 0 && item.parentElement.querySelector('input').value.length <= 0) { 
-                    return;
+    const iterationOneFormButton = document.querySelector('#iteration-one-form .add-button');
+    const iterationTwoFormButton = document.querySelector('#iteration-two-form .add-button');
+    [iterationOneFormButton, iterationTwoFormButton].forEach(item => {
+        item.addEventListener('click', function() {
+            // #iteration-one-form
+            const parentForm = this.parentElement;
+            const titleValue = parentForm.querySelector('input').value;
+            const textValue = parentForm.querySelector('textarea').value;
+
+            if (titleValue.length == 0 || textValue.length == 0) {
+                return;
+            }
+
+            let which = 1;
+
+            if (parentForm.parentElement == stepTwoIterationsContainer) {
+                which = 2;
+            }
+
+            fetch('/iterations/', {
+                method: "POST",
+                mode: "same-origin",
+                headers: new Headers(customHeaders),
+                body: JSON.stringify({
+                    'noteid': noteid, 'title': titleValue, 'text': textValue, 'which': which
+                })
+            })
+            .then(async r => {
+                if (r.status == 400) {
+                    // invalid values were given
+                    alert('Could not add iteration, invalid values were given.')
+                } else {
+                    return await r.json()
                 }
-                addItem(object)
+            })
+            .then(r => {
+                // successfully added the iteration 
+                if (r.id) {
+                    // attempt to remove no message direct child from main iteration container 
+                    try {
+                        if (parentForm.parentElement.querySelector('.nomessage')) {
+                            parentForm.parentElement.removeChild(parentForm.parentElement.querySelector('.nomessage'))
+                        }
+                    } catch(e) { console.log(e) }
+                    addIteration(titleValue, textValue, which, r.id)
+                    // clear inputs
+                    parentForm.querySelector('input').value = "";
+                    parentForm.querySelector('textarea').value = "";
+                } else {alert('Error: Did not recieve id.')}
+            })
+            .catch(e => {
+                console.log(e);
+            })
+        })
+    })
+
+
+    ///////////////////
+    // Adding Links
+    ///////////////////
+    function addLink(title, href, which, id) {
+        console.log(title, href, which, id)
+        /*
+        <div class="link-container">
+            <div class="data">
+                .. title etc here, edit buttons and what not
+            </div>
+            .. here is where we would append or insert the edit form
+        */
+
+       const linkContainer = document.createElement('div');
+       linkContainer.dataset.linkid = id;
+       linkContainer.classList.add('link-container')
+
+       const linkData = document.createElement('div');
+       linkData.classList.add('data')
+
+       const link = document.createElement('a');
+       link.setAttribute('href', href)
+       link.setAttribute('target', '_blank')
+       link.innerText = title;
+
+       const editButton = document.createElement('button');
+       editButton.classList.add('edit-link')
+       editButton.setAttribute('type', 'button')
+       editButton.innerText = 'Edit';
+       editButton.style.marginLeft = '.5em';
+       editButton.style.marginRight = '.5em';
+       editButton.addEventListener('click', ()=>{useEditForm(id, true)})
+
+       const deleteButton = document.createElement('button');
+       deleteButton.classList.add('dangerous')
+       deleteButton.classList.add('delete-link')
+       deleteButton.innerText = 'Delete';
+       deleteButton.addEventListener('click', () => {deleteLink(id)})
+       deleteButton.setAttribute('type', 'button')
+
+       linkData.appendChild(link)
+       linkData.appendChild(editButton)
+       linkData.appendChild(deleteButton)
+       linkContainer.appendChild(linkData)
+
+       let parentContainer = null;
+       if (which == 0) {
+           parentContainer = document.querySelector('#general-links').querySelector('.links');
+       } else {
+           parentContainer = document.querySelector(`[data-id="${which}"]`).querySelector('.links');
+       }
+       if (parentContainer.querySelector('.nomessage')) {
+           parentContainer.removeChild(parentContainer.querySelector('.nomessage'))
+       }
+       parentContainer.appendChild(linkContainer)
+    }
+
+    const linksAddButton = document.querySelector('#links-data .add-button'); 
+    const linkTitle = document.querySelector('#link-title');
+    const linkHref = document.querySelector('#links-data textarea');
+    linksAddButton.addEventListener('click', function() {
+        // saving the values so if user changes them after adding and we are still processing we can use the values used when submitted
+        const which = parseInt(linkWhich.value);
+        const title = linkTitle.value.trim();
+        const href = linkHref.value.trim();
+
+        if (title.length == 0 || href.length == 0) {
+            return;
+        }
+
+        // clear the link form fields
+        linkHref.value = "";
+        linkTitle.value = "";
+        fetch('/links/', {
+            method: "POST",
+            mode: "same-origin",
+            headers: new Headers(customHeaders),
+            body: JSON.stringify({
+                title, href, which, 'noteid': parseInt(noteid)
+            })
+        })
+        .then(async r => {
+            if (r.status == 400) {
+                alert('Could not add link!')
+                this.disabled = false;
+            } else if (r.status == 200) {
+                return await r.json()
+            }
+        })
+        .then(r => {
+            // ad the link to the relative iteration
+            addLink(title, href, which, r.id)
+        })
+    })
+
+    ///////////////////
+    // Deleting Links 
+    ///////////////////
+    function deleteLink(linkId) {
+        const linkContainer = document.querySelector(`[data-linkid="${linkId}"]`);
+        fetch(`/links/${parseInt(linkId)}/`, {
+            method: 'DELETE',
+            mode: 'same-origin',
+            headers: new Headers(customHeaders)
+        })
+        .then(r => {
+            if (r.status == 400) {
+                alert('Could not delete link!')
+            } else {
+                // remove link container
+                linkContainer.parentElement.removeChild(linkContainer)
+            }
+        })
+    }
+    document.querySelectorAll('.delete-link').forEach(item => 
+        item.addEventListener('click', ()=>{deleteLink(item.parentElement.parentElement.dataset.linkid)})
+    )
+
+    ///////////////////
+    // Editing
+    ///////////////////
+    const editForm = document.querySelector('#edit-iteration-container');
+    const editInput = editForm.querySelector('input');
+    const editText = editForm.querySelector('textarea');
+
+    function resetEditForm() {
+        // clear inputs and hide
+        editInput.value = ""; 
+        editText.value = "";
+        // hide the form
+        editForm.classList.add('display-none')
+        // reveal the data form it is replacing in .table-data
+        editForm.parentElement.querySelector('.data').classList.remove('display-none')
+        // move to body
+        document.querySelector('body').appendChild(editForm)
+    }
+
+    editForm.querySelector('.close').addEventListener('click', function() {
+        resetEditForm()
+    })
+
+    editForm.querySelector('.save').addEventListener('click', function() {
+        if (editInput.value.length == 0 || editText.value.length == 0) {
+            return;
+        }
+
+        const titleValue = window.localStorage.getItem('editInputOriginal') == editInput.value.trim() ? null : editInput.value;
+        const textValue = window.localStorage.getItem('editTextOriginal') == editText.value.trim() ? null : editText.value;
+
+        // did not change anything do not make unnecessary request to server
+        if (titleValue == null && textValue == null) {
+            return;
+        }
+
+        let iterationId = null;
+        let route = null;
+        let body = {'title': titleValue, 'text': textValue};
+        let dataQuery = null;
+
+        if (this.parentElement.parentElement.classList.contains('link-container')) {
+            iterationId = this.parentElement.parentElement.dataset.linkid;
+            route = `/links/${iterationId}/`;
+            body['which'] = linkWhich.value;
+            dataQuery = `[data-linkid="${iterationId}"]`;
+        } else {
+            iterationId = this.parentElement.parentElement.dataset.id; 
+            route = `/iterations/${iterationId}/`;
+            dataQuery = `[data-id="${iterationId}"]`;
+        }
+
+        fetch(route, {
+            method: "PATCH",
+            mode: "same-origin",
+            headers: new Headers(customHeaders),
+            body: JSON.stringify(body)
+        })
+        .then(async r => {
+            if (r.status == 400) {
+                alert('Could not save edit!') 
+            } else {
+                // save updated into relative fields
+                const parent = document.querySelector(dataQuery);
+                try {
+                    parent.querySelector('.iteration-title').innerText = editInput.value.trim();
+                    parent.querySelector('.iteration-text').innerText = editText.value.trim();
+                } catch(e) {
+                    parent.querySelector('.data').querySelector('a').innerText = editInput.value.trim();
+                    parent.querySelector('.data').querySelector('a').setAttribute('href', editText.value.trim())
+                }
+                resetEditForm()
             }
         })
     })
 
-    document.querySelector('.submit').addEventListener('click', function() {
-        addButtons.forEach(item => {
-            item.previousElementSibling.value = JSON.stringify(iterations[item.dataset.which]);
+    function useEditForm(iterationId, islink=false) {
+        resetEditForm()
+        const tableData = document.querySelector(`[data-${islink?"linkid":"id"}="${iterationId}"]`)
+        const data = tableData.querySelector('.data');
+        // move the form to iteration to last child of .table-data
+        tableData.insertBefore(editForm, tableData.lastElementChild)
+        // then hide .data of .table-data
+        data.classList.add('display-none')
+        // fill editForm input/textarea with iteration title and text
+        if (islink) {
+            editInput.value = data.querySelector('a').innerText;
+            editText.value = data.querySelector('a').getAttribute('href');
+        } else {
+            editInput.value = tableData.querySelector('.iteration-title').innerText;
+            editText.value = data.querySelector('.iteration-text').innerText;
+        }
+        // reveal the editForm
+        editForm.classList.remove('display-none')
+        window.localStorage.setItem('editInputOriginal', editInput.value)
+        window.localStorage.setItem('editTextOriginal', editText.value)
+    }
+
+    const editButtons = document.querySelectorAll('.note-iteration .edit-iteration');
+    editButtons.forEach(item => {
+        item.addEventListener('click', ()=>{
+            const iterationId = item.parentElement.parentElement.dataset.id; 
+            useEditForm(iterationId)
         })
-        form.submit()
+    })
+    const editLinkButtons = document.querySelectorAll('.edit-link');
+    editLinkButtons.forEach(item => {
+        item.addEventListener('click', () => {
+            const iterationId = item.parentElement.parentElement.dataset.linkid; 
+            useEditForm(iterationId, islink=true)
+        })
     })
 
-    function editButtonFunctionality(object) {
-        if (editIterationContainer.classList.contains('busy')) {
-            // editIterationContainer.querySelector('textarea').value = '';
-            // editIterationContainer.parentElement.querySelector('.data').classList.remove('display-none')
-            toggleEditIterationContainer(object)
+
+    ///////////////////
+    // Deleting
+    ///////////////////
+    function removeIteration(iterationId) {
+        /*
+        Iterating through each .table-data in .table-data-container if id == iterationId then remove that .table-data
+        Updating iteration of .table-data's whose id's are larger than iterationId, because they come after the given .table-data since id are consecutive
+        */
+        const parentContainer = document.querySelector(`[data-id="${iterationId}"]`).parentElement;
+        for (const iteration of parentContainer.querySelectorAll('.note-iteration')) {
+            if (iteration.dataset.id == iterationId) {
+                iteration.parentElement.removeChild(iteration)
+                continue;
+            }
+            if (parseInt(iteration.dataset.id) > iterationId) {
+                iteration.dataset.iteration = parseInt(iteration.dataset.iteration) - 1;
+                iteration.querySelector('.iteration-count').innerText = `(${iteration.dataset.iteration})`;
+                // update iteration relative option value in selec field tag
+                const option = linkWhich.querySelector(`[value="${iteration.dataset.id}"]`);
+                option.innerText = `Iteration: ${iteration.dataset.iteration}`;
+            }
         }
-
-        // const data = target.parentElement.parentElement.querySelector('.data');
-        const target = object.target;
-        const parent = target.parentElement;
-        parent.classList.add('display-none')
-
-        target.parentElement.parentElement.insertBefore(editIterationContainer, parent)
-
-        editIterationContainer.classList.remove('display-none')
-        editIterationContainer.classList.add('busy')
-
-        editIterationContainer.dataset.which = parent.dataset.which;
-
-        let inputTitle = editIterationContainer.querySelector('input');
-
-        // if edit button of a link was clicked display the titl einput in the edit form 
-        if (parent.dataset.which == 0) {
-            inputTitle.value = target.previousElementSibling.innerText;
-            editIterationContainer.querySelector('textarea').value = target.previousElementSibling.getAttribute('href')
-            inputTitle.classList.remove('display-none');
-        } else {
-            editIterationContainer.querySelector('textarea').value = target.parentElement.querySelector('p').innerText.trim();
-            editIterationContainer.querySelector('input').classList.add('display-none')
-        }
+        // remove option for removed iteration in which select field 
+        const t = document.querySelector(`[value="${iterationId}"]`);
+        linkWhich.removeChild(t)
     }
 
-    document.querySelectorAll('.edit-iteration').forEach(item => {
-        item.addEventListener('click', editButtonFunctionality)
-    })
-
-    function toggleEditIterationContainer() {
-        // can either be close or save edit button on the edit form
-
-        editIterationContainer.classList.add('display-none')
-        editIterationContainer.classList.remove('busy')
-        // parent of form which is table-data
-        let parent = editIterationContainer.parentElement;
-        if (parent.dataset.length == null) {
-            parent = editIterationContainer.nextElementSibling;
-        }
-        const value = parent.dataset.iteration;
-        if (parent.dataset.which == '0') {
-            parent.classList.remove('display-none')
-        } else {
-            editIterationContainer.nextElementSibling.classList.remove('display-none')
-        }
-        editIterationContainer.querySelector('textarea').value = '';
-        editIterationContainer.querySelector('input').value = '';
-        editIterationContainer.querySelector('input').classList.add('display-none')
-        document.querySelector('body').appendChild(editIterationContainer)
+    function deleteIteration(iterationId) {
+        fetch(`/iterations/${iterationId}/`, {
+            method: "DELETE",
+            mode: "same-origin",
+            headers: new Headers(customHeaders)
+        })
+        .then(r => {
+            if (r.status == 400) {
+                alert('Could not delete iteration!')
+            } else if (r.status == 200) {
+                // delete it
+                removeIteration(iterationId) 
+            }
+        })
     }
 
-    // send back to body and hide
-    editIterationContainer.querySelector('.close').addEventListener('click', toggleEditIterationContainer)
-
-    editIterationContainer.querySelector('.save-edit').addEventListener('click', function(object) {
-        // save response 
-        let parent = editIterationContainer.parentElement;
-        if (parent.dataset.which == null) {
-            // edit container when using links is appended before the data div taht we are trying to edit, therefore if in links we want to get the next element
-            parent = editIterationContainer.nextElementSibling;
-        }
-        // if (parent.querySelector('.edit-iteration').dataset.added) {
-        //     // just added do not choose anything for edited.
-        // }
-        const value = this.previousElementSibling.querySelector('textarea').value.trim();
-        if (iterations[parent.dataset.which].edit == null) {
-            iterations[parent.dataset.which]["edit"] = {};
-        }
-        if (parent.dataset.which ==  0) {
-            const inputTitleValue = this.previousElementSibling.querySelector('input').value.trim(); 
-            iterations[parent.dataset.which].edit[parent.dataset.iteration] = [parseInt(parent.dataset.forwhich), inputTitleValue, value];
-            // iterations[this.dataset.which].edit[iteration][0] = this.previousElementSibling.querySelector('input').value.trim();
-            // iterations[this.dataset.which].edit[iteration][1] = value.trim();
-            this.parentElement.nextElementSibling.querySelector('a').innerText = inputTitleValue.trim();
-            this.parentElement.nextElementSibling.querySelector('a').setAttribute('href', value.trim());
-        } else {
-            iterations[parent.dataset.which].edit[parent.dataset.iteration] = value.trim();
-            this.parentElement.parentElement.querySelector('.data').querySelector('p').innerText = value.trim();
-        }
-
-        toggleEditIterationContainer()
+    const deleteIterationButtons = document.querySelectorAll('.delete-iteration');
+    deleteIterationButtons.forEach(item => { 
+        item.addEventListener('click', function() {
+            // <div class=table-data> <div class=data> <button editbutton>
+            const iterationId = item.parentElement.parentElement.dataset.id; 
+            deleteIteration(iterationId)
+        })
     })
 
 
+    //////
+    // Main form submission
+    /////
+    const mainForm = document.querySelector('#note-edit-form');
+    document.querySelector('#note-edit-button').addEventListener('click', function() {
+        mainForm.submit()
+    })
 })
