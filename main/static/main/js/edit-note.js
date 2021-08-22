@@ -1,3 +1,4 @@
+let iterations = null;
 document.addEventListener('DOMContentLoaded', function() {
     const brain = document.querySelector('nav img');
 
@@ -34,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // 2 = iterations_two
     // 3 = general 
     // this object will be queried when the main form is submitted to retrieve information regarding (added, deleted, edited) iterations. 
-    var iterations = {1: {}, 0: {}, 2:{}, 3: {}}; 
+    iterations = {1: {}, 0: {}, 2:{}, 3: {}}; 
 
     // this function is run as an event funciton therefore, is passed e
     function addItem(object) {
@@ -43,35 +44,44 @@ document.addEventListener('DOMContentLoaded', function() {
         // since we are adding an item we are going to increase the length dataset value of the button indicating that total iterations in the buttons section has increased by 1
         target.dataset.length = parseInt(target.dataset.length) + 1;
 
-        // container which will store each iteration (not used for links because each link is stored inside a container.table-data, each link is a div.data in a div.table-data)
         const container = document.createElement('div');
-        container.classList.add('table-data')
+        let dataContainer = null;
+        if (target.dataset.which == 0) {
+            // this will store all the information of an item
+            // purpose for separation is because the editIterationContainer is appended to each div.table-data giving the illusion of converting each row into its relative input.
+            // in order to perform the illusion, we need to reveal the appended form and hide the data in table-data which is why I encapsulated the item data into a div of its own.
+            container.classList.add('data')
+        } else {
+            dataContainer = document.createElement('div');
+            dataContainer.classList.add('data')
+            // table-data which will store each iteration (not used for links because each link is stored inside a container.table-data, each link is a div.data in a div.table-data)
+            container.classList.add('table-data')
+        }
+
+        container.dataset.which = target.dataset.which;
+        // settings the iteration dataset value to be the current buttons parents parent total length of .table-data divs plus one (plus one because we are adding this item)
+        container.dataset.iteration = parseInt(target.dataset.length);
 
         // each div.table-data contains an h4 that lets the user know what a current iteration is
         // for normal iterations it would display what iteration a text is in example: Iteration X, followed by text
         // for links if there is not a link section for a certain step 1 section then this iterationHeader is used to display the following in the .table-data: "Links for iteration: x"
         const iterationHeader = document.createElement('h4');
 
-        // this will store all the information of an item
-        // purpose for separation is because the editIterationContainer is appended to each div.table-data giving the illusion of converting each row into its relative input.
-        // in order to perform the illusion, we need to reveal the appended form and hide the data in table-data which is why I encapsulated the item data into a div of its own.
-        const dataContainer = document.createElement('div'); 
-        dataContainer.classList.add('data')
+        // add item button always succeeds a textarea field, grab that field as the values we want are going to be stored there
+        const textarea = target.previousElementSibling;
 
-        // as stated before, target = button that was clicked, due to the layout of the form each add iteration(or link) button succeeds an input and or textarea.
-        const input = target.previousElementSibling;
-
+        // edit button that is used for all type of items (link, iteration)
         const editButton = document.createElement('button');
         editButton.setAttribute('type', 'button')
         editButton.classList.add('edit-iteration')
         editButton.addEventListener('click', editButtonFunctionality)
         editButton.innerText = 'Edit';
+        editButton.dataset.added = true;
 
-        // if the current button dataset value added does not exist
+        // when we add a value we store all the added values in a map {'added': [list of added items]} in the server we check if added is in the available keys if so add the values
         if (target.dataset.added == null) {
             // assign an empty list to added key in the object
-            // NOTE: that target.dataset.which is used to reference which iterations section we are on, above (where iterations was declared) a comment on which = certain section
-            iterations[target.dataset.which].added = [];
+            iterations[target.dataset.which]["added"] = [];
             // update buttons dataset added value 
             target.dataset.added = true;
         }
@@ -83,30 +93,27 @@ document.addEventListener('DOMContentLoaded', function() {
             let linkTitle = document.querySelector('#link-title');
 
             // each link contains the following format: [iteration of step 1 choosen, link title to be displayed when rendering, link href to be used]
-            iterations[target.dataset.which].added.push([iterationChoosen, linkTitle.value.trim(), input.value.trim()]);
+            iterations[target.dataset.which].added.push([iterationChoosen, linkTitle.value.trim(), textarea.value.trim()]);
 
             // creating the a tag to store the newly added link
             const a = document.createElement('a');
-            let temp = input.value;
-            a.setAttribute('href', input.value)
+            a.setAttribute('href', textarea.value.trim())
             a.setAttribute('target', '_blank')
-            a.innerText = linkTitle.value;
+            a.innerText = linkTitle.value.trim();
+
+            container.dataset.forwhich = iterationChoosen;
 
             // adding link to dataContainer
-            dataContainer.appendChild(a)
+            container.appendChild(a)
+            container.appendChild(editButton)
 
+            // clearing link form fields (link title, link href (textarea))
             linkTitle.value = "";
-            input.value = "";
+            textarea.value = "";
 
             // garbage collect
             linkTitle = null;
-
-
-            // settings the iteration dataset value to be the current buttons parents parent total length of .table-data divs plus one (plus one because we are adding this item)
-            editButton.dataset.iteration = target.parentElement.parentElement.querySelector('.table-data').length+1;
-
         } else {
-            editButton.dataset.iteration = target.dataset.length;
             let emptyIterationP = target.parentElement.parentElement.querySelector('p');
             if (emptyIterationP && emptyIterationP.innerText.startsWith('No')) {
                 // remove since a new item is being added therefore no longer being empty 
@@ -116,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function() {
             emptyIterationP = null;
 
             // format here is different than the format for links because this is simply adding text unlike links which contains iteration choosen, title, and text therefore we can simply concat a value with existing array in added
-            iterations[target.dataset.which].added = iterations[target.dataset.which].added.concat(input.value.trim());
+            iterations[target.dataset.which].added = iterations[target.dataset.which].added.concat(textarea.value.trim());
 
             // since links is mainly meant for step 1 (solve after acquiring gaps in explanation) each time this newItem function is run on 1 (1 = new step 1 iteration) then add an option to store links
             // in the newly added iteration for step 1
@@ -130,42 +137,39 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             const p = document.createElement('p');
-            p.innerText = input.value;
+            p.innerText = textarea.value;
             dataContainer.appendChild(p)
+            dataContainer.appendChild(editButton)
         }
-
-        editButton.dataset.which = target.dataset.which;
-        dataContainer.appendChild(editButton);
-
-        const forwhich = parseInt(document.querySelector('#forwhich').value);
-        const tempp = target.parentElement.parentElement.children[forwhich];
-        dataContainer.dataset.forwhich = forwhich;
-        dataContainer.dataset.which = target.dataset.which;
-
+        
         // if button clicked to add new item is not links section
         if (target.dataset.which != 0) { 
             iterationHeader.innerText = `Iteration: ${target.dataset.length}`;
             container.classList.add('note-iteration')
             container.appendChild(iterationHeader)
             container.appendChild(dataContainer)
+            // insert newly added container before the add form of the iteration container
             target.parentElement.parentElement.insertBefore(container, target.parentElement)
-        } else if (target.dataset.which == 0 && document.querySelector('#links-data').querySelectorAll('.table-data').length > parseInt(document.querySelector('#forwhich').value)) {
-            // ^ if button was in links section and links section td contains table data whose index is relative to the forwhich value selected then append link to thus container
-            const forwhichcontainer = document.querySelector('#links-data').querySelectorAll('.table-data')[parseInt(document.querySelector('#forwhich').value)];
-            forwhichcontainer.appendChild(dataContainer)
-            dataContainer.dataset.iteration = forwhichcontainer.querySelector('.data').length+1;
-        } else if (target.dataset.which == 0 && document.querySelector('#links-data').querySelectorAll('.table-data').length <= parseInt(document.querySelector('#forwhich').value)) {
-            // ^ otherwise if button in links section and links section td does not contain a table data of index equal to selected forwhich value
-            iterationHeader.innerText = `Links for iteration: ${document.querySelector('#forwhich').value}`;
-            // append the container that encapsulates dataContainer (<div.table-data>__space for edit form___<div.data>__space for actual information such as p, a)
-            container.appendChild(iterationHeader)
-            container.appendChild(dataContainer)
-            target.parentElement.parentElement.insertBefore(container, target.parentElement)
-            // just created so the length is goign to be 1
-            dataContainer.dataset.iteration = 1;
+        }else if (target.dataset.which == 0) {
+            const linksData = document.querySelector('#links-data');
+            const tableData = linksData.querySelectorAll('.table-data');
+            const forwhich = document.querySelector('#forwhich').value;
+            if (tableData.length > parseInt(forwhich.value)) {
+                // ^ if button was in links section and links section td contains table data whose index is relative to the forwhich value selected then append link to thus container
+                const forwhichcontainer = tableData[parseInt(forwhich)];
+                forwhichcontainer.appendChild(dataContainer)
+                // dataContainer.dataset.iteration = forwhichcontainer.querySelector('.data').length+1;
+            } else if (tableData.length <= parseInt(forwhich)) {
+                // ^ otherwise if button in links section and links section td does not contain a table data of index equal to selected forwhich value
+                iterationHeader.innerText = `Links for iteration: ${document.querySelector('#forwhich').value}`;
+                // append the container that encapsulates dataContainer (<div.table-data>__space for edit form___<div.data>__space for actual information such as p, a)
+                container.insertBefore(iterationHeader, container.firstChild)
+                target.parentElement.parentElement.insertBefore(container, target.parentElement)
+                // just created so the length is goign to be 1
+                // dataContainer.dataset.iteration = 1;
+            }
         }
-
-        input.value = "";
+        textarea.value = "";
     }
 
     addButtons.forEach(item => {
@@ -255,13 +259,16 @@ document.addEventListener('DOMContentLoaded', function() {
             // edit container when using links is appended before the data div taht we are trying to edit, therefore if in links we want to get the next element
             parent = editIterationContainer.nextElementSibling;
         }
+        // if (parent.querySelector('.edit-iteration').dataset.added) {
+        //     // just added do not choose anything for edited.
+        // }
         const value = this.previousElementSibling.querySelector('textarea').value.trim();
         if (iterations[parent.dataset.which].edit == null) {
-            iterations[parent.dataset.which].edit = {};
+            iterations[parent.dataset.which]["edit"] = {};
         }
         if (parent.dataset.which ==  0) {
             const inputTitleValue = this.previousElementSibling.querySelector('input').value.trim(); 
-            iterations[parent.dataset.which].edit[parent.dataset.iteration] = [parent.dataset.forwhich, inputTitleValue, value];
+            iterations[parent.dataset.which].edit[parent.dataset.iteration] = [parseInt(parent.dataset.forwhich), inputTitleValue, value];
             // iterations[this.dataset.which].edit[iteration][0] = this.previousElementSibling.querySelector('input').value.trim();
             // iterations[this.dataset.which].edit[iteration][1] = value.trim();
             this.parentElement.nextElementSibling.querySelector('a').innerText = inputTitleValue.trim();

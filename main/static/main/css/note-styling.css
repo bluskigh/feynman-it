@@ -41,4 +41,21 @@ textarea::placeholder {
     border: none;
     padding: 0;
 }
+.links-separator {
+    width: 20%;
+    border-color: gray;
+    margin: .5em 0;
+}
+.link-data button {
+    background: transparent;
+    border: 1px solid white;
+    border-radius: .5em;
+    color: white;
+    font-size: .6em;
+}
+.link-data .delete-link {
+    background: red; 
+    color: darkred; 
+    border: none;
+}
 /* End of Note Styling */

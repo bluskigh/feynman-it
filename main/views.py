@@ -15,7 +15,7 @@ from django.db.models import Q
 
 from json import loads, dumps
 
-from .models import User, Note, Folder 
+from .models import User, Note, Folder, Link, Iteration
 
 
 class NewFolderForm(ModelForm):
@@ -70,7 +70,6 @@ class NewNoteForm(ModelForm):
         model = Note 
         fields = ['title']
 
-
     def clean_title(self):
         title = self.cleaned_data.get('title')
         if not len(title):
@@ -82,21 +81,19 @@ class LargeTextField(forms.Field):
     """Utilizes text area widget, and converts data from widget into json"""
     widget = forms.Textarea
 
-
     def __init__(self, *, placeholder='', empty_value='', **kwargs):
         self.empty_value = empty_value
         self.placeholder = placeholder 
         super().__init__(**kwargs)
 
-
     def to_python(self, value):
         if value not in self.empty_value:
             # should be an array of values
             data = loads(value)
+            print(data)
             return data
         else:
             return self.empty_value 
-
 
     def widget_attrs(self, widget):
         attrs = super().widget_attrs(widget)
@@ -106,12 +103,13 @@ class LargeTextField(forms.Field):
 
 
 class NoteForm(ModelForm):
-    step_one_iterations = LargeTextField(required=False, placeholder='Enter iteration for step one')
-    step_two_iterations = LargeTextField(required=False, placeholder='Enter iteration for step two')
-    links = LargeTextField(required=False, placeholder='Enter link here') 
+    # step_one_iterations = LargeTextField(required=False, placeholder='Enter iteration for step one')
+    # step_two_iterations = LargeTextField(required=False, placeholder='Enter iteration for step two')
+    # links = LargeTextField(required=False, placeholder='Enter link here') 
+
     class Meta:
         model = Note
-        exclude = ['owner', 'folder']
+        exclude = ['owner', 'folder', 'step_one_iterations', 'step_two_iterations', 'links']
 
 
 class FolderForm(forms.Form):
@@ -138,6 +136,85 @@ def notes(request):
     return render(request, 'main/notes.html', {
         'notes': [n.basic_information() for n in Note.objects.filter(owner=request.user)], 
         'new_note_form': NewNoteForm()})
+
+
+@login_required
+def iterations(request, id=None):
+    if request.method == 'POST':
+        data = loads(request.body)
+        noteid = data.get('noteid')
+        title = data.get('title')
+        text = data.get('text')
+        which = data.get('which')
+        if not noteid or not title or not text or not which:
+            return HttpResponse(status=400)
+        note = Note.objects.get(id=noteid)
+        iteration = Iteration(title=title, text=text)
+        if which == 1:
+            iteration.note_step_one = note 
+        else:
+            iteration.note_step_two = note
+        iteration.save()
+        return JsonResponse({'id': iteration.id}, status=200)
+
+
+@login_required
+def iteration(request, id):
+    try:
+        iteration = Iteration.objects.get(id=id)
+    except:
+        return HttpResponse(status=400)
+
+    if (iteration.note_step_one and iteration.note_step_one.owner == request.user) or (iteration.note_step_two and iteration.note_step_two.owner == request.user):
+        if request.method == 'DELETE':
+            iteration.delete()
+            return HttpResponse(status=200)
+        elif request.method == 'PATCH':
+            data = loads(request.body)
+            title = data.get('title')
+            text = data.get('text')
+            if title:
+                iteration.title = title
+            if text:
+                iteration.text = text
+            iteration.save()
+            return HttpResponse(status=200)
+        
+    return HttpResponse(status=400)
+
+
+@login_required
+def links(request):
+    """POST request requires following: title, href"""
+    if request.method == 'POST':
+        data = loads(request.body)
+        if not data.get('title') or not data.get('href') or not data.get('noteid'):
+            # invalid request
+            return HttpResponse(status=400)
+        note = Note.objects.get(id=data.get('noteid'))
+        link = Link(title=data.get('title'), href=data.get('href'))
+        if data.get('which') == 0:
+            print('added a genral note')
+            link.general = note
+        else:
+            iteration = Iteration.objects.get(id=data.get('which'))
+            link.which_iteration = iteration
+        link.save()
+        # for now just return id, on frontend we will wait until this id is returned back
+        return JsonResponse({'id': link.id}, status=200)
+
+
+@login_required
+def link(request, id):
+    link = Link.objects.get(id=id)
+    if link is None:
+        return HttpResponse(status=400)
+    if request.method == 'DELETE':
+        link.delete()
+        return HttpResponse(status=200)
+    elif request.method == 'POST':
+        # do some updating stuff here
+        pass
 
 
 @login_required
@@ -187,38 +264,10 @@ def edit_note(request, id):
         if form.is_valid():
             changed_data = form.changed_data
             cleaned_data = form.cleaned_data
-            # updating
-            if 'step_three' in changed_data:
-                note.step_three = cleaned_data.get('step_three')
             if 'title' in changed_data:
                 note.title = cleaned_data.get('title')
-            if 'step_one_iterations' in changed_data:
-                soi = cleaned_data.get('step_one_iterations')
-                # user updated iteration
-                if soi.get('edit'):
-                    for key in soi.get('edit'):
-                        note.step_one_iterations[int(key)-1] = soi.get('edit').get(key)
-                else:
-                    if soi.get('added'):
-                        note.step_one_iterations.extend(soi.get('added'))
-            if 'step_two_iterations' in changed_data:
-                sti = cleaned_data.get('step_two_iterations')
-                if sti.get('edit'):
-                    for key in sti.get('edit'):
-                        note.step_two_iterations[int(key)-1] = sti.get('edit').get(key)
-                else:
-                    if sti.get('added'):
-                        note.step_two_iterations.extend(sti.get('added'))
-            if 'links' in changed_data:
-                l = cleaned_data.get('links')
-                if l.get('edit'):
-                    for key in l.get('edit'):
-                        note.links[int(key)] = l.get('edit').get(key)
-                else:
-                    if l.get('added'):
-                        for arr in l.get('added'):
-                            note.links.append(arr)
-                            # note.links.extend(l.get('added'))
+            if 'step_three' in changed_data:
+                note.step_three = cleaned_data.get('step_three')
             note.understand = cleaned_data.get('understand')
             note.save()
             return HttpResponseRedirect(reverse('view_note', kwargs={'id': id}))

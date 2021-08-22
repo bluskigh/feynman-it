@@ -6,13 +6,14 @@
 <link rel="stylesheet" href="{% static 'main/css/table-styles.css' %}" type="text/css">
 {% endblock %}
 {% block container_start %}
+<input type="text" style="display: none;" name="noteid" value={{note.id}}>
 {{ form.errors }}
 <section id="edit-iteration-container" class="display-none">
     <div style="display: flex; align-items: center; flex-direction: column;">
-        <input type="text" name="title" class="display-none">
+        <input type="text" name="title"> 
         <textarea name="text" class="edit" cols="30" rows="10"></textarea>
     </div>
-    <button type="button" class="save-edit">Save Edit</button>
+    <button type="button" class="save">Save Edit</button>
     <button type="button" class="close">Close</button>
 </section>
 <form action="{% url 'edit_note' note.id %}" method="POST" id="note-edit-form">
@@ -24,8 +25,9 @@
 </tr>
 {% endblock %}
 {% block iterations_one %}
-<div class="iteration-input">
-    {{ form.step_one_iterations }}
+<div class="iteration-input" id="iteration-one-form">
+    <input type="text" id="step_one_title" placeholder="Iteration Title">
+    <textarea name="step_one_iterations" id="id_step_one_iterations" cols="40" rows="10" placeholder="Enter iterations for step one"></textarea>
     <button class="add-button" type="button" data-which=1 data-length={{note.iterations_one|length}}>Add Iteration</button>
 </div>
 {% endblock %}
@@ -35,18 +37,20 @@
         <!-- <label for="forwhich">Link for iteration: </label> -->
         <select name="forwhich" id="forwhich">
             <option value="0">General</option>
-            {% for iteration in note.iterations_one %}
-            <option value="{{ forloop.counter }}">Iteration {{ forloop.counter }}</option>
+            {% for iteration in note.step_one_iterations %}
+            <option value="{{iteration.id}}">Iteration: {{forloop.counter}}</option>
             {% endfor %}
         </select>
         <input type="text" placeholder="Link Title" id="link-title" style="width: 100%;">
     </div>
-    {{ form.links }}
+    <textarea name="links" id="id_links" cols="40" rows="10" placeholder="Enter href for link"></textarea>
     <button class="add-button" type="button" data-which=0 data-length={{note.links|length}}>Add Link</button>
 </div>
 {% endblock %}
 {% block step_two_iterations %}
-<div class="iteration-input">
+<div class="iteration-input" id="iteration-two-form">
+    <input type="text" id="step_two_title" placeholder="Iteration Title">
+    <textarea name="step_two_iterations" id="id_step_two_iterations" cols="40" rows="10" placeholder="Enter iterations for step two"></textarea>
     {{ form.step_two_iterations }}
     <button class="add-button" type="button" data-which=2 data-length={{note.iterations_two|length}}>Add Iteration</button>
 </div>
@@ -64,6 +68,6 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="{% static 'main/js/edit-note.js' %}"></script>
+<script src="{% static 'main/js/edit-note2.js' %}"></script>
 <script src="{% static 'main/js/note-animation.js' %}"></script>
 {% endblock %}
