@@ -373,7 +373,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     parent.querySelector('.iteration-text').innerText = editText.value.trim();
                 } catch(e) {
                     parent.querySelector('.data').querySelector('a').innerText = editInput.value.trim();
-                    parent.querySelector('.data').querySelector('a').setAttribute('href', editInput.value.trim())
+                    parent.querySelector('.data').querySelector('a').setAttribute('href', editText.value.trim())
                 }
                 resetEditForm()
             }
