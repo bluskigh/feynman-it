@@ -22,7 +22,7 @@
                             {% if iteration.links %}
                                 {% for link in iteration.links %}
                                 <div class="link-container" data-linkid={{link.id}}>
-                                    <div class="link-data">
+                                    <div class="data">
                                         <a href="{{ link.href }}" target="_blank">{{ link.title }}</a>
                                         {% if 'edit' in request.path %}
                                         <button type="button" class="edit-link">Edit</button>
@@ -57,7 +57,7 @@
                 {% if note.general_links %}
                     {% for link in note.general_links %}
                         <div class="link-container" data-linkid={{link.id}}>
-                            <div class="link-data">
+                            <div class="data">
                                 <a href="{{ link.href }}" target="_blank">{{ link.title }}</a>
                                 {% if 'edit' in request.path %}
                                 <button type="button" class="edit-link">Edit</button>

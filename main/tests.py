@@ -1,8 +1,9 @@
 from django.test import TestCase, Client
 from django.db.models import Q
 from django.contrib.auth.models import Permission
+from django.shortcuts import reverse
 
-from .models import User, Note, Folder
+from .models import User, Note, Folder, Iteration, Link
 
 from json import dumps, loads
 
@@ -41,41 +42,65 @@ class TestApp(TestCase):
     def test_add_note(self):
         """Test the creation of a note"""
         self.test_login()
-        response = self.client.post('/new_note/', content_type='application/json', data={'title': 'Testing note'})
+        response = self.client.post(reverse('new_note'), content_type='application/json', data={'title': 'Testing note'})
         self.assertTrue(Note.objects.count())
         self.assertEqual(response.status_code, 200)
     
 
-    def test_edit_note(self):
-        """Test editing note"""
+    def test_add_iteration(self, which=1, title='First iteration'):
+        """Test adding an iteration to notes. Default adds to step one"""
         self.test_add_note()
-
-        print('>>>>>>>>>>>>>>Editing note')
-
-        print('>>>>Before editing')
         note = Note.objects.get(title='Testing note')
-        print(note.more_information())
-        # The way I have it done is the data is sent as a JSON string where once the to_python() coerces the value back to a data type it knows to load the dumped json text
-        response = self.client.post(f'/notes/{note.id}/edit/', data={'title': 'Edited testing note', 
-            'step_one_iterations': dumps({'added': ['Some random text.', 'Another random text', 'With commas,,,yes']}), 
-            'step_two_iterations': '',
-            'links': dumps({'1': ['1', 'First link title', 'google.com']}),
-            'step_three': '', 'understand': '' })
+        response = self.client.post(reverse('iterations'), content_type='application/json', data={'title': title, 'text': 'This is the text of the iteration', 'noteid': note.id, 'which': which})
+        iteration = Iteration.objects.get(title=title)
+        self.assertTrue(iteration)
+        note = Note.objects.get(title='Testing note')
+        if which == 1:
+            self.assertEqual(note.step_one_iterations.count(), 1)
+        elif which == 2:
+            self.assertEqual(note.step_two_iterations.count(), 1)
 
-        print('>>>>After first edit')
-        note = Note.objects.get(title='Edited testing note')
-        print(note.more_information())
-        response = self.client.post(f'/notes/{note.id}/edit/', data={'title': 'Edited testing note', 
-            'step_one_iterations': dumps({'edit': {'1': 'Edited some random text'}}),
-            'step_two_iterations': dumps({'added': ['Second iteration first']}),
-            'links': '', 'step_three': 'Final step should be loaded', 'understand': True })
+    def test_add_step_one_iteration(self):
+        """Test adding iteration to step_two"""
+        self.test_add_iteration(which=2, title='Second iteration')
 
-        print('>>>>After second edit')
-        note = Note.objects.get(title='Edited testing note')
-        print(note.more_information())
-        # note still same, not modified
-        self.assertEqual(len(note.step_one_iterations), 3)
-        self.assertEqual(note.step_one_iterations[0], 'Edited some random text')
+
+    def test_add_link(self):
+        """Test add link to iteration"""
+        self.test_add_iteration()
+        note = Note.objects.get(title='Testing note')
+        iteration = note.step_one_iterations.get(title='First iteration')
+        response = self.client.post(reverse('links'), content_type='application/json', data={'title': 'First link', 'href': 'https://cs50.com', 'which': iteration.id, 'noteid': note.id})
+
+        iteration = note.step_one_iterations.get(title='First iteration')
+        self.assertTrue(Link.objects.get(title='First link'))
+        self.assertEqual(iteration.links.count(), 1)
+
+    def test_general_link(self):
+        """Test adding a general link"""
+        self.test_add_note()
+        note = Note.objects.get(title='Testing note')
+        response = self.client.post(reverse('links'), content_type='application/json', data={'title': 'General link', 'href': 'https://cs50.com', 'which': 0, 'noteid': note.id})
+        note = Note.objects.get(title='Testing note')
+        self.assertTrue(note.general_links)
+        self.assertEqual(note.general_links.count(), 1)
+
+    def test_delete_link(self):
+        """Test delete link and compare length of note links"""
+        self.test_add_link()
+        link = Link.objects.get(title='First link')
+        response = self.client.delete(reverse('link', kwargs={'id': link.id}))
+        iteration = Iteration.objects.get(title='First iteration')
+        self.assertEqual(iteration.links.count(), 0)
+
+    def test_edit_link(self):
+        """Test editing a link, only update title and not href"""
+        self.test_add_link()
+        link = Link.objects.get(title='First link')
+        response = self.client.patch(reverse('link', kwargs={'id': link.id}), content_type='application/json', data={'title': 'First link edited', 'href': None})
+        link = Link.objects.get(title='First link edited')
+        self.assertTrue(link)
+        self.assertEqual(link.href, 'https://cs50.com')
 
 
     def test_add_folder(self):

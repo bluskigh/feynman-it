@@ -190,7 +190,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log(title, href, which, id)
         /*
         <div class="link-container">
-            <div class="link-data">
+            <div class="data">
                 .. title etc here, edit buttons and what not
             </div>
             .. here is where we would append or insert the edit form
@@ -201,7 +201,7 @@ document.addEventListener('DOMContentLoaded', function() {
        linkContainer.classList.add('link-container')
 
        const linkData = document.createElement('div');
-       linkData.classList.add('link-data')
+       linkData.classList.add('data')
 
        const link = document.createElement('a');
        link.setAttribute('href', href)
@@ -338,38 +338,62 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        const iterationId = this.parentElement.parentElement.dataset.id; 
-        fetch(`/iterations/${iterationId}/`, {
+        let iterationId = null;
+        let route = null;
+        let body = {'title': titleValue, 'text': textValue};
+        let dataQuery = null;
+
+        if (this.parentElement.parentElement.classList.contains('link-container')) {
+            iterationId = this.parentElement.parentElement.dataset.linkid;
+            route = `/links/${iterationId}/`;
+            body['which'] = linkWhich.value;
+            dataQuery = `[data-linkid="${iterationId}"]`;
+        } else {
+            iterationId = this.parentElement.parentElement.dataset.id; 
+            route = `/iterations/${iterationId}/`;
+            dataQuery = `[data-id="${iterationId}"]`;
+        }
+
+        fetch(route, {
             method: "PATCH",
             mode: "same-origin",
             headers: new Headers(customHeaders),
-            body: JSON.stringify({
-                'title': titleValue, 'text': textValue
-            })
+            body: JSON.stringify(body)
         })
         .then(async r => {
             if (r.status == 400) {
-                alert('Could not save edit of iteration!')
+                alert('Could not save edit!') 
             } else {
                 // save updated into relative fields
-                const parent = document.querySelector(`[data-id="${iterationId}"]`);
-                parent.querySelector('.iteration-title').innerText = editInput.value.trim();
-                parent.querySelector('.iteration-text').innerText = editText.value.trim();
+                const parent = document.querySelector(dataQuery);
+                try {
+                    parent.querySelector('.iteration-title').innerText = editInput.value.trim();
+                    parent.querySelector('.iteration-text').innerText = editText.value.trim();
+                } catch(e) {
+                    parent.querySelector('.data').querySelector('a').innerText = editInput.value.trim();
+                    parent.querySelector('.data').querySelector('a').setAttribute('href', editInput.value.trim())
+                }
                 resetEditForm()
             }
         })
     })
 
-    function useEditForm(iterationId) {
+    function useEditForm(iterationId, islink=false) {
         resetEditForm()
-        const tableData = document.querySelector(`[data-id="${iterationId}"]`);
+        const tableData = document.querySelector(`[data-${islink?"linkid":"id"}="${iterationId}"]`)
+        const data = tableData.querySelector('.data');
         // move the form to iteration to last child of .table-data
         tableData.insertBefore(editForm, tableData.lastElementChild)
         // then hide .data of .table-data
-        tableData.querySelector('.data').classList.add('display-none')
+        data.classList.add('display-none')
         // fill editForm input/textarea with iteration title and text
-        editInput.value = tableData.querySelector('.iteration-title').innerText;
-        editText.value = tableData.querySelector('.iteration-text').innerText;
+        if (islink) {
+            editInput.value = data.querySelector('a').innerText;
+            editText.value = data.querySelector('a').getAttribute('href');
+        } else {
+            editInput.value = tableData.querySelector('.iteration-title').innerText;
+            editText.value = data.querySelector('.iteration-text').innerText;
+        }
         // reveal the editForm
         editForm.classList.remove('display-none')
         window.localStorage.setItem('editInputOriginal', editInput.value)
@@ -381,6 +405,14 @@ document.addEventListener('DOMContentLoaded', function() {
         item.addEventListener('click', ()=>{
             const iterationId = item.parentElement.parentElement.dataset.id; 
             useEditForm(iterationId)
+        })
+    })
+    const editLinkButtons = document.querySelectorAll('.edit-link');
+    editLinkButtons.forEach(item => {
+        item.addEventListener('click', () => {
+            const iterationId = item.parentElement.parentElement.dataset.linkid; 
+            console.log(iterationId)
+            useEditForm(iterationId, islink=true)
         })
     })
 

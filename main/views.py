@@ -194,7 +194,6 @@ def links(request):
         note = Note.objects.get(id=data.get('noteid'))
         link = Link(title=data.get('title'), href=data.get('href'))
         if data.get('which') == 0:
-            print('added a genral note')
             link.general = note
         else:
             iteration = Iteration.objects.get(id=data.get('which'))
@@ -211,10 +210,16 @@ def link(request, id):
         return HttpResponse(status=400)
     if request.method == 'DELETE':
         link.delete()
-        return HttpResponse(status=200)
-    elif request.method == 'POST':
-        # do some updating stuff here
-        pass
+    elif request.method == 'PATCH':
+        data = loads(request.body)
+        title = data.get('title')
+        text = data.get('text')
+        if title is not None:
+            link.title = title
+        if text is not None:
+            link.text = text
+        link.save()
+    return HttpResponse(status=200)
 
 
 @login_required
