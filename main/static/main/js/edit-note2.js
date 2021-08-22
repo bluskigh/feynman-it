@@ -435,6 +435,9 @@ document.addEventListener('DOMContentLoaded', function() {
             if (parseInt(iteration.dataset.id) > iterationId) {
                 iteration.dataset.iteration = parseInt(iteration.dataset.iteration) - 1;
                 iteration.querySelector('.iteration-count').innerText = `(${iteration.dataset.iteration})`;
+                // update iteration relative option value in selec field tag
+                const option = linkWhich.querySelector(`[value="${iteration.dataset.id}"]`);
+                option.innerText = `Iteration: ${iteration.dataset.iteration}`;
             }
         }
         // remove option for removed iteration in which select field 

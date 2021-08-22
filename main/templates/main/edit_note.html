@@ -10,7 +10,7 @@
 {{ form.errors }}
 <section id="edit-iteration-container" class="display-none">
     <div style="display: flex; align-items: center; flex-direction: column;">
-        <input type="text" name="title"> 
+        <input type="text" name="title" autocomplete="off"> 
         <textarea name="text" class="edit" cols="30" rows="10"></textarea>
     </div>
     <button type="button" class="save">Save Edit</button>
@@ -26,7 +26,7 @@
 {% endblock %}
 {% block iterations_one %}
 <div class="iteration-input" id="iteration-one-form">
-    <input type="text" id="step_one_title" placeholder="Iteration Title">
+    <input type="text" id="step_one_title" placeholder="Iteration Title" autocomplete="off">
     <textarea name="step_one_iterations" id="id_step_one_iterations" cols="40" rows="10" placeholder="Enter iterations for step one"></textarea>
     <button class="add-button" type="button" data-which=1 data-length={{note.iterations_one|length}}>Add Iteration</button>
 </div>
@@ -41,7 +41,7 @@
             <option value="{{iteration.id}}">Iteration: {{forloop.counter}}</option>
             {% endfor %}
         </select>
-        <input type="text" placeholder="Link Title" id="link-title" style="width: 100%;">
+        <input type="text" placeholder="Link Title" id="link-title" style="width: 100%;" autocomplete="off">
     </div>
     <textarea name="links" id="id_links" cols="40" rows="10" placeholder="Enter href for link"></textarea>
     <button class="add-button" type="button" data-which=0 data-length={{note.links|length}}>Add Link</button>
@@ -49,7 +49,7 @@
 {% endblock %}
 {% block step_two_iterations %}
 <div class="iteration-input" id="iteration-two-form">
-    <input type="text" id="step_two_title" placeholder="Iteration Title">
+    <input type="text" id="step_two_title" placeholder="Iteration Title" autocomplete="off">
     <textarea name="step_two_iterations" id="id_step_two_iterations" cols="40" rows="10" placeholder="Enter iterations for step two"></textarea>
     {{ form.step_two_iterations }}
     <button class="add-button" type="button" data-which=2 data-length={{note.iterations_two|length}}>Add Iteration</button>

@@ -19,13 +19,14 @@ from .models import User, Note, Folder, Link, Iteration
 
 
 class NewFolderForm(ModelForm):
+    title = forms.CharField(max_length=64, widget=forms.TextInput(attrs={'autocomplete': 'off'}))
     class Meta:
         model = Folder 
-        exclude = ['owner']
+        exclude = ['owner', 'title']
 
 
 class LoginForm(forms.Form):
-    username = forms.CharField(max_length=64)
+    username = forms.CharField(max_length=64, widget=forms.TextInput(attrs={'autocomplete': 'off'}))
     password = forms.CharField(widget=forms.PasswordInput)
 
 
@@ -45,7 +46,7 @@ class LoginForm(forms.Form):
 
 class RegisterForm(LoginForm):
     field_order = ['username', 'email', 'password', 'confirmation']
-    email = forms.CharField(widget=forms.EmailInput)
+    email = forms.CharField(widget=forms.EmailInput(attrs={'autocomplete': 'off'}))
     confirmation = forms.CharField(widget=forms.PasswordInput, 
             error_messages={'required': 'Please Re-Enter your password \
                     for confirmation'})
@@ -66,6 +67,7 @@ class RegisterForm(LoginForm):
 
 
 class NewNoteForm(ModelForm):
+    title = forms.CharField(max_length=64, widget=forms.TextInput(attrs={'autocomplete': 'off'}))
     class Meta:
         model = Note 
         fields = ['title']
@@ -79,7 +81,7 @@ class NewNoteForm(ModelForm):
 
 class LargeTextField(forms.Field):
     """Utilizes text area widget, and converts data from widget into json"""
-    widget = forms.Textarea
+    widget = forms.Textarea(attrs={'autocomplete': 'off'})
 
     def __init__(self, *, placeholder='', empty_value='', **kwargs):
         self.empty_value = empty_value
@@ -103,10 +105,6 @@ class LargeTextField(forms.Field):
 
 
 class NoteForm(ModelForm):
-    # step_one_iterations = LargeTextField(required=False, placeholder='Enter iteration for step one')
-    # step_two_iterations = LargeTextField(required=False, placeholder='Enter iteration for step two')
-    # links = LargeTextField(required=False, placeholder='Enter link here') 
-
     class Meta:
         model = Note
         exclude = ['owner', 'folder', 'step_one_iterations', 'step_two_iterations', 'links']
