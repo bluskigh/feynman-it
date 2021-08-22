@@ -58,4 +58,7 @@ textarea::placeholder {
     color: darkred; 
     border: none;
 }
+.link-container a {
+    text-decoration: underline;
+}
 /* End of Note Styling */

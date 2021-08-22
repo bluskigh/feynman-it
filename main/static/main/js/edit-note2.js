@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', function() {
         editButton.style.marginRight = ".5em";
         editButton.setAttribute('type', 'button')
         editButton.classList.add('edit-iteration')
-        editButton.addEventListener('click', ()=>{editIteration(id)})
+        editButton.addEventListener('click', ()=>{useEditForm(id)})
         editButton.innerText = 'Edit';
 
         const deleteButton = document.createElement('button');
@@ -133,11 +133,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const iterationTwoFormButton = document.querySelector('#iteration-two-form .add-button');
     [iterationOneFormButton, iterationTwoFormButton].forEach(item => {
         item.addEventListener('click', function() {
-            this.disabled = true;
             // #iteration-one-form
             const parentForm = this.parentElement;
             const titleValue = parentForm.querySelector('input').value;
             const textValue = parentForm.querySelector('textarea').value;
+
+            if (titleValue.length == 0 || textValue.length == 0) {
+                return;
+            }
+
             let which = 1;
 
             if (parentForm.parentElement == stepTwoIterationsContainer) {
@@ -174,7 +178,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     parentForm.querySelector('input').value = "";
                     parentForm.querySelector('textarea').value = "";
                 } else {alert('Error: Did not recieve id.')}
-                this.disabled = false;
             })
             .catch(e => {
                 console.log(e);
@@ -214,6 +217,7 @@ document.addEventListener('DOMContentLoaded', function() {
        editButton.innerText = 'Edit';
        editButton.style.marginLeft = '.5em';
        editButton.style.marginRight = '.5em';
+       editButton.addEventListener('click', ()=>{useEditForm(id, true)})
 
        const deleteButton = document.createElement('button');
        deleteButton.classList.add('dangerous')
@@ -248,6 +252,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const title = linkTitle.value.trim();
         const href = linkHref.value.trim();
 
+        if (title.length == 0 || href.length == 0) {
+            return;
+        }
+
         // clear the link form fields
         linkHref.value = "";
         linkTitle.value = "";
@@ -262,6 +270,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(async r => {
             if (r.status == 400) {
                 alert('Could not add link!')
+                this.disabled = false;
             } else if (r.status == 200) {
                 return await r.json()
             }
@@ -271,13 +280,6 @@ document.addEventListener('DOMContentLoaded', function() {
             addLink(title, href, which, r.id)
         })
     })
-
-    ///////////////////
-    // Editing Links 
-    ///////////////////
-    function useEditFormLink(linkId) {
-
-    }
 
     ///////////////////
     // Deleting Links 
@@ -411,7 +413,6 @@ document.addEventListener('DOMContentLoaded', function() {
     editLinkButtons.forEach(item => {
         item.addEventListener('click', () => {
             const iterationId = item.parentElement.parentElement.dataset.linkid; 
-            console.log(iterationId)
             useEditForm(iterationId, islink=true)
         })
     })
