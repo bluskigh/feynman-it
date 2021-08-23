@@ -35,6 +35,15 @@
             </ul>
         </section>
     </nav>
+    {% if messages %}
+    <section id="messages">
+        {% for message in messages %}
+        <div class="message {{message.tags}}">
+            <h5>{{message}}</h5>
+        </div>
+        {% endfor %}
+    </section>
+    {% endif %}
     <main>
     {% block body %}{% endblock %}
     </main>

@@ -60,7 +60,10 @@ button {
     transition: transform .5s ease;
 }
 button:hover { cursor: pointer; }
-.warning {
+#messages {
+    width: 100%;
+}
+.warning, .error {
     background: red; 
     color: darkred;
 }
@@ -68,8 +71,13 @@ button:hover { cursor: pointer; }
     background: darkgreen;
     color: lightgreen;
 }
+.info {
+    background: blue;
+    color: lightblue;
+}
 .message {
-    width: 100%;
+    max-width: 100%;
+    word-break: break-all;
     padding: 1.5em 1em;
     box-sizing: border-box;
 }

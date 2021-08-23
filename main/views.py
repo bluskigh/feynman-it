@@ -273,6 +273,7 @@ def edit_note(request, id):
                 note.step_three = cleaned_data.get('step_three')
             note.understand = cleaned_data.get('understand')
             note.save()
+            messages.success(request, 'Successfully saved note')
             return HttpResponseRedirect(reverse('view_note', kwargs={'id': id}))
         else:
             # being naive here, error are goign to be a bit complex due to how its all structured
@@ -292,6 +293,7 @@ def new_folder(request):
     if form.is_valid():
         cd = form.cleaned_data
         Folder.objects.create(title=cd.get('title').strip(), owner=request.user)
+        messages.success(request, 'Successfully created folder')
         return HttpResponseRedirect(reverse('folders'))
     else:
         return render(request, 'main/folders.html', {'form': form, 'folders': Folder.objects.filter(owner=request.user)})
@@ -317,6 +319,7 @@ def view_folder(request, id):
                 note = Note.objects.get(id=option)
                 note.folder = folder
                 note.save()
+            messages.success(request, 'Successfully moved notes')
             return HttpResponseRedirect(reverse('view_folder', kwargs={'id': id}))
         else:
             return render(request, 'main/view_folder.html', {'folder': folder, 'notes': request.user.notes.filter(folder=folder), 'form': form})
@@ -334,10 +337,12 @@ def delete_folder(request, id):
             note.folder = deleted_folder 
             note.save()
     else:
+        messages.info(request, f'Deleted notes from "{folder.title}"')
         for note in folder.folder_notes.all():
             note.delete()
 
     if folder != all_folder and folder != deleted_folder and len(notes) == 0:
+        messages.success(request, f'Successfully deleted folder "{folder.title}"')
         folder.delete()
 
     return HttpResponseRedirect(reverse('folders'))
