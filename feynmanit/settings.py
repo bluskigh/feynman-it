@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+from dotenv import load_dotenv
 from pathlib import Path
 from os import environ
 import django_heroku
@@ -131,6 +132,9 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# extend environment variables with key:value in .env file in root dir
+load_dotenv()
 
 if environ.get('DEVELOPMENT') is None:
     django_heroku.settings(locals())

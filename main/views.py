@@ -1,3 +1,5 @@
+from os import environ
+
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse 
 from django.shortcuts import render, reverse
 from django.contrib.auth import authenticate 
@@ -16,6 +18,22 @@ from django.db.models import Q
 from json import loads, dumps
 
 from .models import User, Note, Folder, Link, Iteration
+
+AUTH_KEYS = {'AUTH_DOMAIN': environ.get('AUTH_DOMAIN'), 'AUTH_CLIENTID': environ.get('AUTH_CLIENTID'), 'AUTH_LOGIN_REDIRECT': environ.get('AUTH_LOGIN_REDIRECT')}
+
+
+def validate_jwt(token):
+    """
+    Steps:
+    1. Check that the JWT is well formed
+    2. Check the signature
+    3. Check the standard claims
+
+    1. 
+    JSON web token structure
+    """
+    pass
+
 
 
 class NewFolderForm(ModelForm):
@@ -125,7 +143,7 @@ def index(request):
 
 
 def home(request):
-    return render(request, 'main/index.html')
+    return render(request, 'main/index.html', AUTH_KEYS)
 
 
 @login_required
@@ -406,6 +424,16 @@ def login(request):
         else:
             return render(request, 'main/login.html', {'form': form})
 
+
+def login_result(request):
+    if request.method == 'GET':
+        return render(request, 'main/login_result.html')
+    elif request.method == 'POST':
+        token = request.POST.get('token')
+        if token is None:
+            messages.error(request, 'Could not log you in, please try again.')
+            return HttpResponseRedirect(reverse('login_result'))
+        verify_jwt(token)
 
 def logout(request):
     auth_logout(request)

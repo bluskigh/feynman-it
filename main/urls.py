@@ -18,6 +18,9 @@ urlpatterns = [
         path('new_folder/', views.new_folder, name='new_folder'),
         path('folders/<int:id>/', views.view_folder, name='view_folder'),
         path('folders/<int:id>/delete/', views.delete_folder, name='delete_folder'),
+
+        path('login-result/', views.login_result, name='login_result'),
+
         path('accounts/login/', views.login, name='login'),
         path('accounts/register/', views.register, name='register'),
         path('accounts/logout/', views.logout, name='logout')
