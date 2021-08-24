@@ -18,6 +18,7 @@ from django.db.models import Q
 from json import loads, dumps
 
 from .models import User, Note, Folder, Link, Iteration
+from .auth import get_token_from_header, verify_jwt
 
 AUTH_KEYS = {'AUTH_DOMAIN': environ.get('AUTH_DOMAIN'), 'AUTH_CLIENTID': environ.get('AUTH_CLIENTID'), 'AUTH_LOGIN_REDIRECT': environ.get('AUTH_LOGIN_REDIRECT')}
 
