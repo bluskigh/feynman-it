@@ -20,4 +20,5 @@ urlpatterns = [
         path('folders/<int:id>/delete/', views.delete_folder, name='delete_folder'),
 
         path('login-result/', views.login_result, name='login_result'),
+        path('logout/', views.logout, name='logout')
 ]

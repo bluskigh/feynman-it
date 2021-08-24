@@ -27,7 +27,6 @@ tr {
         </a>
         {% endfor %}
         {% load layout_tags %}
-        {% if request.user|has_permission:'main.add_note' %}
         <div class="item">
             <button class="item-add">+</button>
             <form action="{% url 'new_note' %}" class="new-item-form hidden" method="POST">
@@ -42,7 +41,6 @@ tr {
                 </div>
             </form>
         </div>
-        {% endif %}
     </section>
 {% endblock %}
 {% block scripts %}

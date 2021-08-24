@@ -26,6 +26,7 @@
                 {% define True as lis %}
                 {% else %}
                 {% define False as lis %}
+                <li><a href="https://{{AUTH_DOMAIN}}/authorize?audience=feynamnit&response_type=token&client_id={{AUTH_CLIENTID}}&redirect_uri={{AUTH_REDIRECT_DOMAIN}}login-result">Log In / Register</a></li>
                 {% endif %}
                 {% for li in lis %}
                 {% with path=li|get_path %}
@@ -68,10 +69,9 @@
                 {% endwith %}
                 <ul class="footer-list">
                 {% if not request.user.is_authenticated %}
-                    <li><a href="{% url 'register' %}">Register</a></li>
-                    <li><a href="https://{{AUTH_DOMAIN}}/authorize?audience=feynamnit&response_type=token&client_id={{AUTH_CLIENTID}}&redirect_uri={{AUTH_LOGIN_REDIRECT}}">Log In</a></li>
+                    <li><a href="https://{{AUTH_DOMAIN}}/authorize?audience=feynamnit&response_type=token&client_id={{AUTH_CLIENTID}}&redirect_uri={{AUTH_REDIRECT_DOMAIN}}login-result">Log In</a></li>
                 {% else %}
-                    <li><a href="{% url 'logout' %}">Log Out</a></li>
+                    <li><a href="{{ ''|get_logout_url }}">Logout</a></li>
                 {% endif %}
                 </ul>
             </div>

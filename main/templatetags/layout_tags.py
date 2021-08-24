@@ -1,3 +1,5 @@
+from os import environ
+
 from django import template 
 from django.urls import reverse
 
@@ -9,8 +11,10 @@ register = template.Library()
 def get_path(value):
     value =  value.lower()
     # path is simple, just the name
-    if value in ['folders', 'notes', 'login', 'register', 'logout']:
+    if value in ['folders', 'notes']:
         return reverse(value)
+    if value == 'logout':
+        return get_logout_url('')
 
 
 @register.simple_tag
@@ -18,8 +22,11 @@ def define(authenticated=None):
     """Returns a list of lis to be displayed if the user is authenticated"""
     if authenticated:
         return ['Folders', 'Notes', 'Logout']
-    else:
-        return ['Login', 'Register']
+
+
+@register.filter(name='get_logout_url')
+def get_logout_url(value):
+    return f'https://{environ.get("AUTH_DOMAIN")}/logout?returnTo={environ.get("AUTH_REDIRECT_DOMAIN")}logout&client_id={environ.get("AUTH_CLIENTID")}'
 
 
 @register.filter(name='has_permission')

@@ -10,17 +10,22 @@ API_AUDIENCE = environ.get('API_AUDIENCE')
 DISCOVERY_ENDPOINT = f'https://{AUTH_DOMAIN}/.well-known/openid-configuration'
 
 
+class CustomException(Exception):
+    def __init__(self, message):
+        self.message = message
+        super().__init__(self.message)
+
+
 def get_token_from_header(request):
     """Gets token from authorization header"""
-    if 'Authorization' not in request:
-        print('Authorization was not in header')
-        return None
+    if 'Authorization' not in request.headers:
+        raise CustomException('Authorization was not in header')
     authorization = request.headers.get('Authorization')
     authorization = authorization.split(' ')
+    print(authorization)
     if len(authorization) != 2 or authorization[0].lower() != 'bearer' or len(authorization[1].split('.')) != 3:
-        print('Invalid authorization header given')
-        return None
-    return authorization[1].split('.')
+        raise CustomException('Invalid authorization header given')
+    return authorization[1]
 
 
 def filter_jwks(keys):
@@ -32,22 +37,19 @@ def verify_jwt(token):
     jwks = filter_jwks(jwks.get('keys'))
     
     # kid from jwt 
-    kid = loads(b64decode(token[0]).decode('utf-8')).get('kid')
+    kid = loads(b64decode(token.split('.')[0]).decode('utf-8')).get('kid')
 
     # getting exact signature verification key
     jwk = list(filter(lambda key: key.get('kid') == kid, jwks))[0]
 
     try:
-        payload = jwt.decode(token=token, key=jwk, algorithms=ALGORITHMS, audience=AUDIENCE, issuer=f'https://{AUTH_DOMAIN}/')
+        payload = jwt.decode(token=token, key=jwk, algorithms=ALGORITHMS, audience=API_AUDIENCE, issuer=f'https://{AUTH_DOMAIN}/')
+        return payload
     except jwt.ExpiredSignatureError as e:
-        print(e)
-        return None
+        raise CustomException(e)
     except jwt.JWTClaimsError as e:
-        print(e)
-        return None
+        raise CustomException(e)
     except jwt.JWTClaimsError as e:
-        print(e)
-        return None
+        raise CustomException(e)
     except Exception as e:
-        print(e)
-        return None
+        raise CustomException(e)

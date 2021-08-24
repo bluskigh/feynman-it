@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
 
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-    const customHeaders = {"X-CSRFToken": csrftoken, "Content-Type": "application/json"};
+    const customHeaders = {"X-CSRFToken": csrftoken, "Content-Type": "application/json", "Authorization": `Bearer ${window.sessionStorage.getItem('token')}`};
     const noteid = parseInt(document.querySelector('[name=noteid]').value);
 
     const linkWhich = document.querySelector('#links-data #forwhich');
@@ -269,7 +269,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(async r => {
             if (r.status == 400) {
-                alert('Could not add link!')
+                alert(r.message)
                 this.disabled = false;
             } else if (r.status == 200) {
                 return await r.json()

@@ -4,7 +4,7 @@ from django.contrib.postgres.fields import ArrayField
 
 
 class User(AbstractUser):
-    pass
+    sub = models.CharField(max_length=64, default=None, null=True)
 
 
 class Folder(models.Model):

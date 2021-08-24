@@ -19,7 +19,6 @@ tr {
 {% block body %}
 <h2>Folders</h2>
 <section id="items-flex-container">
-{% if folders|length > 0 %}
 {% for folder in folders %}
 <a href="{% url 'view_folder' folder.id %}" class="item item-animate folder">
     <div class="item-shader hidden"></div>
@@ -28,7 +27,6 @@ tr {
 </a>
 {% endfor %}
 {% load layout_tags %}
-{% if request.user|has_permission:'main.add_folder' %}
 <div class="item">
     <button class="item-add">+</button>
     <form action="{% url 'new_folder' %}" class="new-item-form hidden" method="POST">
@@ -43,10 +41,6 @@ tr {
         </div>
     </form>
 </div>
-{% endif %}
-{% else %}
-<p>No folders.</p>
-{% endif %}
 </section>
 {% endblock %}
 {% block scripts %}

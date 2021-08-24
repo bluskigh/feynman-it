@@ -1,3 +1,5 @@
+from time import time
+from functools import wraps
 from os import environ
 
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse 
@@ -5,7 +7,6 @@ from django.shortcuts import render, reverse
 from django.contrib.auth import authenticate 
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout 
-from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import Permission
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
@@ -17,25 +18,42 @@ from django.db.models import Q
 
 from json import loads, dumps
 
+from jose.jwt import ExpiredSignatureError
+
 from .models import User, Note, Folder, Link, Iteration
-from .auth import get_token_from_header, verify_jwt
+from .auth import get_token_from_header, verify_jwt, CustomException
 
-AUTH_KEYS = {'AUTH_DOMAIN': environ.get('AUTH_DOMAIN'), 'AUTH_CLIENTID': environ.get('AUTH_CLIENTID'), 'AUTH_LOGIN_REDIRECT': environ.get('AUTH_LOGIN_REDIRECT')}
-
-
-def validate_jwt(token):
-    """
-    Steps:
-    1. Check that the JWT is well formed
-    2. Check the signature
-    3. Check the standard claims
-
-    1. 
-    JSON web token structure
-    """
-    pass
+AUTH_KEYS = {'AUTH_DOMAIN': environ.get('AUTH_DOMAIN'), 'AUTH_CLIENTID': environ.get('AUTH_CLIENTID'), 'AUTH_REDIRECT_DOMAIN': environ.get('AUTH_REDIRECT_DOMAIN')}
 
 
+def login_required(func):
+    @wraps(func)
+    def wrapper_(request, *args, **kwargs):
+        expiration = request.session.get('exp')
+        if expiration is None:
+            messages.error(request, 'You have to be signed in to perform that action')
+            return HttpResponseRedirect(reverse('home'))
+        if expiration >= int(time()):
+            return func(request, *args, **kwargs)
+        else:
+            messages.info(request, 'Session expired: You have been signed out')
+            return HttpResponseRedirect(reverse('home'))
+    return wrapper_
+
+def authorized(func):
+    @wraps(func)
+    def wrapper_(request, *args, **kwargs):
+        try:
+            token = get_token_from_header(request)
+            verify_jwt(token)
+            return func(request, *args, **kwargs)
+        except CustomException as e:
+            print(e)
+            return JsonResponse({'message': e.message}, status=400)
+        except Exception as e:
+            print(e)
+            return JsonResponse({'message': e}, status=400)
+    return wrapper_
 
 class NewFolderForm(ModelForm):
     title = forms.CharField(max_length=64, widget=forms.TextInput(attrs={'autocomplete': 'off'}))
@@ -156,6 +174,7 @@ def notes(request):
 
 
 @login_required
+@authorized
 def iterations(request, id=None):
     if request.method == 'POST':
         data = loads(request.body)
@@ -247,7 +266,6 @@ def profile(request):
 
 
 @login_required
-@permission_required('main.add_note')
 def new_note(request):
     if request.method == 'POST':
         data = loads(request.body)
@@ -264,7 +282,6 @@ def new_note(request):
 
 
 @login_required
-@permission_required('main.view_note')
 def view_note(request, id):
     note = Note.objects.get(id=id)
     if note is None:
@@ -274,7 +291,6 @@ def view_note(request, id):
 
 
 @login_required
-@permission_required('main.change_note')
 def edit_note(request, id):
     note = Note.objects.get(id=id)
     if note is None:
@@ -306,7 +322,6 @@ def folders(request):
 
 
 @login_required
-@permission_required('main.add_folder')
 def new_folder(request):
     form = NewFolderForm(request.POST)
     if form.is_valid():
@@ -345,7 +360,6 @@ def view_folder(request, id):
 
 
 @login_required
-@permission_required('main.delete_folder')
 def delete_folder(request, id):
     folder = Folder.objects.get(id=id)
     deleted_folder = request.user.folders.all()[1]
@@ -374,12 +388,36 @@ def login_result(request):
         token = request.POST.get('token')
         if token is None:
             messages.error(request, 'Could not log you in, please try again.')
-            return HttpResponseRedirect(reverse('login_result'))
-        payload = verify_jwt(token)
-        print(payload)
-        return HttpResponse(payload)
+            return HttpResponseRedirect(reverse('home'))
+        try:
+            payload = verify_jwt(token)
+            # storing time this token expires
+            request.session['exp'] = payload.get('exp') 
+            request.session['sub'] = payload.get('sub')
+            # check if this subject (user) exist in the database
+            user = User.objects.filter(sub=request.session.get('sub'))
+            if len(user) == 0:
+                # does not exist, create the user
+                user = User.objects.create(sub=request.session.get('sub'))
+            else:
+                user = user[0]
+            # user already exist do nothing, TODO: decide, to store user information in session or not
+
+            # check if default folders exist for user if not then add them to users folders
+            folders = user.folders.all()
+            if len(folders.filter(title='All')) == 0:
+                Folder.objects.create(title='All', owner=user)
+            if len(folders.filter(title='Delete')) == 0:        
+                Folder.objects.create(title='Delete', owner=user)
+
+            # log the user in
+            auth_login(request, user)
+        except Exception as e:
+            print(e)
+            messages.error(request, 'Something went wrong...')
+        return HttpResponseRedirect(reverse('home'))
 
 
 def logout(request):
     auth_logout(request)
-    return HttpResponseRedirect(reverse('login'))
+    return HttpResponseRedirect(reverse('home'))
