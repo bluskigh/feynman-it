@@ -269,7 +269,7 @@ def view_note(request, id):
     note = Note.objects.get(id=id)
     if note is None:
         messages.info(request, f'404: Could not locate note of id: {id}')
-        return HttpResponseRedirect(reverse('index'))
+        return HttpResponseRedirect(reverse('notes'))
     return render(request, 'main/view_note.html', {'note': note.more_information()})
 
 
@@ -367,65 +367,6 @@ def delete_folder(request, id):
     return HttpResponseRedirect(reverse('folders'))
 
 
-def register(request):
-    if request.user.is_authenticated:
-        return HttpResponseRedirect(reverse('index'))
-
-    if request.method == 'GET':
-        return render(request, 'main/register.html', 
-                {'form': RegisterForm()})
-    elif request.method == 'POST':
-        form = RegisterForm(request.POST)
-        if form.is_valid():
-            cd = form.cleaned_data
-            user = User.objects.create_user(
-                    username=cd.get('username'), 
-                    email=cd.get('email'),
-                    password=cd.get('password'))
-
-            # add all permissions related to notes
-            # permissions = Permission.objects.filter(codename__contains='_note')
-            # user.user_permissions.add(*permissions)
-            
-            # create delete and all folders, now should be [0] = add, [1] = delete when attemping to access users folders
-            Folder.objects.create(title='All', owner=user)
-            Folder.objects.create(title='Deleted', owner=user)
-            return HttpResponseRedirect(reverse('login'))
-        else:
-            return render(request, 'main/register.html', 
-                    {'form': form})
-
-
-def login(request):
-    if request.user.is_authenticated:
-        return HttpResponseRedirect(reverse('index'))
-
-    if request.method == 'GET':
-        return render(request, 'main/login.html', {'form': LoginForm()})
-    elif request.method == 'POST':
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            cd = form.cleaned_data
-            user = cd.get('user')
-            auth_login(request, user)
-            # in case of an update we want to check if this user has 
-            # certain permissions otherwise if so ignore otherwise add
-            note_query = Q(codename__contains='_note')
-            folder_query = Q(codename__contains='_folder')
-            note_permissions = Permission.objects.filter(note_query)
-            folder_permissions = Permission.objects.filter(folder_query)
-            # THIS may be a bit silly, since a user can have old model permissions and not new model permissions therefore the adding of permission will run
-            # but we don't want to readd permission he already has, therefore instead look by group
-            if not user.has_perms([p.codename for p in folder_permissions]):
-                user.user_permissions.add(*folder_permissions)
-            if not user.has_perms([p.codename for p in note_permissions]):
-                user.user_permissions.add(*note_permissions)
-
-            return HttpResponseRedirect(reverse('index'))
-        else:
-            return render(request, 'main/login.html', {'form': form})
-
-
 def login_result(request):
     if request.method == 'GET':
         return render(request, 'main/login_result.html')
@@ -434,7 +375,10 @@ def login_result(request):
         if token is None:
             messages.error(request, 'Could not log you in, please try again.')
             return HttpResponseRedirect(reverse('login_result'))
-        verify_jwt(token)
+        payload = verify_jwt(token)
+        print(payload)
+        return HttpResponse(payload)
+
 
 def logout(request):
     auth_logout(request)
