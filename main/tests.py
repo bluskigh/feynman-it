@@ -23,7 +23,6 @@ class TestApp(TestCase):
 
     def test_login(self):
         response = self.client.post(reverse('login-result'), {'token': self.TESTING_TOKEN})
-        print(response.status_code)
         self.assertEqual(response.status_code, 302)
 
 
