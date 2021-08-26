@@ -410,6 +410,7 @@ def login_result(request):
             if len(folders.filter(title='Delete')) == 0:        
                 Folder.objects.create(title='Delete', owner=user)
 
+            print('Loged the user in')
             # log the user in
             auth_login(request, user)
         except Exception as e:

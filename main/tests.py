@@ -1,3 +1,6 @@
+from json import dumps, loads
+from os import environ
+
 from django.test import TestCase, Client
 from django.db.models import Q
 from django.contrib.auth.models import Permission
@@ -5,37 +8,22 @@ from django.shortcuts import reverse
 
 from .models import User, Note, Folder, Iteration, Link
 
-from json import dumps, loads
+from dotenv import find_dotenv, load_dotenv
 
 
 class TestApp(TestCase):
     def setUp(self):
         # build rows
         self.client = Client()
+        env_location = find_dotenv('.testing_token_env')
+        load_dotenv(env_location)
+        self.TESTING_TOKEN = environ.get('TESTING_TOKEN')
+        self.client.defaults['HTTP_AUTHORIZATION'] = f'Bearer {self.TESTING_TOKEN}'
 
-
-    def test_register(self):
-        """Testing registering a user"""
-        response = self.client.post('/accounts/register/', data={'username': 'mario', 'password': 'mario', 'confirmation': 'mario', 'email': 'mario@gmail.com'})
-        self.assertEqual(User.objects.filter(username='mario').count(), 1)
-        # redirection only occurs when successfuly registered therefore being redirected to login page
-        self.assertEqual(response.status_code, 302)
-        
 
     def test_login(self):
-        """Testing logging in registered user"""
-        self.test_register()
-        response = self.client.post('/accounts/login/', data={'username': 'mario', 'password': 'mario'})
-        user = User.objects.get(username='mario')
-
-        # another way to test the user was logged in is to check his permissions, each login checks if user has certain permissions, if not they are added
-        # since this user was just created he should have them added in previous post request
-        note_query = Q(codename__contains='_note')
-        folder_query = Q(codename__contains='_folder')
-        permissions = Permission.objects.filter(note_query & folder_query)
-        self.assertTrue(user.has_perms([p.codename for p in permissions]))
-
-        # redirection only occurs when successfuly registered therefore being redirected to index route
+        response = self.client.post(reverse('login-result'), {'token': self.TESTING_TOKEN})
+        print(response.status_code)
         self.assertEqual(response.status_code, 302)
 
 

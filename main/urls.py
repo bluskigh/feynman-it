@@ -19,6 +19,6 @@ urlpatterns = [
         path('folders/<int:id>/', views.view_folder, name='view_folder'),
         path('folders/<int:id>/delete/', views.delete_folder, name='delete_folder'),
 
-        path('login-result/', views.login_result, name='login_result'),
+        path('login-result/', views.login_result, name='login-result'),
         path('logout/', views.logout, name='logout')
 ]

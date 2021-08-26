@@ -1,13 +1,12 @@
 from jose import jwt 
-from requests import get
+import http.client
 from os import environ
 from base64 import b64decode
 from json import loads
 
-AUTH_DOMAIN = environ.get('AUTH_DOMAIN')
-ALGORITHMS = environ.get('ALGORITHMS')
-API_AUDIENCE = environ.get('API_AUDIENCE')
-DISCOVERY_ENDPOINT = f'https://{AUTH_DOMAIN}/.well-known/openid-configuration'
+
+DOMAIN = environ.get('AUTH_DOMAIN')
+AUDIENCE = environ.get('API_AUDIENCE') 
 
 
 class CustomException(Exception):
@@ -22,7 +21,6 @@ def get_token_from_header(request):
         raise CustomException('Authorization was not in header')
     authorization = request.headers.get('Authorization')
     authorization = authorization.split(' ')
-    print(authorization)
     if len(authorization) != 2 or authorization[0].lower() != 'bearer' or len(authorization[1].split('.')) != 3:
         raise CustomException('Invalid authorization header given')
     return authorization[1]
@@ -33,23 +31,24 @@ def filter_jwks(keys):
 
 
 def verify_jwt(token):
-    jwks = get(get(DISCOVERY_ENDPOINT).json().get('jwks_uri')).json()
-    jwks = filter_jwks(jwks.get('keys'))
-    
-    # kid from jwt 
-    kid = loads(b64decode(token.split('.')[0]).decode('utf-8')).get('kid')
+    jwks = http.client.HTTPSConnection(DOMAIN)
+    jwks.request('GET', '/.well-known/jwks.json')
+    jwks = jwks.getresponse()
+    jwks = loads(jwks.read().decode()).get('keys')
+    jwks = filter_jwks(jwks)
 
-    # getting exact signature verification key
-    jwk = list(filter(lambda key: key.get('kid') == kid, jwks))[0]
+    # decoding the header, converting to string by decoding, and loading using json
+    header = loads(b64decode(token.split('.')[0]).decode())
+    kid = header.get('kid')
 
+    jwk = list(filter(lambda key: key.get('kid') == kid, jwks))
+
+    if len(jwk) == 0:
+        print('Could not find exact key')
+        return None
+
+    jwk = jwk[0] 
     try:
-        payload = jwt.decode(token=token, key=jwk, algorithms=ALGORITHMS, audience=API_AUDIENCE, issuer=f'https://{AUTH_DOMAIN}/')
-        return payload
-    except jwt.ExpiredSignatureError as e:
-        raise CustomException(e)
-    except jwt.JWTClaimsError as e:
-        raise CustomException(e)
-    except jwt.JWTClaimsError as e:
-        raise CustomException(e)
+        return jwt.decode(token=token, audience=AUDIENCE, key=jwk, algorithms=['RS256'], issuer=f'https://{DOMAIN}/')
     except Exception as e:
         raise CustomException(e)

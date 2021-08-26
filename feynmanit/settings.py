@@ -24,6 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # extend environment variables with key:value in .env file in root dir
 load_dotenv()
+
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = environ.get('PRODUCTION_KEY')
 

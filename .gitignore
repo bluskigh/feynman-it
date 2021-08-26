@@ -4,6 +4,7 @@ __pycache__/
 # Environments
 feynman_venv/
 .env
+.testing_token_env
 .venv
 env/
 venv/
