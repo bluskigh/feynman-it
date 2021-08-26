@@ -21,12 +21,12 @@ ACCESS_TOKEN = sys.argv[1] # token that is found in developer tab
 TESTING_TOKEN = sys.argv[2] # current testing token being used by github secrets
 # AUTH0
 DOMAIN = sys.argv[3] # domain of auth0 
-AUDIENCE = sys.argv[4] # audience of auth0
-AUDIENCE_TESTING_TOKEN= sys.argv[5]
-CLIENT_ID = sys.argv[6] # client id of auth0
-CLIENT_SECRET = sys.argv[7] # cilent secret of auth0
-GRANT_TYPE = sys.argv[8] # grant-type of auth0
-ALGORITHMS = sys.argv[9].split(',') # algoriths accepted by auth0
+# AUDIENCE = sys.argv[4] # audience of auth0
+AUDIENCE_TESTING_TOKEN= sys.argv[4]
+CLIENT_ID = sys.argv[5] # client id of auth0
+CLIENT_SECRET = sys.argv[6] # cilent secret of auth0
+GRANT_TYPE = sys.argv[7] # grant-type of auth0
+ALGORITHMS = sys.argv[8].split(',') # algoriths accepted by auth0
 
 
 def set_testing_token():
@@ -149,7 +149,7 @@ def verify_jwt():
     print(TESTING_TOKEN)
     try:
         # verify token is valid using specific jwk
-        jwt.decode(token=TESTING_TOKEN, key=jwk, audience=AUDIENCE, algorithms=ALGORITHMS, issuer=f'https://{DOMAIN}/')
+        jwt.decode(token=TESTING_TOKEN, key=jwk, audience=AUDIENCE_TESTING_TOKEN, algorithms=ALGORITHMS, issuer=f'https://{DOMAIN}/')
         # is valid set that token as the testing_token
         environ['TESTING_TOKEN'] = TESTING_TOKEN 
         print('No need to set or create a testing token, current token is valid.') 

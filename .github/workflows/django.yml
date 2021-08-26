@@ -40,7 +40,7 @@ jobs:
         pip install -r requirements.txt
     - name: Set testing token for testing
       run: |
-        python3 key.py ${{ secrets.ACCESS_TOKEN }} ${{ secrets.TESTING_TOKEN }} dev-8ed6tra3.us.auth0.com feynamnit https://dev-8ed6tra3.us.auth0.com/api/v2/ ${{ secrets.CLIENT_ID }} ${{ secrets.CLIENT_SECRET }} client_credentials RS256 
+        python3 key.py ${{ secrets.ACCESS_TOKEN }} ${{ secrets.TESTING_TOKEN }} dev-8ed6tra3.us.auth0.com https://dev-8ed6tra3.us.auth0.com/api/v2/ ${{ secrets.CLIENT_ID }} ${{ secrets.CLIENT_SECRET }} client_credentials RS256 
     - name: Run Tests
       run: |
         source testing-setup.sh
