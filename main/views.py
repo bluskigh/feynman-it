@@ -398,7 +398,7 @@ def login_result(request):
             user = User.objects.filter(sub=request.session.get('sub'))
             if len(user) == 0:
                 # does not exist, create the user
-                user = User.objects.create(sub=request.session.get('sub'))
+                user = User.objects.create(username=request.session.get('sub'), sub=request.session.get('sub'))
             else:
                 user = user[0]
             # user already exist do nothing, TODO: decide, to store user information in session or not

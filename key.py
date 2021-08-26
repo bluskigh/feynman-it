@@ -145,6 +145,8 @@ def verify_jwt():
     # get exact jwk
     jwk = list(filter(lambda key: key.get('kid') == kid, jwks))[0]
 
+    print('>>> Below is the testing token')
+    print(TESTING_TOKEN)
     try:
         # verify token is valid using specific jwk
         jwt.decode(token=TESTING_TOKEN, key=jwk, audience=AUDIENCE, algorithms=ALGORITHMS, issuer=f'https://{DOMAIN}/')

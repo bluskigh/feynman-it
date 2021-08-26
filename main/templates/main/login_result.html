@@ -7,7 +7,7 @@
 </head>
 <body>
     <h1>Successfully Logged In</h1>
-    <form action="{% url 'login_result' %}" method="POST" id="login-result-form">
+    <form action="{% url 'login-result' %}" method="POST" id="login-result-form">
         {% csrf_token %}
         <button type="submit">Continue to feynmanit</button>
     </form>{% load static %}
