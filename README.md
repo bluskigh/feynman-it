@@ -6,9 +6,6 @@ The name given to this web application is "FeynmanIt" because it was inspired by
 ## Motivation
 I have been know of Richard Feynman's learning technique for quite a while, but always wanted a web application that utilized it. I never found a web application that has utilized it, therefore I thought it would be nice to have for not only me but for others to utilize too. I thought of how great an application like this can be for multiple uses such as classroom teaching, individuals, and parents. Of course the idea of helping others really motivated me to start this project, therefore with my limited knowledge of Django I thought I would give it a try. Hopefully in the future more advanced features can be implemented such as: sharing notes and having a forum where existing notes can be referenced as answers to questions for others to learn.
 
-## Distinctiveness and Complexity 
-This web application is nothing like a social network as the main ideas such as "comments, likes, and posts" are not applied. Nor does this web application adhere to the likings of a commerce website because there are no listings, and products implemented. This web application is significantly different than past projects in CS50w because it falls under the category of education. The comparison between WiKi and this project in hindsight could be made, but this is not an encyclopedia though they both do fall under the category of education. What makes this project distinct from WiKi is the functionality of note-taking and the application of how it's done. Therefore the parity between this web application and WiKi need not be augmented. 
-
 ## Application is hosted at:
 ```
 http://feynman-it.herokuapp.com
