@@ -23,7 +23,7 @@ from jose.jwt import ExpiredSignatureError
 from .models import User, Note, Folder, Link, Iteration
 from .auth import get_token_from_header, verify_jwt, CustomException
 
-AUTH_KEYS = {'AUTH_DOMAIN': environ.get('AUTH_DOMAIN'), 'AUTH_CLIENTID': environ.get('AUTH_CLIENTID'), 'AUTH_REDIRECT_DOMAIN': environ.get('AUTH_REDIRECT_DOMAIN')}
+AUTH_KEYS = {'AUTH_DOMAIN': environ.get('DOMAIN'), 'AUTH_CLIENTID': environ.get('AUTH_CLIENTID'), 'AUTH_REDIRECT_DOMAIN': environ.get('AUTH_REDIRECT_DOMAIN')}
 
 
 def login_required(func):
