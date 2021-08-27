@@ -5,8 +5,8 @@ from base64 import b64decode
 from json import loads
 
 
-DOMAIN = environ.get('AUTH_DOMAIN')
-AUDIENCE = environ.get('API_AUDIENCE') 
+DOMAIN = environ.get('DOMAIN')
+AUDIENCE = environ.get('AUDIENCE') 
 
 
 class CustomException(Exception):
