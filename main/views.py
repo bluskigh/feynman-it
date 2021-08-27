@@ -23,8 +23,11 @@ from jose.jwt import ExpiredSignatureError
 from .models import User, Note, Folder, Link, Iteration
 from .auth import get_token_from_header, verify_jwt, CustomException
 
-AUTH_KEYS = {'AUTH_DOMAIN': environ.get('DOMAIN'), 'AUTH_CLIENTID': environ.get('AUTH_CLIENTID'), 'AUTH_REDIRECT_DOMAIN': environ.get('AUTH_REDIRECT_DOMAIN')}
+from dotenv import load_dotenv
 
+load_dotenv()
+
+AUTH_KEYS = {'DOMAIN': environ.get('DOMAIN'), 'AUTH_CLIENTID': environ.get('AUTH_CLIENTID'), 'AUTH_REDIRECT_DOMAIN': environ.get('AUTH_REDIRECT_DOMAIN')}
 
 def login_required(func):
     @wraps(func)
@@ -410,11 +413,9 @@ def login_result(request):
             if len(folders.filter(title='Delete')) == 0:        
                 Folder.objects.create(title='Delete', owner=user)
 
-            print('Loged the user in')
             # log the user in
             auth_login(request, user)
         except Exception as e:
-            print(e)
             messages.error(request, 'Something went wrong...')
         return HttpResponseRedirect(reverse('home'))
 

@@ -26,7 +26,7 @@ def define(authenticated=None):
 
 @register.filter(name='get_logout_url')
 def get_logout_url(value):
-    return f'https://{environ.get("AUTH_DOMAIN")}/logout?returnTo={environ.get("AUTH_REDIRECT_DOMAIN")}logout&client_id={environ.get("AUTH_CLIENTID")}'
+    return f'https://{environ.get("DOMAIN")}/logout?returnTo={environ.get("AUTH_REDIRECT_DOMAIN")}logout&client_id={environ.get("AUTH_CLIENTID")}'
 
 
 @register.filter(name='has_permission')

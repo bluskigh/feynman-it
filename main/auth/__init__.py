@@ -3,11 +3,10 @@ import http.client
 from os import environ
 from base64 import b64decode
 from json import loads
-
+from dotenv import load_dotenv
 
 DOMAIN = environ.get('DOMAIN')
 AUDIENCE = environ.get('AUDIENCE') 
-
 
 class CustomException(Exception):
     def __init__(self, message):
