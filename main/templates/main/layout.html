@@ -15,8 +15,8 @@
     <link rel="stylesheet" type="text/css" href="{% static 'main/css/media.css' %}">
 </head>
 <body>
+    <!-- GROUP OF NAVIGATION LINKS -->
     <nav>
-        <!-- <h3>FeynmanIt</h3> -->
         <img src="{% static 'main/images/logo.svg' %}" alt="Brain Image" width="50px" height="50px">
         <section>
             <label id="responsive-nav-button" class="display-none">|||</label>
@@ -45,9 +45,12 @@
         {% endfor %}
     </section>
     {% endif %}
+    <!-- MAIN CONTENT OF THE PAGE -->
     <main>
     {% block body %}{% endblock %}
     </main>
+
+    <!-- WEBSITES FOOTER -->
     <footer>
         <section>
             <h2>FeynmanIt</h2>
@@ -76,12 +79,11 @@
                 </ul>
             </div>
         </section>
-        <p id="quote">Anything is possible.</p>
-        <section class="socials">
+        <menu class="socials">
             <div class="social"></div>
             <div class="social"></div>
             <div class="social"></div>
-        </section>
+        </menu>
         <p class="copyright">© 2021 Mario Molinito. All rights reserved.</p>
     </footer>
     {% block scripts %}{% endblock %}
