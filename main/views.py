@@ -416,7 +416,7 @@ def login_result(request):
             # log the user in
             auth_login(request, user)
         except Exception as e:
-            messages.error(request, 'Something went wrong...')
+            messages.error(request, f'Something went wrong... {e}')
         return HttpResponseRedirect(reverse('home'))
 
 
