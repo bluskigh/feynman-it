@@ -23,6 +23,7 @@ textarea, input {
     width: 100%;
     background: transparent;
     border: 2px solid white;
+    box-sizing: border-box;
     color: white;
 }
 textarea::placeholder {
@@ -60,5 +61,23 @@ textarea::placeholder {
 }
 .link-container a {
     text-decoration: underline;
+}
+@keyframes pendingAnimation {
+    0% {
+        background: white;
+    }
+    100% {
+        background: rgb(255, 255, 255, .6);
+    }
+}
+.pending {
+    background: rgb(255, 255, 255, .7);
+    color: black;
+    animation-name: pendingAnimation;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease;
+    animation-duration: 1s;
+    animation-direction: alternate;
+    cursor: not-allowed !important;
 }
 /* End of Note Styling */

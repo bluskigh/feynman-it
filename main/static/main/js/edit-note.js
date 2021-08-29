@@ -8,6 +8,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const brain = document.querySelector('nav img');
 
+    function addPending(item) {
+        item.classList.add('pending')
+        item.disabled = true;
+    }
+    function removePending(item) {
+        item.classList.remove('pending')
+        item.disabled = false;
+    }
+
     function sleep() {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
@@ -132,11 +141,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const iterationOneFormButton = document.querySelector('#iteration-one-form .add-button');
     const iterationTwoFormButton = document.querySelector('#iteration-two-form .add-button');
     [iterationOneFormButton, iterationTwoFormButton].forEach(item => {
-        item.addEventListener('click', function() {
+        item.addEventListener('click', function(e) {
             // #iteration-one-form
             const parentForm = this.parentElement;
             const titleValue = parentForm.querySelector('input').value;
             const textValue = parentForm.querySelector('textarea').value;
+
+            addPending(e.target)
 
             if (titleValue.length == 0 || textValue.length == 0) {
                 return;
@@ -177,7 +188,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     // clear inputs
                     parentForm.querySelector('input').value = "";
                     parentForm.querySelector('textarea').value = "";
-                } else {alert('Error: Did not recieve id.')}
+                    console.log(e.target)
+                    removePending(e.target)
+                } else {alert('Error: Did not recieve id.');removePending(e.target)}
             })
             .catch(e => {
                 console.log(e);
@@ -243,6 +256,7 @@ document.addEventListener('DOMContentLoaded', function() {
        parentContainer.appendChild(linkContainer)
     }
 
+
     const linksAddButton = document.querySelector('#links-data .add-button'); 
     const linkTitle = document.querySelector('#link-title');
     const linkHref = document.querySelector('#links-data textarea');
@@ -251,6 +265,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const which = parseInt(linkWhich.value);
         const title = linkTitle.value.trim();
         const href = linkHref.value.trim();
+
+        addPending(linksAddButton)
 
         if (title.length == 0 || href.length == 0) {
             return;
@@ -278,7 +294,8 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(r => {
             // ad the link to the relative iteration
             addLink(title, href, which, r.id)
-        })
+            removePending(linksAddButton)
+        }).catch((e) => {removePending(linksAddButton)})
     })
 
     ///////////////////
