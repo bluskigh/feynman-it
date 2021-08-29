@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function() {
         deleteButton.classList.add('delete-iteration')
         deleteButton.classList.add('dangerous')
         deleteButton.innerText = 'Delete';
-        deleteButton.addEventListener('click', ()=>{deleteIteration(id)})
+        deleteButton.addEventListener('click', ()=>{deleteIteration(id, deleteButton)})
 
 
         data.appendChild(textTag)
@@ -236,7 +236,7 @@ document.addEventListener('DOMContentLoaded', function() {
        deleteButton.classList.add('dangerous')
        deleteButton.classList.add('delete-link')
        deleteButton.innerText = 'Delete';
-       deleteButton.addEventListener('click', () => {deleteLink(id)})
+       deleteButton.addEventListener('click', () => {deleteLink(id, deleteButton)})
        deleteButton.setAttribute('type', 'button')
 
        linkData.appendChild(link)
@@ -301,7 +301,7 @@ document.addEventListener('DOMContentLoaded', function() {
     ///////////////////
     // Deleting Links 
     ///////////////////
-    function deleteLink(linkId) {
+    function deleteLink(linkId, item) {
         const linkContainer = document.querySelector(`[data-linkid="${linkId}"]`);
         fetch(`/links/${parseInt(linkId)}/`, {
             method: 'DELETE',
@@ -313,12 +313,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert('Could not delete link!')
             } else {
                 // remove link container
+                removePending(item)
                 linkContainer.parentElement.removeChild(linkContainer)
             }
         })
     }
     document.querySelectorAll('.delete-link').forEach(item => 
-        item.addEventListener('click', ()=>{deleteLink(item.parentElement.parentElement.dataset.linkid)})
+        addPending(item)
+        item.addEventListener('click', ()=>{deleteLink(item.parentElement.parentElement.dataset.linkid, item)})
     )
 
     ///////////////////
@@ -344,7 +346,7 @@ document.addEventListener('DOMContentLoaded', function() {
         resetEditForm()
     })
 
-    editForm.querySelector('.save').addEventListener('click', function() {
+    editForm.querySelector('.save').addEventListener('click', function(e) {
         if (editInput.value.length == 0 || editText.value.length == 0) {
             return;
         }
@@ -373,6 +375,8 @@ document.addEventListener('DOMContentLoaded', function() {
             dataQuery = `[data-id="${iterationId}"]`;
         }
 
+        addPending(e.target)
+
         fetch(route, {
             method: "PATCH",
             mode: "same-origin",
@@ -393,6 +397,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     parent.querySelector('.data').querySelector('a').setAttribute('href', editText.value.trim())
                 }
                 resetEditForm()
+                removePending(e.target)
             }
         })
     })
@@ -462,7 +467,7 @@ document.addEventListener('DOMContentLoaded', function() {
         linkWhich.removeChild(t)
     }
 
-    function deleteIteration(iterationId) {
+    function deleteIteration(iterationId, target) {
         fetch(`/iterations/${iterationId}/`, {
             method: "DELETE",
             mode: "same-origin",
@@ -474,16 +479,18 @@ document.addEventListener('DOMContentLoaded', function() {
             } else if (r.status == 200) {
                 // delete it
                 removeIteration(iterationId) 
+                removePending(target)
             }
         })
     }
 
     const deleteIterationButtons = document.querySelectorAll('.delete-iteration');
     deleteIterationButtons.forEach(item => { 
-        item.addEventListener('click', function() {
+        item.addEventListener('click', function(e) {
+            addPending(e.target)
             // <div class=table-data> <div class=data> <button editbutton>
             const iterationId = item.parentElement.parentElement.dataset.id; 
-            deleteIteration(iterationId)
+            deleteIteration(iterationId, e.target)
         })
     })
 
