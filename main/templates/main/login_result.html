@@ -1,16 +1,66 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FeynmanIt | Login Result</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: .5em;
+            background: #E9C46A;
+            height: 100%;
+            width: 100%;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+        main {
+            margin: 0; padding: 2em;
+            height: 100%; max-height: 100%;
+            width: 100%; max-width: 100%;
+            background: #264653;
+            color: white;
+            box-sizing: border-box;
+            position: relative;
+        }
+        main section {
+            position: absolute;
+            top: 50%; right: 50%;
+            transform: translate(50%, -50%);
+            text-align: center;
+        }
+        main section h1 {
+            margin-bottom: .5em;
+        }
+        main section button {
+            border: 1px solid white;
+            background: transparent;
+            transition: .5s ease;
+            cursor: pointer;
+            color: white;
+            padding: .5em 2em;
+        }
+        main section button:hover {
+            background: rgb(255, 255, 255, .8);
+            color: black;
+            transform: translateY(-5px)
+        }
+        h1 {
+            margin: 0; padding: 0;
+        }
+    </style>
 </head>
 <body>
-    <h1>Successfully Logged In</h1>
-    <form action="{% url 'login-result' %}" method="POST" id="login-result-form">
-        {% csrf_token %}
-        <button type="submit">Continue to feynmanit</button>
-    </form>{% load static %}
+    <main>
+        <section>
+            <h1>Successfully Logged In</h1>
+            <form action="{% url 'login-result' %}" method="POST" id="login-result-form">
+                {% csrf_token %}
+                <button type="submit" aria-label="Button to continue to feynmanit web application">Continue to feynmanit</button>
+            </form>{% load static %}
+        </section>
+    </main>
     <script src="{% static 'main/js/login_result.js'%}"></script>
 </body>
 </html>

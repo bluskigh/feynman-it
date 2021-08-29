@@ -1,6 +1,9 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="author" content="Mario Molinito">
+    <meta name="description" content="This application was created with the intention of implementing the infamous learning technique called “The Feynman Technique”. As a way to provide others a chance to truly learn and understand topics from the comfort of their electronical devices.">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FeynmanIt | {% block title %}{% endblock %}</title>
@@ -10,9 +13,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
     <!-- Styles -->
-    <link rel="stylesheet" type="text/css" href="{% static 'main/css/layout.css' %}">
+    <link rel="stylesheet preload" type="text/css" media="all" href="{% static 'main/css/layout.css' %}">
     {% block style %}{% endblock %}
-    <link rel="stylesheet" type="text/css" href="{% static 'main/css/media.css' %}">
+    <link rel="stylesheet" media="screen and (max-width: 1300px)" type="text/css" href="{% static 'main/css/media.css' %}">
 </head>
 <body>
     <!-- GROUP OF NAVIGATION LINKS -->

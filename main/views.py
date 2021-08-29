@@ -389,6 +389,8 @@ def login_result(request):
         return render(request, 'main/login_result.html')
     elif request.method == 'POST':
         token = request.POST.get('token')
+        print(request.POST)
+        print(token)
         if token is None:
             messages.error(request, 'Could not log you in, please try again.')
             return HttpResponseRedirect(reverse('home'))
@@ -422,4 +424,5 @@ def login_result(request):
 
 def logout(request):
     auth_logout(request)
+    messages.success(request, 'Successfully logged out.')
     return HttpResponseRedirect(reverse('home'))

@@ -24,6 +24,7 @@ body {
     font-family: 'Poppins', sans-serif;
     background: lightgrey;
     overflow-x: hidden;
+    height: 100vh;
 }
 #note-edit-form { width: 100%; }
 #note-edit-button {

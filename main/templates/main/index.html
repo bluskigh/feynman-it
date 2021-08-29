@@ -4,6 +4,8 @@
 {% load static %}
 <link rel="stylesheet" href="{% static 'main/css/index.css' %}" type="text/css">
 {% endblock %}
+{% for message in messages %}
+{% endfor %}
 {% block body %}
 <section id="about">
     <h1>FeynmanIt</h1>

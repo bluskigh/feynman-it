@@ -1,7 +1,7 @@
 {% extends 'main/layout.html' %}
 {% load static %}
 {% block style %}
-<link rel="stylesheet" href="{% static 'main/css/item-styling.css' %}" type="text/css">
+<link rel="stylesheet preload" href="{% static 'main/css/item-styling.css' %}" type="text/css">
 <style>
 th {
     margin: 0;
@@ -44,6 +44,6 @@ tr {
     </section>
 {% endblock %}
 {% block scripts %}
-<script src="{% static 'main/js/item-animation.js' %}"></script>
-<script src="{% static 'main/js/add-item.js' %}"></script>
+<script async src="{% static 'main/js/item-animation.js' %}"></script>
+<script async src="{% static 'main/js/add-item.js' %}"></script>
 {% endblock %}
