@@ -85,7 +85,7 @@
     width: 70%;
 }
 .new-item-form button {
-    padding: 0 .5em;
+    padding: .5em;
 }
 .new-item-form button:hover  {
     opacity: .8;

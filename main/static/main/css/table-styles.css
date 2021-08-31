@@ -36,6 +36,9 @@
     border-top: 1em lightgrey solid;
     padding-top: 2em;
 }
+.iteration-text {
+    white-space: pre-wrap;
+}
 
 .tableitem-mouseenter {
     opacity: 1 !important;

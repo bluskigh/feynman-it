@@ -352,7 +352,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         const titleValue = window.localStorage.getItem('editInputOriginal') == editInput.value.trim() ? null : editInput.value;
-        const textValue = window.localStorage.getItem('editTextOriginal') == editText.value.trim() ? null : editText.value;
+        const textValue = window.localStorage.getItem('editTextOriginal') == editText.value ? null : editText.value;
 
         // did not change anything do not make unnecessary request to server
         if (titleValue == null && textValue == null) {
@@ -391,10 +391,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 const parent = document.querySelector(dataQuery);
                 try {
                     parent.querySelector('.iteration-title').innerText = editInput.value.trim();
-                    parent.querySelector('.iteration-text').innerText = editText.value.trim();
+                    parent.querySelector('.iteration-text').innerText = editText.value;
                 } catch(e) {
                     parent.querySelector('.data').querySelector('a').innerText = editInput.value.trim();
-                    parent.querySelector('.data').querySelector('a').setAttribute('href', editText.value.trim())
+                    parent.querySelector('.data').querySelector('a').setAttribute('href', editText.value)
                 }
                 resetEditForm()
                 removePending(e.target)
