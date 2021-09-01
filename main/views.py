@@ -40,7 +40,7 @@ def login_required(func):
             return func(request, *args, **kwargs)
         else:
             messages.info(request, 'Session expired: You have been signed out')
-            return HttpResponseRedirect(reverse('home'))
+            return HttpResponseRedirect(reverse('logout'))
     return wrapper_
 
 def authorized(func):
