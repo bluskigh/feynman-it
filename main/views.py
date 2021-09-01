@@ -173,7 +173,7 @@ def home(request):
 @login_required
 def notes(request):
     # right now index handles rendering all notes
-    notes = cache.get(request.session.get('notes_key')):
+    notes = cache.get(request.session.get('notes_key'))
     if notes is None:
         # cache is empty, therefore make expensive calculation and store in cache
         notes = [n.basic_information() for n in Note.objects.filter(owner=request.user)]
