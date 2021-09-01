@@ -20,7 +20,7 @@
 <body>
     <!-- GROUP OF NAVIGATION LINKS -->
     {% load cache %}
-    {% cache None 'feynman.nav' request.user.id}
+    {% cache None 'feynman.nav' request.user.id %}
     <nav>
         <img src="{% static 'main/images/logo.svg' %}" alt="Brain Image" width="50px" height="50px">
         <section>
