@@ -143,7 +143,8 @@ def get_cache():
     password = environ['MEMCACHIER_PASSWORD']
     return {
       'default': {
-        'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
+        'BACKEND': 'django_bmemcached.memcached.BMemcached',
+        # 'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
         # TIMEOUT is not the connection timeout! It's the default expiration
         # timeout that should be applied to keys! Setting it to `None`
         # disables expiration.
