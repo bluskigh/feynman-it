@@ -1,3 +1,4 @@
+{% load cache %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,13 +14,14 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
     <!-- Styles -->
+    {% cache 86400 'feynman.styling' %}
     <link rel="stylesheet preload" type="text/css" media="all" href="{% static 'main/css/layout.css' %}">
-    {% block style %}{% endblock %}
     <link rel="stylesheet" media="screen and (max-width: 1300px)" type="text/css" href="{% static 'main/css/media.css' %}">
+    {% block style %}{% endblock %}
+    {% endcache %}
 </head>
 <body>
     <!-- GROUP OF NAVIGATION LINKS -->
-    {% load cache %}
     <nav>
         {% cache 259200 'feynman.brain' %}
         <img src="{% static 'main/images/logo.svg' %}" alt="Brain Image" width="50px" height="50px">
