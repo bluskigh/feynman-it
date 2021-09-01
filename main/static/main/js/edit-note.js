@@ -319,8 +319,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     }
     document.querySelectorAll('.delete-link').forEach(item => {
-        addPending(item)
-        item.addEventListener('click', ()=>{deleteLink(item.parentElement.parentElement.dataset.linkid, item)})
+        item.addEventListener('click', ()=>{addPending(item);deleteLink(item.parentElement.parentElement.dataset.linkid, item)})
     })
 
     ///////////////////

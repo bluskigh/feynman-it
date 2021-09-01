@@ -5,7 +5,7 @@
     {% block note_title %}
     {% endblock %}
     <tr>
-        <th><h3>1: Existing Knowledge</h3></th>
+        <th><h3>1: Knowledge</h3></th>
         <td class="table-data-container" id="step_one_iterations_container">
             {% if note.step_one_iterations %}
                 {% for iteration in note.step_one_iterations %}
@@ -77,7 +77,7 @@
         </td>
     </tr>
     <tr>
-        <th><h3>2: Gaps in explanation</h3></th>
+        <th><h3>2: Gaps in knowledge</h3></th>
         <td class="table-data-container" id="step_two_iterations_container">
             {% if note.step_two_iterations %}
                 {% for iteration in note.step_two_iterations %}
