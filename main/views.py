@@ -15,6 +15,7 @@ from django.contrib.messages import get_messages
 from django import forms
 from django.forms import ModelForm
 from django.db.models import Q
+from django.core.cache import cache
 
 from json import loads, dumps
 
@@ -28,6 +29,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 AUTH_KEYS = {'DOMAIN': environ.get('DOMAIN'), 'AUTH_CLIENTID': environ.get('AUTH_CLIENTID'), 'AUTH_REDIRECT_DOMAIN': environ.get('AUTH_REDIRECT_DOMAIN')}
+
 
 def login_required(func):
     @wraps(func)
@@ -171,9 +173,12 @@ def home(request):
 @login_required
 def notes(request):
     # right now index handles rendering all notes
-    return render(request, 'main/notes.html', {
-        'notes': [n.basic_information() for n in Note.objects.filter(owner=request.user)], 
-        'new_note_form': NewNoteForm()})
+    notes = cache.get(request.session.get('notes_key')):
+    if notes is None:
+        # cache is empty, therefore make expensive calculation and store in cache
+        notes = [n.basic_information() for n in Note.objects.filter(owner=request.user)]
+        cache.set(request.session.get('notes_key'), notes)
+    return render(request, 'main/notes.html', {'notes': notes, 'new_note_form': NewNoteForm()})
 
 
 @login_required
@@ -279,6 +284,8 @@ def new_note(request):
             note = Note.objects.create(title=cd.get('title'), owner=request.user, folder=add_folder)
             result = note.basic_information()
             result['route'] = reverse('view_note', kwargs={'id': note.id})
+            # new note, therefore remove cache so it can be updated
+            cache.delete(request.session.get('notes_key'))
             return JsonResponse(result, status=200)
         else:
             return JsonResponse({'errors': form.errors, 'status': 400}, status=400)
@@ -320,8 +327,13 @@ def edit_note(request, id):
 
 @login_required
 def folders(request):
+    folders = cache.get(request.session.get('folders_key'))
+    if folders is None:
+        # folders not in cache, therefore make expensive calculation and save in cache
+        folders = [f.basic_information() for f in Folder.objects.filter(owner=request.user)]
+        cache.set(request.session.get('folders_key'), folders)
     return render(request, 'main/folders.html', {'form': NewFolderForm(), 
-        'folders': [folder.basic_information() for folder in Folder.objects.filter(owner=request.user)]})
+        'folders': folders})
 
 
 @login_required
@@ -331,6 +343,8 @@ def new_folder(request):
         cd = form.cleaned_data
         Folder.objects.create(title=cd.get('title').strip(), owner=request.user)
         messages.success(request, 'Successfully created folder')
+        # new folder, therefore remove cache so it can be updated
+        cache.delete(request.session.get('folders_key'))
         return HttpResponseRedirect(reverse('folders'))
     else:
         return render(request, 'main/folders.html', {'form': form, 'folders': Folder.objects.filter(owner=request.user)})
@@ -389,8 +403,6 @@ def login_result(request):
         return render(request, 'main/login_result.html')
     elif request.method == 'POST':
         token = request.POST.get('token')
-        print(request.POST)
-        print(token)
         if token is None:
             messages.error(request, 'Could not log you in, please try again.')
             return HttpResponseRedirect(reverse('home'))
@@ -406,6 +418,10 @@ def login_result(request):
                 user = User.objects.create(username=request.session.get('sub'), sub=request.session.get('sub'))
             else:
                 user = user[0]
+
+            request.session['notes_key'] = f'{user.sub}.notes'
+            request.session['folders_key'] = f'{user.sub}.folders'
+
             # user already exist do nothing, TODO: decide, to store user information in session or not
 
             # check if default folders exist for user if not then add them to users folders
