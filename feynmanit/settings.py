@@ -137,11 +137,10 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 def get_cache():
-  import os
   try:
-    servers = os.environ['MEMCACHIER_SERVERS']
-    username = os.environ['MEMCACHIER_USERNAME']
-    password = os.environ['MEMCACHIER_PASSWORD']
+    servers = environ['MEMCACHIER_SERVERS']
+    username = environ['MEMCACHIER_USERNAME']
+    password = environ['MEMCACHIER_PASSWORD']
     return {
       'default': {
         'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
