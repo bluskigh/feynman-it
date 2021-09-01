@@ -4,6 +4,7 @@
 {% load static %}
 <link rel="stylesheet" href="{% static 'main/css/index.css' %}" type="text/css">
 {% endblock %}
+{% cache 604800 'feynman.index' %}
 {% block body %}
 <section id="about">
     <h1>FeynmanIt</h1>
@@ -119,3 +120,4 @@
     </div>
 </section>
 {% endblock %}
+{% endcache %}
