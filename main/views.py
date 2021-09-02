@@ -270,29 +270,39 @@ def link(request, id):
 
 @login_required
 def profile(request):
-    # TODO: add caching to this, very expensive only update every 5 hours or so, so cache.set(seconds for 5 hours, result)
-    # get heatmap
+    calendar_key = request.session.get('calendar_key')
+    calendar = cache.get(calendar_key)
     today = date.today()
-    calendar = Calendar()
-    calendar = calendar.monthdayscalendar(today.year, today.month)
-    yq = Q(created__year=today.year)
-    mq = Q(created__month=today.month)
+    if calendar is None:
+        # get heatmap
+        calendar = Calendar()
+        calendar = calendar.monthdayscalendar(today.year, today.month)
+        yq = Q(created__year=today.year)
+        mq = Q(created__month=today.month)
 
-    # TODO: get notes from cache instead if exists.
-    notes = Note.objects.filter(owner=request.user)
+        notes = Note.objects.filter(owner=request.user)
 
-    # dq is going to be custom to day in iteration
-    for mi, week in enumerate(calendar):
-        for si, day in enumerate(week):
-            if day != 0:
-                dq = Q(created__day=int(day))
-                t = notes.filter(yq&mq&dq)
-                # TODO: when data is clicked, show notes below the heatmap that were completed on x day
-                total = len(t)
-                                    # day, intensity of opacity
-                calendar[mi][si] = (day, (total / 20), total)
-            else:
-                calendar[mi][si] = (None, 0)
+        # dq is going to be custom to day in iteration
+        for mi, week in enumerate(calendar):
+            for si, day in enumerate(week):
+                if day != 0:
+                    dq = Q(created__day=int(day))
+                    t = notes.filter(yq&mq&dq)
+                    # TODO: when data is clicked, show notes below the heatmap that were completed on x day
+                    total = len(t)
+                                        # day, intensity of opacity
+                    calendar[mi][si] = (day, (total / 20), total)
+                else:
+                    calendar[mi][si] = (None, 0)
+        # something 
+        if calendar_key is None:
+            calendar_key = f'{request.user.sub}.calendar'
+            request.session['calendar_key'] = calendar_key
+        # caching for a day
+        print("Set the cache")
+        cache.set(calendar_key, calendar, 60)
+    else:
+        print("Recieved from teh cache")
     return render(request, 'main/view_profile.html', {
         'username': request.user.sub,
         'heatmap': calendar,

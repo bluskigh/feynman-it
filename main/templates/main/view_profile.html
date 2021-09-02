@@ -17,10 +17,21 @@
         background: black;
         color: white;
         padding: .5em;
-        top: 2%;
-        left: 2%;
+        top: 2%; right: 50%;
+        transform: translate(50%, -100%);
         font-size: .5;
         display: none;
+    }
+    .arrow {
+        position: absolute;
+        bottom: -8px; right: 50%;
+        transform: translateX(50%);
+        background: black;
+        height: 10px;
+        width: 1vh;
+        border-bottom-right-radius: 100%;
+        border-bottom-left-radius: 100%;
+        border-bottom: none;
     }
 
 
@@ -78,6 +89,7 @@
                 {% if activity > 0 %}
                 <div class="hdata_info">
                     <p>Completed {{ day|get_value:2 }}</p>
+                    <div class="arrow"></div>
                 </div>
                 {% endif %}
             </td>
