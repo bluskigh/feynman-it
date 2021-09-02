@@ -1,5 +1,5 @@
 from datetime import date
-from calendar import Calendar
+from calendar import Calendar, month_name
 from time import time
 from functools import wraps
 from os import environ
@@ -287,12 +287,16 @@ def profile(request):
             if day != 0:
                 dq = Q(created__day=int(day))
                 t = notes.filter(yq&mq&dq)
-                calendar[mi][si] = (day, len(t))
+                # TODO: when data is clicked, show notes below the heatmap that were completed on x day
+                total = len(t)
+                                    # day, intensity of opacity
+                calendar[mi][si] = (day, (total / 20), total)
             else:
-                calendar[mi][si] = None
+                calendar[mi][si] = (None, 0)
     return render(request, 'main/view_profile.html', {
         'username': request.user.sub,
-        'heatmap': calendar
+        'heatmap': calendar,
+        'month': month_name[today.month]
     })
 
 
