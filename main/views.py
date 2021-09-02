@@ -299,10 +299,7 @@ def profile(request):
             calendar_key = f'{request.user.sub}.calendar'
             request.session['calendar_key'] = calendar_key
         # caching for a day
-        print("Set the cache")
-        cache.set(calendar_key, calendar, 60)
-    else:
-        print("Recieved from teh cache")
+        cache.set(calendar_key, calendar, 43200)
     return render(request, 'main/view_profile.html', {
         'username': request.user.sub,
         'heatmap': calendar,
