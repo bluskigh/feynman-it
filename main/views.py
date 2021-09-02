@@ -1,3 +1,5 @@
+from datetime import date
+from calendar import Calendar
 from time import time
 from functools import wraps
 from os import environ
@@ -268,9 +270,30 @@ def link(request, id):
 
 @login_required
 def profile(request):
+    # TODO: add caching to this, very expensive only update every 5 hours or so, so cache.set(seconds for 5 hours, result)
+    # get heatmap
+    today = date.today()
+    calendar = Calendar()
+    calendar = calendar.monthdayscalendar(today.year, today.month)
+    yq = Q(created__year=today.year)
+    mq = Q(created__month=today.month)
+
+    # TODO: get notes from cache instead if exists.
+    notes = Note.objects.filter(owner=request.user)
+
+    # dq is going to be custom to day in iteration
+    for mi, week in enumerate(calendar):
+        for si, day in enumerate(week):
+            if day != 0:
+                dq = Q(created__day=int(day))
+                t = notes.filter(yq&mq&dq)
+                calendar[mi][si] = (day, len(t))
+            else:
+                calendar[mi][si] = None
     return render(request, 'main/view_profile.html', {
-        'username': request.user.get('username'),
-        })
+        'username': request.user.sub,
+        'heatmap': calendar
+    })
 
 
 @login_required
