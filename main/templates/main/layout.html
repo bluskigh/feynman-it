@@ -79,6 +79,7 @@
                 {% endwith %}
                 <ul class="footer-list">
                 {% if not request.user.is_authenticated %}
+                    <li><a href="{% url 'profile' %}">Profile</a></li>
                     <li><a href="https://{{DOMAIN}}/authorize?audience=feynamnit&response_type=token&client_id={{AUTH_CLIENTID}}&redirect_uri={{AUTH_REDIRECT_DOMAIN}}login-result">Log In</a></li>
                 {% else %}
                     <li><a href="{{ ''|get_logout_url }}">Logout</a></li>

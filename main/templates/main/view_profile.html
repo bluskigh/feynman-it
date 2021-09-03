@@ -9,6 +9,7 @@
         border: 1px solid black; 
         transition: .1s ease;
         position: relative;
+        padding: .5em 1em;
     }
 
     /* Layout for information seen when data is hovered */
@@ -18,7 +19,7 @@
         color: white;
         padding: .5em;
         top: 2%; right: 50%;
-        transform: translate(50%, -100%);
+        transform: translate(50%, -125%);
         font-size: .5;
         display: none;
     }
@@ -32,6 +33,14 @@
         border-bottom-right-radius: 100%;
         border-bottom-left-radius: 100%;
         border-bottom: none;
+    }
+
+    .hdata_day {
+        position: absolute;
+        top: 2%; left: 2%;
+        font-size: .5em; 
+        color: black;
+        cursor: default;
     }
 
 
@@ -59,6 +68,9 @@
         font-size: .8em;
         color: var(--main);
     }
+    .space {
+        height: .5em;
+    }
 </style>
 {% endblock %}
 {% block body %}
@@ -69,7 +81,6 @@
             <th colspan=7>HeatMap for <span class="month">{{ month }}</span></th>
         </tr>
         <tr>
-
             <th>Mon</th>
             <th>Tue</th>
             <th>Wed</th>
@@ -77,7 +88,6 @@
             <th>Fri</th>
             <th>Sat</th>
             <th>Sun</th>
-
         </tr>
     </thead>
     <tbody>
@@ -85,7 +95,10 @@
         <tr>
             {% for day in week %}
             {% with activity=day|get_value:1 %}
-            <td class="heatmap_data {% if day|get_value:0 is None %}hdata_nothing{% endif %} {% if activity > 0 and activity <= .25 %}hdata_lessquarter{% endif %} {% if activity >= .25 and activity <= .50 %}hdata_half{% endif %} {% if activity >= .50 and activity <= .75 %}hdata_quarterhalf{% endif %} {% if activity >= .75 and activity <= 1 %}hdata_full{% endif %}">
+            <td aria-label="heatmap data" aria-valuenow="{{activity}}" class="heatmap_data {% if day|get_value:0 is None %}hdata_nothing{% endif %} {% if activity > 0 and activity <= .25 %}hdata_lessquarter{% endif %} {% if activity >= .25 and activity <= .50 %}hdata_half{% endif %} {% if activity >= .50 and activity <= .75 %}hdata_quarterhalf{% endif %} {% if activity >= .75 and activity <= 1 %}hdata_full{% endif %}">
+                {% if day|get_value:0 > 0 %}
+                <p class="hdata_day">{{day|get_value:0}}</p>
+                {% endif %}
                 {% if activity > 0 %}
                 <div class="hdata_info">
                     <p>Completed {{ day|get_value:2 }}</p>
@@ -96,6 +109,7 @@
             {% endwith %}
             {% endfor %}
         </tr>
+        <tr class="space"></tr>
         {% endfor %}
     </tbody>
 </table>
@@ -105,7 +119,7 @@
     document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.hdata_info').forEach(item => {
             item.parentElement.addEventListener('mouseenter', function() {
-                item.parentElement.style.zIndex = 1000;
+                item.parentElement.style.zIndex = 1;
                 item.style.display = "initial";
             })
             item.parentElement.addEventListener('mouseleave', function() {
