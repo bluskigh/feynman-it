@@ -277,18 +277,19 @@ def profile(request):
         # get heatmap
         calendar = Calendar()
         calendar = calendar.monthdayscalendar(today.year, today.month)
+
+        oq = Q(owner=request.user)
         yq = Q(created__year=today.year)
         mq = Q(created__month=today.month)
 
-        notes = Note.objects.filter(owner=request.user)
+        notes = Note.objects.filter(oq&yq&mq)
 
         # dq is going to be custom to day in iteration
         for mi, week in enumerate(calendar):
             for si, day in enumerate(week):
                 if day != 0:
                     dq = Q(created__day=int(day))
-                    t = notes.filter(yq&mq&dq)
-                    # TODO: when data is clicked, show notes below the heatmap that were completed on x day
+                    t = notes.filter(dq)
                     total = len(t)
                                         # day, intensity of opacity
                     calendar[mi][si] = (day, (total / 20), total)

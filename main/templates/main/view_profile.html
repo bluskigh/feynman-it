@@ -2,75 +2,21 @@
 {% block title %}FeynmanIt | Profile{% endblock %}
 {% block style %}
 <style>
-    .heatmap_data {
-        min-height: 10px; min-width: 10px;
-        height: 10px; width: 10px;
-        background: gray;
-        border: 1px solid black; 
-        transition: .1s ease;
-        position: relative;
-        padding: .5em 1em;
-    }
-
+    .heatmap_data {min-height: 10px; min-width: 10px;height: 10px; width: 10px;background: gray;border: 1px solid black; transition: .1s ease;position: relative;padding: .5em 1em;}
     /* Layout for information seen when data is hovered */
-    .hdata_info {
-        position: absolute;
-        background: black;
-        color: white;
-        padding: .5em;
-        top: 2%; right: 50%;
-        transform: translate(50%, -125%);
-        font-size: .5;
-        display: none;
-    }
-    .arrow {
-        position: absolute;
-        bottom: -8px; right: 50%;
-        transform: translateX(50%);
-        background: black;
-        height: 10px;
-        width: 1vh;
-        border-bottom-right-radius: 100%;
-        border-bottom-left-radius: 100%;
-        border-bottom: none;
-    }
-
-    .hdata_day {
-        position: absolute;
-        top: 2%; left: 2%;
-        font-size: .5em; 
-        color: black;
-        cursor: default;
-    }
-
-
+    .hdata_info {position: absolute;background: black;color: white;padding: .5em;top: 2%; right: 50%;transform: translate(50%, -125%);font-size: .5;display: none;}
+    .arrow {position: absolute;bottom: -8px; right: 50%;transform: translateX(50%);background: black;height: 10px;width: 1vh; border-bottom-right-radius: 100%; border-bottom-left-radius: 100%; border-bottom: none; }
+    .hdata_day { position: absolute; top: 2%; left: 2%; font-size: .5em; color: black; cursor: default; }
     /* COLORS FOR THE DATA */
-    .hdata_nothing {
-        opacity: .5;
-    }
-    .hdata_lessquarter {
-        background: lightgreen; 
-    }
-    .hdata_half {
-        background: rgb(63, 116, 63);
-    }
-    .hdata_quarterhalf {
-        background: rgb(44, 84, 44);
-    }
-    .hdata_full {
-        background: rgb(0, 45, 0);
-    }
-    .heatmap_data:hover {
-        opacity: .8;
-        transform: scale(.9);
-    }
-    .month {
-        font-size: .8em;
-        color: var(--main);
-    }
-    .space {
-        height: .5em;
-    }
+    .hdata_nothing { opacity: .5; }
+    .hdata_lessquarter { background: lightgreen;  }
+    .hdata_half { background: rgb(63, 116, 63); }
+    .hdata_quarterhalf { background: rgb(44, 84, 44); }
+    .hdata_full { background: rgb(0, 45, 0); }
+    .heatmap_data:hover { opacity: .8; transform: scale(.9); }
+    .month { font-size: .8em; color: var(--main); }
+    .space { height: .5em; }
+    .small { font-size: .8em; }
 </style>
 {% endblock %}
 {% block body %}
@@ -79,6 +25,9 @@
     <thead>
         <tr>
             <th colspan=7>HeatMap for <span class="month">{{ month }}</span></th>
+        </tr>
+        <tr>
+            <th colspan=7 class="small"><small>Updates every 5 hours</small></th>
         </tr>
         <tr>
             <th>Mon</th>
@@ -101,7 +50,7 @@
                 {% endif %}
                 {% if activity > 0 %}
                 <div class="hdata_info">
-                    <p>Completed {{ day|get_value:2 }}</p>
+                    <p>Modified {{ day|get_value:2 }}</p>
                     <div class="arrow"></div>
                 </div>
                 {% endif %}
