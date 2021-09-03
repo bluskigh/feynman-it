@@ -18,6 +18,7 @@ from django import forms
 from django.forms import ModelForm
 from django.db.models import Q
 from django.core.cache import cache
+from django.core.cache.utils import make_template_fragment_key
 
 from json import loads, dumps
 
@@ -315,12 +316,13 @@ def new_note(request):
         form = NewNoteForm(data)
         if form.is_valid():
             cd = form.cleaned_data
-            add_folder = request.user.folders.all()[0]
+            add_folder = request.user.folders.get(title='All')
             note = Note.objects.create(title=cd.get('title'), owner=request.user, folder=add_folder)
             result = note.basic_information()
             result['route'] = reverse('view_note', kwargs={'id': note.id})
             # new note, therefore remove cache so it can be updated
             cache.delete(request.session.get('notes_key'))
+            cache.delete(request.session.get('folders_key'))
             return JsonResponse(result, status=200)
         else:
             return JsonResponse({'errors': form.errors, 'status': 400}, status=400)
@@ -414,17 +416,23 @@ def view_folder(request, id):
 @login_required
 def delete_folder(request, id):
     folder = Folder.objects.get(id=id)
-    deleted_folder = request.user.folders.all()[1]
-    all_folder = request.user.folders.all()[0]
+    deleted_folder = request.user.folders.get(title='Delete')
+    all_folder = request.user.folders.get(title='All')
     notes = folder.folder_notes.all()
     if folder != deleted_folder:
         for note in notes:
             note.folder = deleted_folder 
             note.save()
+
     else:
         messages.info(request, f'Deleted notes from "{folder.title}"')
+        d = False
         for note in folder.folder_notes.all():
+            d = True
             note.delete()
+        if d:
+            # notes updated -> delete old notes in cache
+            cache.delete(request.session.get('notes_key'))
 
     if folder != all_folder and folder != deleted_folder and len(notes) == 0:
         cache.delete(request.session.get('folders_key'))
