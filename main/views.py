@@ -433,6 +433,7 @@ def delete_folder(request, id):
         if d:
             # notes updated -> delete old notes in cache
             cache.delete(request.session.get('notes_key'))
+            cache.delete(request.session.get('folders_key'))
 
     if folder != all_folder and folder != deleted_folder and len(notes) == 0:
         cache.delete(request.session.get('folders_key'))
