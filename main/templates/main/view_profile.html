@@ -17,6 +17,43 @@
     .month { font-size: .8em; color: var(--main); }
     .space { height: .5em; }
     .small { font-size: .8em; }
+    .spinner-container {
+        display: none;
+        margin: 0 auto;
+        border-radius: 50%;
+        height: 30px;
+        width: 30px;
+        border: 5px solid transparent;
+        z-index: 2;
+        position: relative;
+    }
+    @keyframes frotate {
+        0% { transform: translate(50%, -50%) rotate(0deg); }
+        100% { transform: translate(50%, -50%) rotate(360deg); }
+    }
+    @keyframes srotate {
+        0% { transform: translate(50%, -50%) rotate(180deg); }
+        100% { transform: translate(50%, -50%) rotate(540deg); }
+    }
+    .spinner {
+        background: transparent;
+        position: absolute;
+        top: 50%; right: 50%;
+        transform: translate(50%, -50%);
+        animation-name: frotate;
+        animation-play-state: paused;
+        animation-timing-duration: linear;
+        animation-duration: 1s;
+        animation-iteration-count: infinite;
+        animation-direction: forward;
+        border-radius: 100%;
+        border: 1em solid; border-color: transparent; border-top-color: black;
+    }
+    .second-spinner {
+        animation-name: srotate;
+        border-top-color: #1f1f1d;
+        transform: translate(50%, -50%) rotate(180deg);
+    }
 </style>
 {% endblock %}
 {% block body %}
@@ -62,10 +99,19 @@
         {% endfor %}
     </tbody>
 </table>
+<section>
+    <!-- for assistive technologies -->
+    <h2 class="hidden">Notes from heatmap data clicked</h2>
+    <div class="spinner-container">
+        <div class="spinner"></div>
+        <div class="spinner second-spinner"></div>
+    </div>
+</section>
 {% endblock %}
 {% block scripts %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        const spinnerContainer = document.querySelector('.spinner-container');
         document.querySelectorAll('.hdata_info').forEach(item => {
             item.parentElement.addEventListener('mouseenter', function() {
                 item.parentElement.style.zIndex = 1;
@@ -74,6 +120,21 @@
             item.parentElement.addEventListener('mouseleave', function() {
                 item.parentElement.style.zIndex = 1;
                 item.style.display = "none";
+            })
+            item.parentElement.addEventListener('click', function() {
+                spinnerContainer.style.display = 'block';
+                fetch('/notes?json=True', {
+                    method: "GET",
+                    headers: new Headers({
+                        "Authorization": `Bearer ${window.sessionStorage.getItem("token")}`
+                    })
+                })
+                .then(async r => await r.json())
+                .then(r => {
+                    spinnerContainer.style.display = 'none';
+                    console.log(r.notes)
+                })
+                .catch(e => {console.log('error')})
             })
         })
     })

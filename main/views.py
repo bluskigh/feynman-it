@@ -181,6 +181,9 @@ def notes(request):
         # cache is empty, therefore make expensive calculation and store in cache
         notes = [n.basic_information() for n in Note.objects.filter(owner=request.user)]
         cache.set(request.session.get('notes_key'), notes)
+
+    if request.GET.get('json'):
+        return JsonResponse({'notes': notes}, status=200) 
     return render(request, 'main/notes.html', {'notes': notes, 'new_note_form': NewNoteForm()})
 
 
