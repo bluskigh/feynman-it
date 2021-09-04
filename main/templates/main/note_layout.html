@@ -46,12 +46,11 @@
         </td>
     </tr>
     <tr>
-        <th style="padding-bottom: 0em;"><h3>1a: Links</h3></th>
+        <th style="padding-bottom: 0em;"><h3>1a: General Links</h3></th>
         <td id="links-data" class="table-data-container">
             {% load layout_tags %}
             {% with links=note.links %}
             <div class="table-data" id="general-links">
-                <h4>General Links</h4>
                 <p class="helper">Links that apply to all iterations.</p>
                 <div class="links">
                 {% if note.general_links %}

@@ -61,9 +61,7 @@ button {
     transition: transform .5s ease;
 }
 button:hover { cursor: pointer; }
-#messages {
-    width: 100%;
-}
+#messages { width: 100%; }
 .warning, .error {
     background: red; 
     color: darkred;
@@ -77,10 +75,17 @@ button:hover { cursor: pointer; }
     color: lightblue;
 }
 .message {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     max-width: 100%;
-    word-break: break-all;
     padding: 1.5em 1em;
     box-sizing: border-box;
+}
+.message button {
+    padding: 1em;
+    background: transparent;
+    color: lightgreen;
 }
 /* End of General Styling */
 

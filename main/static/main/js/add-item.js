@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // after adding, revert back to original stage in animation
         itemAddClicked()
+        addFlash()
     }
 
     document.querySelector('.new-item-form').addEventListener('submit', function(e) {
