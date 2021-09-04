@@ -22,7 +22,7 @@
     <!-- GROUP OF NAVIGATION LINKS -->
     <nav>
         {% cache 259200 'feynman.brain' %}
-        <img src="{% static 'main/images/logo.svg' %}" alt="Brain Image" width="50px" height="50px" loading="lazy">
+        <img src="{% static 'main/images/logo.svg' %}" alt="Brain Image" width="30px" height="30px" loading="lazy">
         {% endcache %}
         <section>
             <label id="responsive-nav-button" class="display-none">|||</label>
@@ -56,21 +56,23 @@
     {% block body %}{% endblock %}
     </main>
 
-    {% cache None 'feynman.footer' request.user.id %}
+    {% cache 604800 'feynman.footer' request.user.id %}
     <!-- WEBSITES FOOTER -->
-    <footer>
+    <footer style="box-shadow: 0 0 1em black; background: linear-gradient(45deg, var(--main), #4f707d);">
         <section>
             <h2>FeynmanIt</h2>
             <div class="navigation">
                 {% with isauth=request.user.is_authenticated %}
                     {% with ignoreauth='?ignore_authentication=True' %}
                 <ul class="footer-list">
+                    <li><strong>Navigation</strong></li>
                     <li><a href="{% url 'home' %}">Home</a></li>
                     <li><a href="{% url 'home' %}#about">About</a></li>
                     <li><a href="{% url 'home' %}#howto">How To use</a></li>
                     <li><a href="{% url 'home' %}#contact">Contact</a></li>
                 </ul>
                 <ul class="footer-list">
+                    <li><strong>Actions</strong></li>
                     <li><a href="{% url 'folders' %}">Folders</a></li>
                     <li><a href="{% url 'notes' %}">Notes</a></li>
                     <!-- <li><a href="#">Profile</a></li> -->
@@ -78,10 +80,12 @@
                     {% endwith %}
                 {% endwith %}
                 <ul class="footer-list">
+                    <li><strong>Account</strong></li>
                 {% if not request.user.is_authenticated %}
                     <li><a href="{% url 'profile' %}">Profile</a></li>
                     <li><a href="https://{{DOMAIN}}/authorize?audience=feynamnit&response_type=token&client_id={{AUTH_CLIENTID}}&redirect_uri={{AUTH_REDIRECT_DOMAIN}}login-result">Log In</a></li>
                 {% else %}
+                    <li><a href="{% url 'profile' %}">Profile</a></li>
                     <li><a href="{{ ''|get_logout_url }}">Logout</a></li>
                 {% endif %}
                 </ul>

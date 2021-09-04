@@ -38,6 +38,7 @@ class Note(models.Model):
         return {
             'id': self.id, 
             'title': self.title, 
+            'folder_title': self.folder.title,
             'step_one_iterations': [iteration.basic_information() for iteration in self.step_one_iterations.all().order_by('id')],
             'step_two_iterations': [iteration.basic_information() for iteration in self.step_two_iterations.all().order_by('id')], 
             'step_three': self.step_three,

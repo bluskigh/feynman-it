@@ -355,6 +355,7 @@ def edit_note(request, id):
                 note.step_three = cleaned_data.get('step_three')
             note.understand = cleaned_data.get('understand')
             note.save()
+            cache.delete(request.session.get('notes_key'))
             messages.success(request, 'Successfully saved note')
             return HttpResponseRedirect(reverse('view_note', kwargs={'id': id}))
         else:
@@ -407,6 +408,7 @@ def view_folder(request, id):
                 note = Note.objects.get(id=option)
                 note.folder = folder
                 note.save()
+            cache.delete(request.session.get('folders_key'))
             messages.success(request, 'Successfully moved notes')
             return HttpResponseRedirect(reverse('view_folder', kwargs={'id': id}))
         else:

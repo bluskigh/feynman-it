@@ -27,7 +27,7 @@ tr {
         </a>
         {% endfor %}
         {% load layout_tags %}
-        <div class="item">
+        <div class="item" style="box-shadow: 0 0 .5em black;">
             <button class="item-add">+</button>
             <form action="{% url 'new_note' %}" class="new-item-form hidden" method="POST">
                 <div class="item-shader"></div>

@@ -7,11 +7,14 @@
 {% endblock %}
 {% block container_start %}
 <h1>{{ note.title }}</h1>
-{% if note.understand %}
-<button class="static-button success">Understand</button>
-{% else %}
-<button class="static-button learning">Learning</button>
-{% endif %}
+<div style="display: flex;">
+    {% if note.understand %}
+    <button class="static-button" style="background: var(--accent-two); color: white;">Understand</button>
+    {% else %}
+    <button class="static-button" style="background: var(--accent-three); color: white;">Learning</button>
+    {% endif %}
+    <button class="static-button" style="margin-left: .5em; background: orange; color: white;">In folder: <strong>{{ note.folder_title }}</strong></button>
+</div>
 {% endblock %}
 
 {% block container_end %}
