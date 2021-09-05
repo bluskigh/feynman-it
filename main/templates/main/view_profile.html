@@ -1,6 +1,8 @@
 {% extends 'main/layout.html' %}
 {% block title %}FeynmanIt | Profile{% endblock %}
+{% load static %}
 {% block style %}
+<link rel="stylesheet preload" href="{% static 'main/css/item-styling.css' %}" type="text/css">
 <style>
     .heatmap_data {min-height: 10px; min-width: 10px;height: 10px; width: 10px;background: gray;border: 1px solid black; transition: .1s ease;position: relative;padding: .5em 1em;}
     /* Layout for information seen when data is hovered */
@@ -14,10 +16,11 @@
     .hdata_quarterhalf { background: rgb(44, 84, 44); }
     .hdata_full { background: rgb(0, 45, 0); }
     .heatmap_data:hover { opacity: .8; transform: scale(.9); }
+    .heatmap_active { opacity: .8; transform: scale(.9); }
     .month { font-size: .8em; color: var(--main); }
     .space { height: .5em; }
     .small { font-size: .8em; }
-    .spinner-container {
+    .spinner_container {
         display: none;
         margin: 0 auto;
         border-radius: 50%;
@@ -49,7 +52,7 @@
         border-radius: 100%;
         border: 1em solid; border-color: transparent; border-top-color: black;
     }
-    .second-spinner {
+    .second_spinner {
         animation-name: srotate;
         border-top-color: #1f1f1d;
         transform: translate(50%, -50%) rotate(180deg);
@@ -102,16 +105,19 @@
 <section>
     <!-- for assistive technologies -->
     <h2 class="hidden">Notes from heatmap data clicked</h2>
-    <div class="spinner-container">
+    <div class="spinner_container">
         <div class="spinner"></div>
-        <div class="spinner second-spinner"></div>
+        <div class="spinner second_spinner"></div>
     </div>
+</section>
+<section id="items-flex-container">
 </section>
 {% endblock %}
 {% block scripts %}
+<script src="{% static 'main/js/add-item.js' %}"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const spinnerContainer = document.querySelector('.spinner-container');
+        const spinnerContainer = document.querySelector('.spinner_container');
         document.querySelectorAll('.hdata_info').forEach(item => {
             item.parentElement.addEventListener('mouseenter', function() {
                 item.parentElement.style.zIndex = 1;
@@ -121,8 +127,34 @@
                 item.parentElement.style.zIndex = 1;
                 item.style.display = "none";
             })
+            function displaySpinner() {
+                spinnerContainer.classList.display = 'block';
+                spinnerContainer.classList.animationPlayState = 'running';
+            }
+            const notesContainer = document.querySelector('#items-flex-container');
+            function hideSpinner() {
+                spinnerContainer.classList.display = 'none';
+                spinnerContainer.classList.animationPlayState = 'paused';
+            }
+            var currentActive = null;
             item.parentElement.addEventListener('click', function() {
-                spinnerContainer.style.display = 'block';
+                if (currentActive) {
+                    if (currentActive == item.parentElement) {
+                        hideSpinner()
+                        currentActive.classList.remove('heatmap_active')
+                        currentActive = null;
+                        while (notesContainer.children.length > 0) {
+                            notesContainer.removeChild(notesContainer.firstElementChild)
+                        }
+                        return;
+                    }
+                    // remove from active as the user clicked on a new heatmap
+                    currentActive.classList.remove('heatmap_active')
+                    currentActive = null;
+                }
+                currentActive = item.parentElement;
+                currentActive.classList.add('heatmap_active')
+                displaySpinner()
                 fetch('/notes?json=True', {
                     method: "GET",
                     headers: new Headers({
@@ -131,10 +163,13 @@
                 })
                 .then(async r => await r.json())
                 .then(r => {
+                    for (const item of r.notes) {
+                        addNote(item.id, item.title, 'notes/'+item.id)
+                    }
                     spinnerContainer.style.display = 'none';
-                    console.log(r.notes)
+                    hideSpinner()
                 })
-                .catch(e => {console.log('error')})
+                .catch(e => {console.log(e); console.log('error'); hideSpinner()})
             })
         })
     })

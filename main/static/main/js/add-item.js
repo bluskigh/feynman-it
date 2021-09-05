@@ -1,9 +1,10 @@
+var addNote = null;
 document.addEventListener('DOMContentLoaded', function() {
     const notesContainer = document.querySelector('#items-flex-container');
     const newNoteTitle = document.querySelector('#id_title');
     const newNoteButton = document.querySelector('.new-item-form button');
 
-    function addNote(id, title, route) {
+    addNote = (id, title, route) => {
         try {
             const p = notesContainer.querySelector('p');
             notesContainer.removeChild(p)
@@ -27,45 +28,48 @@ document.addEventListener('DOMContentLoaded', function() {
         notesContainer.insertBefore(container, notesContainer.lastElementChild)
         newNoteTitle.value = "";
 
-        // after adding, revert back to original stage in animation
-        itemAddClicked()
-        addFlash()
     }
 
-    document.querySelector('.new-item-form').addEventListener('submit', function(e) {
-        e.preventDefault()
-        newNoteButton.disabled = true;
-        fetch(this.getAttribute('action'), {
-            method: 'POST', 
-            mode: 'same-origin',
-            headers: new Headers({
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-                'Content-Type': 'application/json'
-            }), 
-            body: JSON.stringify({
-                'title': newNoteTitle.value
+    try {
+
+        document.querySelector('.new-item-form').addEventListener('submit', function(e) {
+            e.preventDefault()
+            newNoteButton.disabled = true;
+            fetch(this.getAttribute('action'), {
+                method: 'POST', 
+                mode: 'same-origin',
+                headers: new Headers({
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                    'Content-Type': 'application/json'
+                }), 
+                body: JSON.stringify({
+                    'title': newNoteTitle.value
+                })
             })
-        })
-        .then(async r => {
-            const data = await r.json(); 
-            if (r.status == 200) {
-                addNote(data.id, data.title, data.route)
-                newNoteButton.disabled = false;
-            } else if (r.status == 400) {
-                for (const error_key in data.errors) {
-                    const error = document.createElement('p');
-                    error.innerText = data.errors[error_key];
-                    const row = document.createElement('tr');
-                    const th = document.createElement('th');
-                    const td = document.createElement('td');
-                    td.appendChild(error)
-                    row.appendChild(th)
-                    row.appendChild(td)
-                    newNoteBody.appendChild(row)
+            .then(async r => {
+                const data = await r.json(); 
+                if (r.status == 200) {
+                    addNote(data.id, data.title, data.route)
+                    addFlash()
+                    // after adding, revert back to original stage in animation
+                    itemAddClicked()
+                    newNoteButton.disabled = false;
+                } else if (r.status == 400) {
+                    for (const error_key in data.errors) {
+                        const error = document.createElement('p');
+                        error.innerText = data.errors[error_key];
+                        const row = document.createElement('tr');
+                        const th = document.createElement('th');
+                        const td = document.createElement('td');
+                        td.appendChild(error)
+                        row.appendChild(th)
+                        row.appendChild(td)
+                        newNoteBody.appendChild(row)
+                    }
                 }
-            }
+            })
+            .catch(e => {console.log(e)})
         })
-        .catch(e => {console.log(e)})
-    })
+    } catch(e) {}
 
 })
