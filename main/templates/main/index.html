@@ -11,13 +11,38 @@
     <h1>FeynmanIt</h1>
     <p>This application was created with the intention of implementing the infamous learning technique called “The Feynman Technique”. As a way to provide others a chance to truly learn and understand topics from the comfort of their electronical devices. </p>
 </section>
-<section id="howto">
+<section id="what" class="section">
+    <h2>Features</h2>
+    <div class="what-information-container">
+        <section class="what-data">
+            <img src="{% static 'main/images/logo.svg' %}" alt="" height="50px" width="50px" loading="lazy">
+            <h3>Folders</h3>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Illo consequuntur, molestiae magnam, voluptas minima fugiat, omnis natus provident a optio id quis corrupti ipsam architecto obcaecati nemo exercitationem placeat veniam.</p>
+        </section>
+        <section class="what-data">
+            <img src="{% static 'main/images/logo.svg' %}" alt="" height="50px" width="50px" loading="lazy">
+            <h3>Notes</h3>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Illo consequuntur, molestiae magnam, voluptas minima fugiat, omnis natus provident a optio id quis corrupti ipsam architecto obcaecati nemo exercitationem placeat veniam.</p>
+        </section>
+        <section class="what-data">
+            <img src="{% static 'main/images/logo.svg' %}" alt="" height="50px" width="50px" loading="lazy">
+            <h3>Progress</h3>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Illo consequuntur, molestiae magnam, voluptas minima fugiat, omnis natus provident a optio id quis corrupti ipsam architecto obcaecati nemo exercitationem placeat veniam.</p>
+        </section>
+        <section class="what-data">
+            <img src="{% static 'main/images/logo.svg' %}" alt="" height="50px" width="50px" loading="lazy">
+            <h3>Forums</h3>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Illo consequuntur, molestiae magnam, voluptas minima fugiat, omnis natus provident a optio id quis corrupti ipsam architecto obcaecati nemo exercitationem placeat veniam.</p>
+        </section>
+    </div>
+</section>
+<section id="howto" class="section">
     <h2>How to use this application</h2>
     <div class="step">
         <div class="step-information-container">
-            <span class="step-button">1.</span>
             <div class="step-information">
-                <h3>Write what you know</h3>
+                <p class="step-iteration"><strong class=''>Step 01:</strong></p>
+                <h3 class="step-gradient">Write what you know</h3>
                 <p>The first iteration of step one should be information you know about a topic prior to researching. This way you can build the foundation of what you should research. From then on, each iteration would be the result updated knowledge after researching.</p>
             </div>
         </div>
@@ -38,9 +63,10 @@
     <div class="step">
         <div class="step-information-container">
             <div class="step-information">
-                <h3>Links</h3>
+                <p class="step-iteration"><strong>Step 01a:</strong></p>
+                <h3 class="step-gradient">Links</h3>
                 <p>This step was added by the developers to assist users in providing sources to what helped them further understand gaps in their iterations. An example of how to use links: </p>
-                <ol>
+                <ol style="color: gray;">
                     <li>Write knowledge on topic in step 1</li>
                     <li>Identify gaps in knowledge in step 2</li>
                     <li>Research topic to fill gaps</li>
@@ -49,7 +75,6 @@
                     <li>Repeat until you can confidently and simply describe topic in step 3</li>
                 </ol>
             </div>
-            <span class="step-button">1a</span>
         </div>
         <div class="step-example" style="text-align: center;">
             <h3>General Links</h3>
@@ -78,9 +103,9 @@
     </div>
     <div class="step">
         <div class="step-information-container">
-            <span class="step-button">2.</span>
             <div class="step-information">
-                <h3>Gaps in explanation</h3>
+                <p class="step-iteration"><strong>Step 02:</strong></p>
+                <h3 class="step-gradient">Gaps in explanation</h3>
                 <p>This is the step where you will attempt to identify any gaps in your present expanation of the topic. This can be done by describing in very simple terms the topic to someone else, and or as done in the computer world by talking to a toy duck. If you are still unsure about certain aspects in the explanation, this is where you would write those uncertanties to see your thought process and solidify your understanding of the topic.</p>
             </div>
         </div>
@@ -101,10 +126,10 @@
     <div class="step">
         <div class="step-information-container">
             <div class="step-information">
-                <h3>Final Statement</h3>
+                <p class="step-iteration"><strong>Step 03:</strong></p>
+                <h3 class="step-gradient">Final Statement</h3>
                 <p>When you believe you have no more gaps in your explanation of the topic. This is the step where you would type your final statement (explanation) for future reference. </p>
             </div>
-            <span class="step-button">3.</span>
         </div>
         <div class="step-example">
             <div class="example-input">
@@ -116,9 +141,7 @@
 </section>
 <section id="contact">
     <h3>Have a question?</h3>
-    <div>
-        <p>mario.molinito9@gmail.com</p>
-    </div>
+    <p>mario.molinito9@gmail.com</p>
 </section>
 {% endblock %}
 {% endcache %}

@@ -15,7 +15,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
     <!-- Styles -->
     <link rel="stylesheet preload" type="text/css" media="all" href="{% static 'main/css/layout.css' %}">
-    <link rel="stylesheet" media="screen and (max-width: 1300px)" type="text/css" href="{% static 'main/css/media.css' %}">
+    <link rel="stylesheet preload" media="screen and (max-width: 1300px)" type="text/css" href="{% static 'main/css/media.css' %}">
     {% block style %}{% endblock %}
 </head>
 <body>
@@ -58,7 +58,7 @@
 
     {% cache 604800 'feynman.footer' request.user.id %}
     <!-- WEBSITES FOOTER -->
-    <footer style="box-shadow: 0 0 1em black; background: linear-gradient(45deg, var(--main), #4f707d);">
+    <footer style="box-shadow: 0 0 1em black;">
         <section>
             <h2>FeynmanIt</h2>
             <div class="navigation">
@@ -96,7 +96,6 @@
             <div class="social"></div>
             <div class="social"></div>
         </menu>
-        <p class="copyright">© 2021 Mario Molinito. All rights reserved.</p>
     </footer>
     {% endcache %}
     {% block scripts %}{% endblock %}
@@ -127,17 +126,14 @@
             }
 
             if (document.body.clientWidth <= 500) {
-                document.addEventListener('DOMContentLoaded', function() {
-                    const navButton = document.querySelector('#responsive-nav-button');
-                    navButton.addEventListener('click', function() {
-                        const ul = navButton.nextElementSibling;
-                        ul.style.display = ul.style.display == 'none' ? 'initial' : 'none';
-                    })
+                const navButton = document.querySelector('#responsive-nav-button');
+                navButton.addEventListener('click', function() {
+                    const ul = navButton.nextElementSibling;
+                    ul.style.display = ul.style.display == 'none' ? 'initial' : 'none';
                 })
             }
 
         })
-
     </script>
 </body>
 </html>

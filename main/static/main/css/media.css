@@ -21,6 +21,9 @@
     }
 }
 @media screen and (max-width: 500px) {
+    main #about h1 {
+        font-size: 3.5em;
+    }
     #responsive-nav-button {
         display: initial;
     }
@@ -63,10 +66,24 @@
     #note-edit-button {
         bottom: 2%;
     }
-    footer { padding: 2em; }
-    footer .socials {
-        display: flex;
+    footer { padding: 2em; flex-direction: column; }
+    .what-information-container {
         flex-direction: column;
+        align-items: center;
+        width: 100%;
     }
+    #what .what-data {
+        width: 80%;
+    }
+    main .step {
+        max-width: 90%; width: 100%;
+    }
+    main #howto {
+        max-width: 90%;
+    }
+    .copyright {
+        position: initial; text-align: center;
+    }
+    #contact { flex-direction: column; }
 }
 /* End of Media Styling */

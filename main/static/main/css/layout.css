@@ -1,6 +1,6 @@
 :root {
-    --accent: #E9C46A;
-    --main: #264653;
+    --accent: #134812;
+    --main: #262525;
     --main-two: #F4A261;
     --accent-two: #2A9D8F;
     --accent-three: #E76F51;
@@ -15,8 +15,7 @@
 /* removing default margin from nodes */
 html, body, nav, ul, p, h1, h2, h3, h4, h5, h6 {margin: 0; padding: 0;}
 li { list-style-type: none; line-height: 1em; }
-a { color: white; text-decoration: none; font-size: .8em; }
-p { font-size: .8em; }
+a { color: white; text-decoration: none; }
 a:hover { text-decoration: underline; }
 .hidden { z-index: -1; user-select: none; opacity: 0% !important; }
 .display-none { display: none; }
@@ -104,8 +103,11 @@ nav {
     padding: 0 4em;
     /* including the padding in the calculation for width/height of nav (otherwise overflow on x axis will occur) */
     box-sizing: border-box;
-    background: var(--main);
     color: var(--accent);
+    background: transparent;
+    position: absolute;
+    top: 0; left: 0;
+    z-indeX: 1;
 }
 nav img { transition: opacity .5s ease; }
 nav ul {
@@ -138,7 +140,10 @@ footer {
     position: relative;
     color: lightgrey;
 }
-footer h2 { color: var(--accent); margin-bottom: .5em; }
+menu {
+    margin: 0; padding: 0;
+}
+footer h2 { margin-bottom: .5em; font-family: 'Times New Roman', Times, serif; }
 footer a { color: lightgrey; }
 footer .navigation {
     display: flex;
