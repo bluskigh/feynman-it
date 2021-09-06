@@ -1,7 +1,7 @@
 /* Start of Media Styling */
 @media screen and (max-width: 1300px) {
     #item-table th {
-        font-size: 3em;
+        font-size: 3em !important;
     }
     #item-table td {
         margin-top: 1em;
@@ -9,12 +9,12 @@
 }
 @media screen and (max-width: 700px) {
     #item-table th {
-        font-size: 2.5em;
+        font-size: 2.5em !important;
     }
 }
 @media screen and (max-width: 600px) {
     #item-table th {
-        font-size: 2em;
+        font-size: 2em !important;
     }
     #item-table td {
         margin-top: .7em;
@@ -28,6 +28,8 @@
         display: initial;
     }
     nav {
+        align-items: flex-start;
+        position: initial;
         padding: 1em 2em;
     }
     .social { margin: .5em; }
@@ -57,7 +59,7 @@
         display: none;
     }
     #item-table th {
-        font-size: 1.5em;
+        font-size: 1.5em !important;
     }
     #item-table td {
         margin-top: .5em;

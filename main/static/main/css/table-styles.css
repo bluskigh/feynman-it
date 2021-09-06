@@ -1,5 +1,8 @@
 /* Start of Table Styling */
-#item-table tr { position: relative; margin: 5em 0; }
+#id_understand { width: fit-content; }
+#item-table tr { position: relative; }
+#item-table tr { margin: 5em 0; }
+#item-table tr:last-child { margin-bottom: 2em; }
 #item-table th {
     /* always behind the actual content */
     opacity: .5;

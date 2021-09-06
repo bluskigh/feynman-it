@@ -1,4 +1,5 @@
-nav { padding: 2em; }
+nav { padding: 2em; background: transparent; position: absolute; top: 0; left: 0; }
+#messages { position: absolute; }
 main {
     margin: 0;
     padding: 0;

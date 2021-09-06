@@ -31,7 +31,7 @@
     opacity: .3;
     top: 0; left: 0;
 }
-.item-animate:hover { cursor: pointer; box-shadow: -5px 5px 0 black; transform: translateY(-5px); }
+.item-animate:hover { cursor: pointer; box-shadow: -5px 5px 0 var(--main-two); transform: translateY(-5px); }
 .item a { color: var(--accent); }
 /* default color of understand bar "does not understand" color*/
 .understand-bar { 
@@ -64,7 +64,7 @@
     border-radius: 50%;
     padding: 1em 1.5em; margin: 0;
     background: var(--accent);
-    color: black;
+    color: white;
     animation-timing-function: ease;
     animation-name: new-item-clicked;
     animation-duration: .8s;
@@ -100,12 +100,12 @@
     text-align: left;
     margin: 0 auto;
     width: fit-content;
-    color: var(--accent);
+    color: white;
 }
 .input-add-container { height: 60%; }
 .input-add-container button {
     background: black;
-    color: var(--accent);
+    color: white;
     max-width: fit-content;
     border: none;
     height: 100%;
@@ -114,7 +114,7 @@
 .input-add-container input {
     background: none;
     border: 3px solid black;
-    color: var(--accent);
+    color: white;
     height: 100%;
 }
 .input-add-container input:focus {
@@ -128,4 +128,5 @@
     flex-direction: column;
     align-items: center;
 }
+.folder:hover { box-shadow: -5px 5px 0 var(--main); }
 /* End of Item Styling */

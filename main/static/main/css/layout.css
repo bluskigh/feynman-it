@@ -60,7 +60,7 @@ button {
     transition: transform .5s ease;
 }
 button:hover { cursor: pointer; }
-#messages { width: 100%; position: absolute; z-index: 2; }
+#messages { width: 100%; z-index: 2; }
 .warning, .error {
     background: red; 
     color: darkred;
@@ -106,9 +106,7 @@ nav {
     /* including the padding in the calculation for width/height of nav (otherwise overflow on x axis will occur) */
     box-sizing: border-box;
     color: var(--accent);
-    background: transparent;
-    position: absolute;
-    top: 0; left: 0;
+    background: var(--main);
     z-index: 1;
 }
 nav img { transition: opacity .5s ease; }
@@ -116,8 +114,6 @@ nav ul {
     /* want to align items in a row vertically centered */
     display: flex;
     align-items: center;
-}
-nav ul li{
 }
 /* provide space on even lis */
 nav ul li:nth-of-type(even) { margin: 0 .5em; }
@@ -145,7 +141,7 @@ footer {
 menu {
     margin: 0; padding: 0;
 }
-footer h2 { margin-bottom: .5em; font-family: 'Times New Roman', Times, serif; }
+footer h2 { margin-bottom: .5em; font-family: 'Times New Roman', Times, serif; color: var(--main-two); }
 footer a { color: lightgrey; }
 footer .navigation {
     display: flex;
