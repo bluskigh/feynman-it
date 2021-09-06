@@ -197,7 +197,7 @@ def iterations(request, id=None):
         text = data.get('text')
         which = data.get('which')
         if not noteid or not title or not text or not which:
-            return JsonResposne({{'noteid': noteid, 'title': title, 'text': text, 'which': which}, status=400)
+            return JsonResposne({'noteid': noteid, 'title': title, 'text': text, 'which': which}, status=400)
         note = Note.objects.get(id=noteid)
         iteration = Iteration(title=title, text=text)
         if which == 1:
