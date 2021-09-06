@@ -170,6 +170,8 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(async r => {
                 if (r.status == 400) {
                     // invalid values were given
+                    console.log(noteid, titleValue, textValue, which)
+                    console.log(r.noteid, r.titleValue, r.textValue, r.which)
                     alert('Could not add iteration, invalid values were given.')
                 } else {
                     return await r.json()
