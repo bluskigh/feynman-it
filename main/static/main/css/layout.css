@@ -122,7 +122,7 @@ nav ul li:nth-of-type(even) { margin: 0 .5em; }
     padding: 2em 0 1.6em 0;
     border-bottom: .4em solid var(--accent);
 }
-.current:hover { border-bottom-color: #e9c56a8f; }
+.current:hover { border-bottom-color: var(--main-two); }
 /* End of Navigation Styling */
 
 
