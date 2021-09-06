@@ -60,7 +60,7 @@ button {
     transition: transform .5s ease;
 }
 button:hover { cursor: pointer; }
-#messages { width: 100%; }
+#messages { width: 100%; position: absolute; z-index: 2; }
 .warning, .error {
     background: red; 
     color: darkred;
@@ -80,12 +80,14 @@ button:hover { cursor: pointer; }
     max-width: 100%;
     padding: 1.5em 1em;
     box-sizing: border-box;
+    z-index: 2;
 }
 .message button {
     padding: 1em;
     background: transparent;
     color: lightgreen;
 }
+#responsive-nav-button { color: var(--main-two); }
 /* End of General Styling */
 
 /* Navigation Styling */
@@ -107,7 +109,7 @@ nav {
     background: transparent;
     position: absolute;
     top: 0; left: 0;
-    z-indeX: 1;
+    z-index: 1;
 }
 nav img { transition: opacity .5s ease; }
 nav ul {
