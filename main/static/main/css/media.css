@@ -58,10 +58,10 @@
     #quote {
         display: none;
     }
-    #item-table th {
+    main #item-table th {
         font-size: 1.5em !important;
     }
-    #item-table td {
+    main #item-table td {
         margin-top: .5em;
         width: 80%;
     }
