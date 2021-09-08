@@ -28,16 +28,6 @@ body {
 #main-container {
     min-height: 80vh;
 }
-#note-edit-form { width: 100%; }
-#note-edit-button {
-    position: absolute;
-    right: 5%;
-    bottom: 5%;
-    transition: background .5s ease; 
-}
-#note-edit-button:hover {
-    background: gray;
-}
 .dangerous {
     background: red;
     color: darkred;
@@ -52,7 +42,6 @@ main {
     text-align: center;
     justify-content: flex-start;
     align-items: center;
-    padding: 2em 0;
     position: relative;
 }
 button {
@@ -63,7 +52,7 @@ button {
     transition: transform .5s ease;
 }
 button:hover { cursor: pointer; }
-#messages { width: 100%; z-index: 2; }
+#messages { width: 100%; z-index: 2; margin-bottom: 2em; }
 .warning, .error {
     background: red; 
     color: darkred;

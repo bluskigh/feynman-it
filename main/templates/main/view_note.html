@@ -14,13 +14,14 @@
     <button class="static-button" style="background: var(--accent-three); color: white;">Learning</button>
     {% endif %}
     <button class="static-button" style="margin-left: .5em; background: orange; color: white;">In folder: <strong>{{ note.folder_title }}</strong></button>
+    <br>
+    {% if note.owner == request.user %}
+    <form action="{% url 'edit_note' note.id %}" method="GET">
+        <button type="submit" id="note-edit-button">Edit</button>
+    </form>
+    {% endif %}
 </div>
 {% endblock %}
-
 {% block container_end %}
-{% if note.owner == request.user %}
-<form action="{% url 'edit_note' note.id %}" method="GET">
-    <button type="submit" id="note-edit-button">Edit</button>
-</form>
-{% endif %}
+<br>
 {% endblock %}

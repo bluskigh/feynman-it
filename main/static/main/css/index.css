@@ -1,10 +1,6 @@
 nav { padding: 2em; background: transparent; position: absolute; top: 0; left: 0; }
 #messages { position: absolute; }
-main {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-}
+main { margin: 0; width: 100%; }
 main .section {
     padding: 2em 0; margin: 2em 0;
 }

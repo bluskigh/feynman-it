@@ -17,6 +17,8 @@
     cursor: help;
 }
 #item-table td {
+    width: 80%;
+    border-radius: 1em;
     background: var(--main);
     color: white;
     /* always in front of the label (header) */
@@ -27,7 +29,6 @@
     /* providing space uptop */
     padding: 2em 1em;
     box-shadow: 0 0 1em black;
-    width: 50%;
     transition-timing-function: ease;
     transition: background .5s, opacity .5s;
 }
@@ -88,4 +89,13 @@ th {
 .iteration-input button {
     height: fit-content;
 }
+#note-edit-form { width: 100%; }
+#note-edit-button {
+    margin-left: .5em;
+    transition: background .5s ease; 
+}
+#note-edit-button:hover {
+    background: gray;
+}
+
 /* End of Table Styling */

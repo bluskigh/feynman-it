@@ -1,5 +1,8 @@
 /* Start of Media Styling */
 @media screen and (max-width: 1300px) {
+    main .what-information {
+        width: 90%;
+    }
     #item-table th {
         font-size: 3em !important;
     }
