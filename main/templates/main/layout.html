@@ -15,46 +15,54 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
     <!-- Styles -->
     <link rel="stylesheet preload" type="text/css" media="all" href="{% static 'main/css/layout.css' %}">
+    {% if request.path != '/' %}
+    <link rel="stylesheet preload" media="screen and (min-width: 1300px)" type="text/css" href="{% static 'main/css/loggedin.css' %}">
+    {% endif %}
     <link rel="stylesheet preload" media="screen and (max-width: 1300px)" type="text/css" href="{% static 'main/css/media.css' %}">
     {% block style %}{% endblock %}
 </head>
 <body>
-    <!-- GROUP OF NAVIGATION LINKS -->
-    <nav>
-        {% cache 259200 'feynman.brain' %}
-        <img src="{% static 'main/images/logo.svg' %}" alt="Brain Image" width="30px" height="30px" loading="lazy">
-        {% endcache %}
-        <section>
-            <label id="responsive-nav-button" class="display-none">|||</label>
-            <ul>
-                {% load layout_tags %}
-                {% if request.user.is_authenticated %}
-                {% define True as lis %}
-                {% else %}
-                {% define False as lis %}
-                <li><a href="https://{{DOMAIN}}/authorize?audience=feynamnit&response_type=token&client_id={{AUTH_CLIENTID}}&redirect_uri={{AUTH_REDIRECT_DOMAIN}}login-result">Log In / Register</a></li>
-                {% endif %}
-                {% for li in lis %}
-                {% with path=li|get_path %}
-                <li class="{% if path in request.path %}current{% endif %}"><a href="{{ path }}">{{ li }}</a></li>
-                {% endwith %}
+    <div id="main-container">
+
+        <!-- GROUP OF NAVIGATION LINKS -->
+        <nav>
+            {% cache 259200 'feynman.brain' %}
+            <img src="{% static 'main/images/logo.svg' %}" alt="Brain Image" width="30px" height="30px" loading="lazy">
+            {% endcache %}
+            <section>
+                <label id="responsive-nav-button" class="display-none">|||</label>
+                <ul>
+                    {% load layout_tags %}
+                    {% if request.user.is_authenticated %}
+                    {% define True as lis %}
+                    {% else %}
+                    {% define False as lis %}
+                    <li><a href="https://{{DOMAIN}}/authorize?audience=feynamnit&response_type=token&client_id={{AUTH_CLIENTID}}&redirect_uri={{AUTH_REDIRECT_DOMAIN}}login-result">Log In / Register</a></li>
+                    {% endif %}
+                    {% for li in lis %}
+                    {% with path=li|get_path %}
+                    <li tabindex="{{forloop.counter}}"  class="{% if path in request.path %}current{% endif %}"><a href="{{ path }}">{{ li }}</a></li>
+                    {% endwith %}
+                    {% endfor %}
+                </ul>
+            </section>
+        </nav>
+        <!-- MAIN CONTENT OF THE PAGE -->
+        <main>
+            <!-- FLASH MESSAGES -->
+            <section id="messages">
+                {% for message in messages %}
+                <div class="message {{message.tags}}">
+                    <h5>{{message}}</h5>
+                    <button><strong>x</strong></button>
+                </div>
                 {% endfor %}
-            </ul>
-        </section>
-    </nav>
-    <!-- FLASH MESSAGES -->
-    <section id="messages">
-        {% for message in messages %}
-        <div class="message {{message.tags}}">
-            <h5>{{message}}</h5>
-            <button><strong>x</strong></button>
-        </div>
-        {% endfor %}
-    </section>
-    <!-- MAIN CONTENT OF THE PAGE -->
-    <main>
-    {% block body %}{% endblock %}
-    </main>
+            </section>
+
+        {% block body %}{% endblock %}
+        </main>
+
+    </div>
 
     {% cache 604800 'feynman.footer' request.user.id %}
     <!-- WEBSITES FOOTER -->

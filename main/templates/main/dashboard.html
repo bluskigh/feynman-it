@@ -1,0 +1,87 @@
+{% extends 'main/layout.html' %}
+{% block title %}FeynmanIt | Dashboard {% endblock %}
+{% load static %}
+{% block style %}
+<link rel="stylesheet" href="{% static 'main/css/item-styling.css' %}" type="text/css">
+<style>
+    #dashboard-body {
+        display: flex;
+        justify-content: space-around;
+        width: 100%;
+    }
+    .action {
+        width: fit-content;
+        position: absolute;
+        transform: rotate(45deg);
+        right: -10%;
+        top: 5%;
+        color: white;
+        height: fit-content;
+    }
+    .action p {
+        font-size: .7em;
+        padding: .2em 2em;
+    }
+    .add {
+        background: green;
+    }
+    .delete {
+        background: darkred;
+    }
+    .edit {
+        background: gray;
+    }
+    .redacted{
+        position: absolute;
+        width: 50%;
+        background: gray;
+        height: .4em;
+        top: 50%; right: 50%;
+        transform: translate(50%, -50%);
+    }
+</style>
+{% endblock %}
+{% block body %}
+<h1>Dashboard</h1>
+<section aria-label="Dashboard body" id="dashboard-body">
+    <section>
+        <h2>Recent Note Actions</h2>
+        {% for note in notes %}
+            {% if note.action == 'delete' %}
+                <a href="#" class="item">
+                    <div class="action {{note.action}}"><p>{{note.action}}</p></div>
+                    <div class="item-shader hidden"></div>
+                    <div class="understand-bar {% if note.understand %}understand{% endif %}"></div>
+                    <h5>{% if note.action == 'delete' %}<span class="redacted"></span>{% endif %}{{ note.title }}</h5>
+                </a>
+            {% else %}
+                <a href="{% url 'view_note' note.id %}" class="item item-animate">
+                    <div class="action {{note.action}}"><p>{{note.action}}</p></div>
+                    <div class="item-shader hidden"></div>
+                    <div class="understand-bar {% if note.understand %}understand{% endif %}"></div>
+                    <h5>{{ note.title }}</h5>
+                </a>
+            {% endif %}
+        {% endfor %}
+    </section>
+    <section>
+        <h2>Recent Folder Actions</h2>
+        {% for folder in folders %}
+            {% if note.action == 'delete' %}
+                <a href="#" class="item item-animate folder">
+                    <div class="action {{folder.action}}"><p>{{folder.action}}</p></div>
+                    <div class="item-shader hidden"></div>
+                    <h5>{{ folder.title }}</h5>
+                    <h5>{% if folder.action == 'delete' %}<span class="redacted"></span>{% endif %}{{ folder.title }}</h5>
+                </a>
+            {% else %}
+                <a href="{% url 'view_folder' folder.id %}" class="item item-animate folder">
+                    <div class="action {{folder.action}}"><p>{{folder.action}}</p></div>
+                    <div class="item-shader hidden"></div>
+                    <h5>{{ folder.title }}</h5>
+                </a>
+            {% endif %}
+        {% endfor %}
+    </section>
+</section>
+{% endblock %}

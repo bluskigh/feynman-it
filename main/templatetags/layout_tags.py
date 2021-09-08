@@ -11,7 +11,7 @@ register = template.Library()
 def get_path(value):
     value =  value.lower()
     # path is simple, just the name
-    if value in ['folders', 'notes', 'profile']:
+    if value in ['dashboard', 'folders', 'notes', 'profile']:
         return reverse(value)
     if value == 'logout':
         return get_logout_url('')
@@ -21,7 +21,7 @@ def get_path(value):
 def define(authenticated=None):
     """Returns a list of lis to be displayed if the user is authenticated"""
     if authenticated:
-        return ['Folders', 'Notes', 'Profile', 'Logout']
+        return ['Dashboard', 'Folders', 'Notes', 'Profile', 'Logout']
 
 
 @register.filter(name='get_logout_url')

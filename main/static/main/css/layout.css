@@ -16,7 +16,7 @@
 html, body, nav, ul, p, h1, h2, h3, h4, h5, h6 {margin: 0; padding: 0;}
 li { list-style-type: none; line-height: 1em; }
 a { color: white; text-decoration: none; }
-a:hover { text-decoration: underline; }
+a:hover { color: var(--main-two); text-decoration: underline; }
 .hidden { z-index: -1; user-select: none; opacity: 0% !important; }
 .display-none { display: none; }
 body {
@@ -24,6 +24,9 @@ body {
     background: lightgrey;
     overflow-x: hidden;
     height: 100vh;
+}
+#main-container {
+    min-height: 80vh;
 }
 #note-edit-form { width: 100%; }
 #note-edit-button {
@@ -88,6 +91,7 @@ button:hover { cursor: pointer; }
     color: lightgreen;
 }
 #responsive-nav-button { color: var(--main-two); }
+#responsive-nav-button:hover { cursor: pointer; }
 /* End of General Styling */
 
 /* Navigation Styling */

@@ -65,6 +65,9 @@ main .section {
 .what-data h3 {
     margin: .5em 0;
 }
+.what-data p {
+    color: #4d4a4a;
+}
 #what h2 {
     padding-bottom: 1em;
 }

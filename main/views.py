@@ -166,11 +166,16 @@ class FolderForm(forms.Form):
 
 @login_required
 def index(request):
-    return HttpResponseRedirect(reverse('notes'))
+    return HttpResponseRedirect(reverse('dashboard'))
 
 
 def home(request):
     return render(request, 'main/index.html', AUTH_KEYS)
+
+
+@login_required
+def dashboard(request):
+    return render(request, 'main/dashboard.html', {'notes': cache.get(request.session.get('notes_actions_key')), 'folders': cache.get(request.session.get('folders_actions_key'))})
 
 
 @login_required
@@ -326,6 +331,14 @@ def new_note(request):
             # new note, therefore remove cache so it can be updated
             cache.delete(request.session.get('notes_key'))
             cache.delete(request.session.get('folders_key'))
+
+            # saving to actions
+            info = note.basic_information()
+            info['action'] = 'add'
+            existing = cache.get(request.session.get('notes_actions_key')) or []
+            existing.append(info)
+            cache.set(request.session.get('notes_actions_key'), existing)
+
             return JsonResponse(result, status=200)
         else:
             return JsonResponse({'errors': form.errors, 'status': 400}, status=400)
@@ -358,6 +371,13 @@ def edit_note(request, id):
                 note.step_three = cleaned_data.get('step_three')
             note.understand = cleaned_data.get('understand')
             note.save()
+
+            existing = cache.get(request.session.get('notes_actions_key')) or []
+            info = note.basic_information()
+            info['action'] = 'edit'
+            existing.append(info)
+            cache.set(request.session.get('notes_actions_key'), existing)
+
             cache.delete(request.session.get('notes_key'))
             messages.success(request, 'Successfully saved note')
             return HttpResponseRedirect(reverse('view_note', kwargs={'id': id}))
@@ -382,10 +402,15 @@ def new_folder(request):
     form = NewFolderForm(request.POST)
     if form.is_valid():
         cd = form.cleaned_data
-        Folder.objects.create(title=cd.get('title').strip(), owner=request.user)
+        folder = Folder.objects.create(title=cd.get('title').strip(), owner=request.user)
         messages.success(request, 'Successfully created folder')
         # new folder, therefore remove cache so it can be updated
         cache.delete(request.session.get('folders_key'))
+        existing = cache.get(request.session.get('folders_actions_key')) or []
+        info = folder.basic_information()
+        info['action'] = 'add'
+        existing.append(info)
+        cache.set(request.session.get('folders_actions_key'), existing)
         return HttpResponseRedirect(reverse('folders'))
     else:
         return render(request, 'main/folders.html', {'form': form, 'folders': Folder.objects.filter(owner=request.user)})
@@ -424,6 +449,13 @@ def delete_folder(request, id):
     deleted_folder = request.user.folders.get(title='Delete')
     all_folder = request.user.folders.get(title='All')
     notes = folder.folder_notes.all()
+
+    info = folder.basic_information()
+    info['action'] = 'delete'
+    existing = cache.get(request.session.get('folders_actions_key')) or []
+    existing.append(info)
+    cache.set(request.session.get('folders_actions_key'), existing)
+
     if folder != deleted_folder:
         for note in notes:
             note.folder = deleted_folder 
@@ -432,13 +464,19 @@ def delete_folder(request, id):
     else:
         messages.info(request, f'Deleted notes from "{folder.title}"')
         d = False
+        existing = cache.get(request.session.get('notes_actions_key')) or []
         for note in folder.folder_notes.all():
             d = True
+            info = note.basic_information()
+            info['action'] = 'delete'
+            existing.append(info)
             note.delete()
         if d:
             # notes updated -> delete old notes in cache
             cache.delete(request.session.get('notes_key'))
             cache.delete(request.session.get('folders_key'))
+
+            cache.set(request.session.get('notes_actions_key'), existing)
 
     if folder != all_folder and folder != deleted_folder and len(notes) == 0:
         cache.delete(request.session.get('folders_key'))
@@ -471,6 +509,8 @@ def login_result(request):
 
             request.session['notes_key'] = f'{user.sub}.notes'
             request.session['folders_key'] = f'{user.sub}.folders'
+            request.session['notes_actions_key'] = f'{user.sub}.notes.actions'
+            request.session['folders_actions_key'] = f'{user.sub}.folders.actions'
 
             # user already exist do nothing, TODO: decide, to store user information in session or not
 
