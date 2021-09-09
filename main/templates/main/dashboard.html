@@ -52,7 +52,7 @@
                     <div class="action {{note.action}}"><p>{{note.action}}</p></div>
                     <div class="item-shader hidden"></div>
                     <div class="understand-bar {% if note.understand %}understand{% endif %}"></div>
-                    <h5>{% if note.action == 'delete' %}<span class="redacted"></span>{% endif %}{{ note.title }}</h5>
+                    <h5><span class="redacted"></span>{{note.title }}</h5>
                 </a>
             {% else %}
                 <a href="{% url 'view_note' note.id %}" class="item item-animate">
@@ -67,12 +67,11 @@
     <section>
         <h2>Recent Folder Actions</h2>
         {% for folder in folders %}
-            {% if note.action == 'delete' %}
+            {% if folder.action == 'delete' %}
                 <a href="#" class="item item-animate folder">
                     <div class="action {{folder.action}}"><p>{{folder.action}}</p></div>
                     <div class="item-shader hidden"></div>
-                    <h5>{{ folder.title }}</h5>
-                    <h5>{% if folder.action == 'delete' %}<span class="redacted"></span>{% endif %}{{ folder.title }}</h5>
+                    <h5><span class="redacted"></span>{{ folder.title }}</h5>
                 </a>
             {% else %}
                 <a href="{% url 'view_folder' folder.id %}" class="item item-animate folder">

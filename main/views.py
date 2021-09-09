@@ -175,7 +175,8 @@ def home(request):
 
 @login_required
 def dashboard(request):
-    return render(request, 'main/dashboard.html', {'notes': cache.get(request.session.get('notes_actions_key')), 'folders': cache.get(request.session.get('folders_actions_key'))})
+    notes = cache.get(request.session.get('notes_actions_key')) or []
+    return render(request, 'main/dashboard.html', {'notes': notes[:5], 'folders': cache.get(request.session.get('folders_actions_key'))})
 
 
 @login_required
