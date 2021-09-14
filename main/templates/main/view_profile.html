@@ -45,7 +45,7 @@
         transform: translate(50%, -50%);
         animation-name: frotate;
         animation-play-state: paused;
-        animation-timing-duration: linear;
+        animation-timing-function: linear;
         animation-duration: 1s;
         animation-iteration-count: infinite;
         animation-direction: forward;
@@ -63,9 +63,7 @@
 {% load layout_tags %}
 <table>
     <thead>
-        <tr>
-            <th colspan=7>HeatMap for <span class="month">{{ month }}</span></th>
-        </tr>
+        <caption>HeatMap for <span class="month">{{ month }}</span></caption>
         <tr>
             <th colspan=7 class="small"><small>Updates every 5 hours</small></th>
         </tr>
