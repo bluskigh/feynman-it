@@ -62,19 +62,20 @@
 {% block body %}
 {% load layout_tags %}
 <table>
+    <caption>HeatMap for <span class="month">{{ month }}</span><span class="display-none">. This heatmap will contain a value ranging from 0 to 1 depending on activity of a certain day. 0 means no activity on that day, 0.5 means medium amount of activity and 1 means large amount of activity. Activity is measured by creation/edit/deletion of notes done on a given day.</span></caption>
     <thead>
-        <caption>HeatMap for <span class="month">{{ month }}</span></caption>
         <tr>
             <th colspan=7 class="small"><small>Updates every 5 hours</small></th>
         </tr>
         <tr>
-            <th>Mon</th>
-            <th>Tue</th>
-            <th>Wed</th>
-            <th>Thu</th>
-            <th>Fri</th>
-            <th>Sat</th>
-            <th>Sun</th>
+            <!-- specifying for assisstive technologies that this th is a header for a column -->
+            <th scope="col">Mon</th>
+            <th scope="col">Tue</th>
+            <th scope="col">Wed</th>
+            <th scope="col">Thu</th>
+            <th scope="col">Fri</th>
+            <th scope="col">Sat</th>
+            <th scope="col">Sun</th>
         </tr>
     </thead>
     <tbody>
@@ -87,7 +88,7 @@
                 <p class="hdata_day">{{day|get_value:0}}</p>
                 {% endif %}
                 {% if activity > 0 %}
-                <div class="hdata_info">
+                <div class="hdata_info" data-day="{{day|get_value:0}}">
                     <p>Modified {{ day|get_value:2 }}</p>
                     <div class="arrow"></div>
                 </div>
@@ -102,13 +103,13 @@
 </table>
 <section>
     <!-- for assistive technologies -->
-    <h2 class="hidden">Notes from heatmap data clicked</h2>
+    <h2 class="display-none">Result of notes from heatmap day selected.</h2>
     <div class="spinner_container">
         <div class="spinner"></div>
         <div class="spinner second_spinner"></div>
     </div>
-</section>
-<section id="items-flex-container">
+    <div id="items-flex-container">
+    </div>
 </section>
 {% endblock %}
 {% block scripts %}
@@ -116,6 +117,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const spinnerContainer = document.querySelector('.spinner_container');
+        let currentActive = null;
         document.querySelectorAll('.hdata_info').forEach(item => {
             item.parentElement.addEventListener('mouseenter', function() {
                 item.parentElement.style.zIndex = 1;
@@ -126,34 +128,33 @@
                 item.style.display = "none";
             })
             function displaySpinner() {
-                spinnerContainer.classList.display = 'block';
-                spinnerContainer.classList.animationPlayState = 'running';
+                spinnerContainer.style.display = 'initial';
+                spinnerContainer.style.animationPlayState = 'running';
             }
             const notesContainer = document.querySelector('#items-flex-container');
             function hideSpinner() {
-                spinnerContainer.classList.display = 'none';
-                spinnerContainer.classList.animationPlayState = 'paused';
+                spinnerContainer.style.display = 'none';
+                spinnerContainer.style.animationPlayState = 'paused';
             }
-            var currentActive = null;
             item.parentElement.addEventListener('click', function() {
                 if (currentActive) {
                     if (currentActive == item.parentElement) {
                         hideSpinner()
                         currentActive.classList.remove('heatmap_active')
                         currentActive = null;
-                        while (notesContainer.children.length > 0) {
-                            notesContainer.removeChild(notesContainer.firstElementChild)
-                        }
                         return;
                     }
                     // remove from active as the user clicked on a new heatmap
                     currentActive.classList.remove('heatmap_active')
                     currentActive = null;
                 }
+                while (notesContainer.children.length > 0) {
+                    notesContainer.removeChild(notesContainer.firstElementChild)
+                }
                 currentActive = item.parentElement;
                 currentActive.classList.add('heatmap_active')
                 displaySpinner()
-                fetch('/notes?json=True', {
+                fetch(`/notes?json=True&day=${item.dataset.day}`, {
                     method: "GET",
                     headers: new Headers({
                         "Authorization": `Bearer ${window.sessionStorage.getItem("token")}`

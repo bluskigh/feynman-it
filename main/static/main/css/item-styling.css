@@ -4,6 +4,7 @@
     flex-wrap: wrap;
     /* otherwise items will touch edges of screen (left, right) */
     max-width: 80%;
+    margin: 0 auto;
     justify-content: flex-start;
     align-items: stretch;
 }

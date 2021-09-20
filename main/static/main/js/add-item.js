@@ -26,8 +26,9 @@ document.addEventListener('DOMContentLoaded', function() {
         container.appendChild(h5)
         // notesContainer.appendChild(container)
         notesContainer.insertBefore(container, notesContainer.lastElementChild)
-        newNoteTitle.value = "";
-
+        try {
+            newNoteTitle.value = "";
+        } catch(e) {/*not supported*/}
     }
 
     try {

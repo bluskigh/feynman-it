@@ -189,7 +189,12 @@ def notes(request):
         cache.set(request.session.get('notes_key'), notes)
 
     if request.GET.get('json'):
+        # attempting to get a specific day
+        if request.GET.get('day'):
+            dq = Q(created__day=request.GET.get('day'))
+            notes = [note.basic_information() for note in Note.objects.filter(dq).all()]
         return JsonResponse({'notes': notes}, status=200) 
+
     return render(request, 'main/notes.html', {'notes': notes, 'new_note_form': NewNoteForm()})
 
 
