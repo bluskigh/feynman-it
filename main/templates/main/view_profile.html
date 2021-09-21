@@ -117,6 +117,8 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const spinnerContainer = document.querySelector('.spinner_container');
+        const firstSpinner = spinnerContainer.firstElementChild; 
+        const secondSpinner = firstSpinner.nextElementSibling;
         let currentActive = null;
         document.querySelectorAll('.hdata_info').forEach(item => {
             item.parentElement.addEventListener('mouseenter', function() {
@@ -129,12 +131,14 @@
             })
             function displaySpinner() {
                 spinnerContainer.style.display = 'initial';
-                spinnerContainer.style.animationPlayState = 'running';
+                firstSpinner.style.animationPlayState = 'running';
+                secondSpinner.style.animationPlayState = 'running';
             }
             const notesContainer = document.querySelector('#items-flex-container');
             function hideSpinner() {
                 spinnerContainer.style.display = 'none';
-                spinnerContainer.style.animationPlayState = 'paused';
+                firstSpinner.style.animationPlayState = 'paused';
+                secondSpinner.style.animationPlayState = 'paused';
             }
             item.parentElement.addEventListener('click', function() {
                 if (currentActive) {
