@@ -167,7 +167,7 @@
                 .then(async r => await r.json())
                 .then(r => {
                     for (const item of r.notes) {
-                        addNote(item.id, item.title, 'notes/'+item.id)
+                        addNote(item.id, item.title, '/notes/'+item.id)
                     }
                     spinnerContainer.style.display = 'none';
                     hideSpinner()
