@@ -103,7 +103,7 @@
         {% if 'edit' not in request.path %}
             <td class="table-data-container" style="text-align: left;">
             {% if note.step_three|length > 0 %}
-                <p>{{ note.step_three }}</p>
+                <p class="iteration-text">{{ note.step_three }}</p>
             {% else %}
                 <p class="nomessage">No final statement.</p>
             {% endif %}
