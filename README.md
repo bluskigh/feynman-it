@@ -1,10 +1,12 @@
 ![run-tests](https://github.com/molinitomario/feynman-it/actions/workflows/django.yml/badge.svg)
 
 ## Description
-The name given to this web application is "FeynmanIt" because it was inspired by Richard Feynman's learning technique. FeynmanIt utilizes the following stack: Django (backend), Python, JS, HTML, and CSS. Once a user signs up they are given certain permissions to create notes and folders. Each note has much thought put into its structure, this structure was inspired by the infamous learning technique "The Feynman Technique" which was, as the name suggests, made popular by Richard Feynman. Sought as the most efficient learning technique as it forces the learner to explain the topic in simple terms instead of tricking themselves into thinking they understand the topic by being complex. A folder can be created to store notes, organizing different learnings by subject, by default, there are two folders created called: "All", and "Deleted". 
+The name given to this web application is "FeynmanIt" because Richard Feynman's learning technique inspired it. FeynmanIt utilizes the following stack: Django (backend), Python, JS, HTML, and CSS. Once a user signs up, they are given specific permissions to create notes and folders. Each note has much thought put into its structure; this structure was inspired by the infamous learning technique "The Feynman Technique," which was, as the name suggests, made famous by Richard Feynman. Sought as the most efficient learning technique, it forces the learner to explain the topic in simple terms instead of tricking themselves into thinking they understand the topic by being complex. A folder can be created to store notes, organizing different learnings by subject. By default, there are two folders created called: "All" and "Deleted." A viewable progress heatmap is available in the profile section (still under development).
+
 
 ## Motivation
-I have been know of Richard Feynman's learning technique for quite a while, but always wanted a web application that utilized it. I never found a web application that has utilized it, therefore I thought it would be nice to have for not only me but for others to utilize too. I thought of how great an application like this can be for multiple uses such as classroom teaching, individuals, and parents. Of course the idea of helping others really motivated me to start this project, therefore with my limited knowledge of Django I thought I would give it a try. Hopefully in the future more advanced features can be implemented such as: sharing notes and having a forum where existing notes can be referenced as answers to questions for others to learn.
+Initially, I was seeking an online note-taking web application based on the Feynman Technique, but to my surprise, there were none. Therefore, I decided that it would be nice to have such an application for me and others to use. So, with my limited and ever-growing knowledge of Full-Stack development, I decided to give it a shot. The drive to help others learn kept me from stoping this side project. "Where is this application applicable?" This application can be used universally everywhere (not literally) in classrooms, job interviews, and personal use. My ultimate goal for this application is to implement a forum based solely on answering questions from existing user notes, which others can study. All in all, the idea of helping others was a significant motivator.  
+
 
 ## Application is hosted at:
 ```
@@ -107,6 +109,5 @@ Since I am using a CI/CD workflow with the help of Github Actions. I need this f
 In this file is where I register custom filters and tags for me to use in Django templating engine. 
 
 ## Todo:
-- Make style much more modern
 - Add forums
-- ... 
+- Advanced heatmap 
