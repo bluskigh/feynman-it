@@ -105,8 +105,8 @@
 }
 .input-add-container { height: 60%; }
 .input-add-container button {
-    background: black;
-    color: white;
+    background: white;
+    color: black;
     max-width: fit-content;
     border: none;
     height: 100%;
@@ -114,7 +114,7 @@
 }
 .input-add-container input {
     background: none;
-    border: 3px solid black;
+    border: 3px solid white;
     color: white;
     height: 100%;
 }
