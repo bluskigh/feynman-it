@@ -107,7 +107,3 @@ All of my stylings were exported into separate files to reduce clutter in HTML f
 Since I am using a CI/CD workflow with the help of Github Actions. I need this file in order to build/push a new release to Heroku after a push to the main branch on this Github repo is performed. All it does is use an existing docker image to set up python3, copy data in the current working directory to ```/usr/src/app```, and then change the working directory to ```/usr/src/app```. Install the necessary dependencies for the project to run. Finally, it starts the server by running ```gunicorn feynmanit.wsgi```. 
 ### Layout Tags
 In this file is where I register custom filters and tags for me to use in Django templating engine. 
-
-## Todo:
-- Add forums
-- Advanced heatmap 
