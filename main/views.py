@@ -283,11 +283,18 @@ def link(request, id):
     return HttpResponse(status=200)
 
 
-@login_required
-def profile(request):
+class CustomDate:
+    def __init__(self, year, month):
+        self.year = year
+        self.month = month 
+def get_heatmap_data(request, year=None, month=None):
+    """ Required all three parameters if one is provided """
     calendar_key = request.session.get('calendar_key')
     calendar = cache.get(calendar_key)
-    today = date.today()
+    if month or year:
+        today = CustomDate(year, month)
+    else:
+        today = date.today()
     if calendar is None:
         # get heatmap
         calendar = Calendar()
@@ -316,11 +323,23 @@ def profile(request):
             request.session['calendar_key'] = calendar_key
         # caching for a day
         cache.set(calendar_key, calendar, 43200)
+    return calendar
+
+
+@login_required
+def profile(request):
+    calendar = get_heatmap_data(request)
     return render(request, 'main/view_profile.html', {
         'username': request.user.sub,
         'heatmap': calendar,
-        'month': month_name[today.month]
+        'month': month_name[date.today().month]
     })
+
+
+@login_required
+def get_heatmap(request):
+    calendar = get_heatmap_data(request, 2021, request.GET.get('month'))
+    return JsonResponse({'calendar': calendar}, status=200)
 
 
 @login_required

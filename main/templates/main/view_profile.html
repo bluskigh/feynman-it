@@ -57,12 +57,16 @@
         border-top-color: #1f1f1d;
         transform: translate(50%, -50%) rotate(180deg);
     }
+    .calendar-button {
+        padding: .1em 1em;
+        margin: 0 1em;
+    }
 </style>
 {% endblock %}
 {% block body %}
 {% load layout_tags %}
 <table>
-    <caption>HeatMap for <span class="month">{{ month }}</span><span class="display-none">. This heatmap will contain a value ranging from 0 to 1 depending on activity of a certain day. 0 means no activity on that day, 0.5 means medium amount of activity and 1 means large amount of activity. Activity is measured by creation/edit/deletion of notes done on a given day.</span></caption>
+    <caption><button id="prevMonth" class="calendar-button">&#60;</button>HeatMap for <span class="month">{{ month }}</span><span class="display-none">. This heatmap will contain a value ranging from 0 to 1 depending on activity of a certain day. 0 means no activity on that day, 0.5 means medium amount of activity and 1 means large amount of activity. Activity is measured by creation/edit/deletion of notes done on a given day.</span><button id="nextMonth" class="calendar-button">&#62;</button></caption>
     <thead>
         <tr>
             <th colspan=7 class="small"><small>Updates every 5 hours</small></th>
@@ -116,6 +120,30 @@
 <script src="{% static 'main/js/add-item.js' %}"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        let [prevButton, nextButton] = document.querySelectorAll('.calendar-button');
+        let current = 10;
+        function getHeatmapData() {
+            let url = new URL('get_heatmap', 'http://localhost:8000');
+            url.searchParams.append('month', current);
+            console.log(current);
+            fetch(url)
+            .then(async r => {
+                console.log(r.status);
+                return await r.json()
+            })
+            .then(body => {
+                console.log(body.calendar);
+            }).catch(e => console.error(e));
+        }
+        prevButton.addEventListener('click', function() {
+            --current;
+            getHeatmapData();
+        })
+        nextButton.addEventListener('click', function() {
+            ++current;
+            getHeatmapData();
+        })
+
         const spinnerContainer = document.querySelector('.spinner_container');
         const firstSpinner = spinnerContainer.firstElementChild; 
         const secondSpinner = firstSpinner.nextElementSibling;
