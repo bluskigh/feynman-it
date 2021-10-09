@@ -125,8 +125,8 @@
         let calendar = [];
         let month = null;
         const tbody = document.querySelector('tbody');
-        let current = new URL(window.location.href);
-        let origin = current.origin;
+        let windowURL = new URL(window.location.href);
+        let origin = windowURL.origin;
         function getHeatmapData() {
             let url = new URL('get_heatmap', origin);
             url.searchParams.append('month', current);
