@@ -290,7 +290,8 @@ class CustomDate:
 def get_heatmap_data(request, year=None, month=None):
     """ Required all three parameters if one is provided """
     calendar_key = request.session.get('calendar_key')
-    calendar = cache.get(calendar_key)
+    calendar = None # TODO fix this, should I cache all months user has 
+# tried to view data of????? 
     if month or year:
         today = CustomDate(year, month)
     else:
@@ -338,8 +339,9 @@ def profile(request):
 
 @login_required
 def get_heatmap(request):
-    calendar = get_heatmap_data(request, 2021, request.GET.get('month'))
-    return JsonResponse({'calendar': calendar}, status=200)
+    month = int(request.GET.get('month'))
+    calendar = get_heatmap_data(request, 2021, month)
+    return JsonResponse({'calendar': calendar, 'month': month_name[month]}, status=200)
 
 
 @login_required

@@ -87,7 +87,7 @@
         <tr>
             {% for day in week %}
             {% with activity=day|get_value:1 %}
-            <td aria-label="heatmap data" aria-valuenow="{{activity}}" class="heatmap_data {% if day|get_value:0 is None %}hdata_nothing{% endif %} {% if activity > 0 and activity <= .25 %}hdata_lessquarter{% endif %} {% if activity >= .25 and activity <= .50 %}hdata_half{% endif %} {% if activity >= .50 and activity <= .75 %}hdata_quarterhalf{% endif %} {% if activity >= .75 and activity <= 1 %}hdata_full{% endif %}">
+            <td aria-label="Day of month: {{activity}}" class="heatmap_data {% if day|get_value:0 is None %}hdata_nothing{% endif %} {% if activity > 0 and activity <= .25 %}hdata_lessquarter{% endif %} {% if activity >= .25 and activity <= .50 %}hdata_half{% endif %} {% if activity >= .50 and activity <= .75 %}hdata_quarterhalf{% endif %} {% if activity >= .75 and activity <= 1 %}hdata_full{% endif %}">
                 {% if day|get_value:0 > 0 %}
                 <p class="hdata_day">{{day|get_value:0}}</p>
                 {% endif %}
@@ -122,27 +122,96 @@
     document.addEventListener('DOMContentLoaded', function() {
         let [prevButton, nextButton] = document.querySelectorAll('.calendar-button');
         let current = 10;
+        let calendar = [];
+        let month = null;
+        const tbody = document.querySelector('tbody');
         function getHeatmapData() {
             let url = new URL('get_heatmap', 'http://localhost:8000');
             url.searchParams.append('month', current);
-            console.log(current);
-            fetch(url)
-            .then(async r => {
-                console.log(r.status);
-                return await r.json()
+            return new Promise((resolve, reject) => {
+                fetch(url)
+                .then(async r => {
+                    console.log(r.status);
+                    return await r.json()
+                })
+                .then(body => {
+                    calendar = body.calendar;
+                    month = body.month;
+                    resolve()
+                }).catch(e => console.error(e));
             })
-            .then(body => {
-                console.log(body.calendar);
-            }).catch(e => console.error(e));
         }
-        prevButton.addEventListener('click', function() {
-            --current;
-            getHeatmapData();
-        })
-        nextButton.addEventListener('click', function() {
-            ++current;
-            getHeatmapData();
-        })
+        function clearHeatMap() {
+            while (tbody.children.length > 0) {
+                tbody.removeChild(tbody.children[0]);
+            }
+            const pending = document.createElement('p');
+            pending.innerText = 'Fetching data...';
+            tbody.appendChild(pending)
+        }
+        function populateHeatmap() {
+            tbody.removeChild(tbody.firstElementChild)
+            document.querySelector('.month').innerText = month;
+            for (const week of calendar) {
+                const tr = document.createElement('tr');
+                console.log(week);
+                for (const info of week) {
+                    const td = document.createElement('td');
+                    const activity = info[1];
+                    const modified = info[2];
+                    const day = info[0];
+                    td.setAttribute('aria-label', `Day of month: ${day}`)
+                    td.classList.add('heatmap_data')
+                    let hdata_info = null;
+                    if (day == null) {
+                        td.classList.add('hdata_nothing')
+                    } else {
+                        const p = document.createElement('p');
+                        p.classList.add('hdata_day')
+                        p.innerText = day;
+                        td.appendChild(p)
+
+                        switch(activity) {
+                            case activity > 0:
+                                hdata_info = document.createElement('div');
+                                hdata_info.classList.add('hdata_info')
+                                hdata_info.dataset.day = day;
+                                const p = document.createElement('p');
+                                p.innerText = `Modified ${modified}`;
+                                const arrow = document.createElement('div');
+                                arrow.classList.add('arrow')
+                                hdata_info.appendChild(p)
+                                hdata_info.appendChild(arrow)
+                            case activity <= .25:
+                                td.classList.add('hdata_lessquarter')
+                                break;
+                            case activity > .25 && activity <= .50:
+                                td.classList.add('hdata_half')
+                                break;
+                            case activity > .50 && activity <= .75:
+                                td.classList.add('hdata_quarterhalf')
+                                break;
+                            case activity > .75 && activity <= 1:
+                                td.classList.add('hdata_full')
+                                break;
+                        }
+                    }
+                    tr.appendChild(td)
+                }
+                tbody.appendChild(tr)
+                const space = document.createElement('tr');
+                space.classList.add('space')
+                tbody.appendChild(space)
+            }
+        }
+        async function calendarButton(value) {
+            current += value;
+            clearHeatMap()
+            await getHeatmapData();
+            populateHeatmap()
+        }
+        prevButton.addEventListener('click', (() => {calendarButton(-1)}))
+        nextButton.addEventListener('click', (() => {calendarButton(1)}))
 
         const spinnerContainer = document.querySelector('.spinner_container');
         const firstSpinner = spinnerContainer.firstElementChild; 
