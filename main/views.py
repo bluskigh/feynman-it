@@ -458,15 +458,14 @@ def delete_folder(request, id):
 
     info = folder.basic_information()
     info['action'] = 'delete'
-    existing = cache.get(request.session.get('folders_actions_key')) or []
-    existing.append(info)
-    cache.set(request.session.get('folders_actions_key'), existing)
 
     if folder != deleted_folder:
         for note in notes:
             note.folder = deleted_folder 
             note.save()
-
+        existing = cache.get(request.session.get('folders_actions_key')) or []
+        existing.append(info)
+        cache.set(request.session.get('folders_actions_key'), existing)
     else:
         messages.info(request, f'Deleted notes from "{folder.title}"')
         d = False
