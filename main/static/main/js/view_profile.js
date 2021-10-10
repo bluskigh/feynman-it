@@ -1,14 +1,16 @@
 document.addEventListener('DOMContentLoaded', function () {
     let [prevButton, nextButton] = document.querySelectorAll('.calendar-button');
-    let current = 10;
+    const monthSpan = document.querySelector('.month');
+    const monthDay = parseInt(monthSpan.dataset.monthDay);
+    let monthName = null;
+    let monthIterator = monthDay;
     let calendar = [];
-    let month = null;
     const tbody = document.querySelector('tbody');
     let windowURL = new URL(window.location.href);
     let origin = windowURL.origin;
     function getHeatmapData() {
         let url = new URL('get_heatmap', origin);
-        url.searchParams.append('month', current);
+        url.searchParams.append('month', monthIterator);
         return new Promise((resolve, reject) => {
             fetch(url)
                 .then(async r => {
@@ -19,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     calendar = body.calendar;
                     month = body.month;
                     resolve()
-                }).catch(e => console.error(e));
+                }).catch(e => reject());
         })
     }
     function clearHeatMap() {
@@ -32,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     function populateHeatmap() {
         tbody.removeChild(tbody.firstElementChild)
-        document.querySelector('.month').innerText = month;
+        monthSpan.innerText = month;
         for (const week of calendar) {
             const tr = document.createElement('tr');
             for (const info of week) {
@@ -84,11 +86,31 @@ document.addEventListener('DOMContentLoaded', function () {
             tbody.appendChild(space)
         }
     }
+    function checkButtonStatus(button, mi, target) {
+        if (mi == target) {
+            button.disabled = true;
+            button.style.opacity = .5;
+        } else if (button.disabled) {
+            button.disabled = false;
+            button.style.opacity = 1;
+        }
+    } 
     async function calendarButton(value) {
-        current += value;
+        monthIterator += value;
+        checkButtonStatus(prevButton, monthIterator, 1)
+        checkButtonStatus(nextButton, monthIterator, 12)
         clearHeatMap()
-        await getHeatmapData();
-        populateHeatmap()
+        try {
+            await getHeatmapData();
+            populateHeatmap()
+            if (monthIterator == monthDay) {
+                monthSpan.style.color = "black";
+            } else {
+                monthSpan.style.color = "var(--accent-three)";
+            }
+        } catch(e) {
+            monthIterator -= value;
+        }
     }
     prevButton.addEventListener('click', (() => { calendarButton(-1) }))
     nextButton.addEventListener('click', (() => { calendarButton(1) }))

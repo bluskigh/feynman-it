@@ -66,7 +66,7 @@
 {% block body %}
 {% load layout_tags %}
 <table>
-    <caption><button id="prevMonth" class="calendar-button">&#8249;</button>HeatMap for <span class="month">{{ month }}</span><span class="display-none">. This heatmap will contain a value ranging from 0 to 1 depending on activity of a certain day. 0 means no activity on that day, 0.5 means medium amount of activity and 1 means large amount of activity. Activity is measured by creation/edit/deletion of notes done on a given day.</span><button id="nextMonth" class="calendar-button">&#8250;</button></caption>
+    <caption><button id="prevMonth" class="calendar-button">&#8249;</button>HeatMap for <span class="month" data-month-day={{month_day}}>{{ month_name }}</span><span class="display-none">. This heatmap will contain a value ranging from 0 to 1 depending on activity of a certain day. 0 means no activity on that day, 0.5 means medium amount of activity and 1 means large amount of activity. Activity is measured by creation/edit/deletion of notes done on a given day.</span><button id="nextMonth" class="calendar-button">&#8250;</button></caption>
     <thead>
         <tr>
             <th colspan=7 class="small"><small>Updates every 5 hours</small></th>

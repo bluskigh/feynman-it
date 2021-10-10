@@ -333,7 +333,8 @@ def profile(request):
     return render(request, 'main/view_profile.html', {
         'username': request.user.sub,
         'heatmap': calendar,
-        'month': month_name[date.today().month]
+        'month_name': month_name[date.today().month],
+        'month_day': date.today().month
     })
 
 
