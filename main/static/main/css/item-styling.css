@@ -15,7 +15,7 @@
     /* default color is learning color */
     background: var(--main);
     /* otherwise items are going to be touching one another */
-    margin: .5em; padding: 2em;
+    margin: .5em; padding: 3em;
     display: flex;
     align-items: center; justify-content: center;
 }

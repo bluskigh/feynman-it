@@ -34,7 +34,7 @@ body {
 }
 .static-button:hover { transform: none; cursor: default; }
 a:hover { color: gray; }
-.helper { color: gray; font-size: .7em; }
+.helper { font-size: .7em; }
 main {
     min-height: 65%;
     display: flex;
