@@ -52,49 +52,57 @@
 <section aria-label="Dashboard body" id="dashboard-body">
     <section>
         <h2>Recent Note Actions</h2>
-        {% for note in notes %}
-            {% if note.action == 'delete' %}
-                <a href="#" class="item item-animate">
-                    <div class="action-container">
-                        <div class="action {{note.action}}"><p>{{note.action}}</p></div>
-                    </div>
-                    <div class="item-shader hidden"></div>
-                    <div class="understand-bar {% if note.understand %}understand{% endif %}"></div>
-                    <h5><span class="redacted"></span>{{note.title }}</h5>
-                </a>
-            {% else %}
-                <a href="{% url 'view_note' note.id %}" class="item item-animate">
-                    <div class="action-container">
-                        <div class="action {{note.action}}"><p>{{note.action}}</p></div>
-                    </div>
-                    <div class="item-shader hidden"></div>
-                    <div class="understand-bar {% if note.understand %}understand{% endif %}"></div>
-                    <h5>{{ note.title }}</h5>
-                </a>
-            {% endif %}
-        {% endfor %}
+        {% if notes %}
+            {% for note in notes %}
+                {% if note.action == 'delete' %}
+                    <a href="#" class="item item-animate">
+                        <div class="action-container">
+                            <div class="action {{note.action}}"><p>{{note.action}}</p></div>
+                        </div>
+                        <div class="item-shader hidden"></div>
+                        <div class="understand-bar {% if note.understand %}understand{% endif %}"></div>
+                        <h5><span class="redacted"></span>{{note.title }}</h5>
+                    </a>
+                {% else %}
+                    <a href="{% url 'view_note' note.id %}" class="item item-animate">
+                        <div class="action-container">
+                            <div class="action {{note.action}}"><p>{{note.action}}</p></div>
+                        </div>
+                        <div class="item-shader hidden"></div>
+                        <div class="understand-bar {% if note.understand %}understand{% endif %}"></div>
+                        <h5>{{ note.title }}</h5>
+                    </a>
+                {% endif %}
+            {% endfor %}
+        {% else %}
+        <p>Nothing here yet.</p>
+        {% endif %}
     </section>
     <section>
         <h2>Recent Folder Actions</h2>
-        {% for folder in folders %}
-            {% if folder.action == 'delete' %}
-                <a href="#" class="item item-animate folder">
-                    <div class="action-container">
-                        <div class="action {{folder.action}}"><p>{{folder.action}}</p></div>
-                    </div>
-                    <div class="item-shader hidden"></div>
-                    <h5><span class="redacted"></span>{{ folder.title }}</h5>
-                </a>
-            {% else %}
-                <a href="{% url 'view_folder' folder.id %}" class="item item-animate folder">
-                    <div class="action-container">
-                        <div class="action {{folder.action}}"><p>{{folder.action}}</p></div>
-                    </div>
-                    <div class="item-shader hidden"></div>
-                    <h5>{{ folder.title }}</h5>
-                </a>
-            {% endif %}
-        {% endfor %}
+        {% if folders %}
+            {% for folder in folders %}
+                {% if folder.action == 'delete' %}
+                    <a href="#" class="item item-animate folder">
+                        <div class="action-container">
+                            <div class="action {{folder.action}}"><p>{{folder.action}}</p></div>
+                        </div>
+                        <div class="item-shader hidden"></div>
+                        <h5><span class="redacted"></span>{{ folder.title }}</h5>
+                    </a>
+                {% else %}
+                    <a href="{% url 'view_folder' folder.id %}" class="item item-animate folder">
+                        <div class="action-container">
+                            <div class="action {{folder.action}}"><p>{{folder.action}}</p></div>
+                        </div>
+                        <div class="item-shader hidden"></div>
+                        <h5>{{ folder.title }}</h5>
+                    </a>
+                {% endif %}
+            {% endfor %}
+        {% else %}
+        <p>Nothing here yet.</p>
+        {% endif %}
     </section>
 </section>
 {% endblock %}
