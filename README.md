@@ -5,7 +5,7 @@ Richard Feynman's learning technique initially inspired "FeynmanIt" it utilizes 
 
 
 ## Motivation
-Initially, I was seeking an online note-taking web application based on the Feynman Technique, but to my surprise, there were none. Therefore, I decided that it would be nice to have such an application for me and others to use. So, with my limited and ever-growing knowledge of Full-Stack development, I decided to give it a shot. The drive to help others learn kept me from stoping this side project. "Where is this application applicable?" This application can be used universally everywhere (not literally) in classrooms, job interviews, and personal use. My ultimate goal for this application is to implement a forum based solely on answering questions from existing user notes, which others can study. All in all, the idea of helping others was a significant motivator.  
+Initially, I was seeking an online note-taking web application based on the Feynman Technique, but to my surprise, there were none. Therefore, I decided that it would be nice to have such an application for me and others to use. So, with my limited and ever-growing knowledge of Full-Stack development, I decided to give it a shot. The drive to help others learn kept me from stoping this side project. "Where is this application applicable?" This application can be used universally everywhere (figuratively) in classrooms, job interviews, and personal use. My ultimate goal for this application is to implement a forum based solely on answering questions from existing user notes, from which others can study. All in all, the idea of helping others was a significant motivator. 
 
 
 ## Application is hosted at:
