@@ -10,10 +10,30 @@
         margin-top: 1em;
     }
 }
+@media screen and (max-width: 850px), (max-width: 500px) {
+    main .what-information-container {
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+    main .what-information {
+        width: 90%;
+        flex-direction: column;
+    }
+    main .what-data:nth-of-type(even) { margin: 2em 0; }
+    .combined-image { display: none; }
+    main #about p {
+        max-width: 90%;
+    }
+}
 @media screen and (max-width: 700px) {
     #item-table th {
         font-size: 2.5em !important;
     }
+    #about p {
+        max-width: 70%;
+    }
+
 }
 @media screen and (max-width: 600px) {
     #item-table th {
@@ -21,6 +41,9 @@
     }
     #item-table td {
         margin-top: .7em;
+    }
+    #about p {
+        max-width: 90%;
     }
 }
 @media screen and (max-width: 500px) {
@@ -85,19 +108,6 @@
         position: initial; text-align: center;
     }
     #contact { flex-direction: column; }
-    main .what-information-container {
-        flex-direction: column;
-        align-items: center;
-        width: 100%;
-    }
-    main .what-information {
-        width: 90%;
-        flex-direction: column;
-    }
-    main .what-data:nth-of-type(even) { margin: 2em 0; }
-    .combined-image { display: none; }
-    main #about p {
-        max-width: 90%;
-    }
+
 }
 /* End of Media Styling */
